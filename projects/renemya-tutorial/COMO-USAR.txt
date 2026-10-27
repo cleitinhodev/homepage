@@ -1,0 +1,50 @@
+RENEMYA — PÁGINA DE TUTORIAL (15 IDIOMAS)
+=========================================
+
+O que é
+-------
+Uma página HTML única e independente com o tutorial do Renemya 1.1.0 em
+15 idiomas (os mesmos do programa), cada um com as capturas de tela no
+próprio idioma. Não usa CDN, fontes externas nem servidor: funciona até
+abrindo o index.html direto do computador.
+
+Como publicar no site
+---------------------
+1. Descompacte o zip. Vai aparecer a pasta "renemya-tutorial/".
+2. Envie a PASTA INTEIRA para o servidor, mantendo a estrutura
+   (index.html + assets/ + img/). Exemplo de destino:
+       https://www.bugzinho.com/renemya-tutorial/
+3. Pronto. O endereço da página será .../renemya-tutorial/
+   (ou .../renemya-tutorial/index.html).
+   Dá para renomear a pasta à vontade; os caminhos são todos relativos.
+4. Para colocar um link no site, aponte para essa pasta. Exemplos:
+       .../renemya-tutorial/?lang=pt_BR   (força português)
+       .../renemya-tutorial/?lang=en      (força inglês)
+       .../renemya-tutorial/#step-7       (abre direto no passo 7)
+
+Idiomas
+-------
+O idioma é escolhido automaticamente pelo idioma do navegador do
+visitante (se não for um dos 15, abre em inglês). O visitante pode trocar
+no seletor do topo; a escolha fica salva no navegador dele.
+Códigos aceitos em ?lang= : pt_BR, en, es, zh_CN, hi, ar, fr, ru, bn,
+ja, de, id, ko, tr, it. Em árabe a página inteira vira da direita para
+a esquerda.
+
+Estrutura
+---------
+  index.html                 a página
+  assets/css/style.css       visual (azul escuro + laranja)
+  assets/js/app.js           seletor de idioma, sumário, zoom das imagens
+  assets/js/langs.js         lista de idiomas
+  assets/js/i18n/<idioma>.js textos de cada idioma
+  assets/img/                ícone e favicon
+  img/<idioma>/              25 capturas (WebP) de cada idioma
+
+Dicas
+-----
+- Não é a home do site: é uma página solta, pode morar em qualquer pasta.
+- Para corrigir um texto, edite o arquivo assets/js/i18n/<idioma>.js
+  (é texto simples dentro de aspas).
+- Os links de download apontam sempre para a última versão:
+  https://github.com/cleitinhodev/renemya/releases/latest

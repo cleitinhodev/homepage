@@ -1,0 +1,1 @@
+window.RNY_LANGS = [["pt_BR", "Português (Brasil)"], ["en", "English"], ["es", "Español"], ["zh_CN", "中文（简体）"], ["hi", "हिन्दी"], ["ar", "العربية"], ["fr", "Français"], ["ru", "Русский"], ["bn", "বাংলা"], ["ja", "日本語"], ["de", "Deutsch"], ["id", "Bahasa Indonesia"], ["ko", "한국어"], ["tr", "Türkçe"], ["it", "Italiano"]];
