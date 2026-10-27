@@ -1,11 +1,140 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CLEITINHO.DEV — Tutoriais retrô</title>
+  <meta name="description" content="Homepage do CleitinhoDEV: uma vitrine retrô que apresenta tutoriais e projetos, cada um com seu próprio estilo.">
+  <meta name="theme-color" content="#14012b">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22%3E%3Crect width=%2216%22 height=%2216%22 fill=%22%2314012b%22/%3E%3Cpath d=%22M5 3l8 5-8 5z%22 fill=%22%23ff1f4b%22/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
-    <h1>Site teste</h1>
+  <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
+
+  <!-- Camadas decorativas: grade, brilho e scanlines CRT -->
+  <div class="bg-grid" aria-hidden="true"></div>
+  <div class="bg-glow" aria-hidden="true"></div>
+  <div class="crt" aria-hidden="true"></div>
+
+  <header class="site-header">
+    <a class="brand" href="#principal" aria-label="CLEITINHO.DEV — ir para Principal">
+      <span class="brand-icon" aria-hidden="true">▶</span>CLEITINHO.DEV
+    </a>
+
+    <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="menu-principal">
+      <span class="sr-only">Abrir menu</span>
+      <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+    </button>
+
+    <nav class="main-nav" id="menu-principal" aria-label="Navegação principal">
+      <!--
+        COMO ADICIONAR UMA NOVA ABA
+        1) Copie um <li> abaixo e troque o href (#nome) e o texto.
+           Para uma aba "Em breve", use aria-disabled="true", tabindex="-1"
+           e o <span class="badge">Em breve</span>.
+        2) Crie uma <section class="panel" id="nome" data-title="Título" hidden>.
+        3) O assets/js/app.js detecta as abas automaticamente.
+      -->
+      <ul class="nav-list">
+        <li><a class="btn nav-link" href="#principal"><span class="btn-label">Principal</span></a></li>
+        <li><a class="btn nav-link" href="#projetos"><span class="btn-label">Projetos</span></a></li>
+        <li><a class="btn nav-link" href="#sobre"><span class="btn-label">Sobre</span></a></li>
+        <li><a class="btn nav-link is-disabled" href="#em-breve" aria-disabled="true" tabindex="-1"><span class="btn-label">???</span><span class="badge">Em breve</span></a></li>
+      </ul>
+      <span class="nav-indicator" aria-hidden="true"></span>
+    </nav>
+  </header>
+
+  <main id="conteudo" tabindex="-1">
+
+    <!-- ===================== PRINCIPAL ===================== -->
+    <section class="panel" id="principal" data-title="Principal" aria-labelledby="t-principal">
+      <div class="hero hero-compact">
+        <p class="eyebrow">// PLAYER 1 — PRESS START</p>
+        <h1 id="t-principal" class="glitch" data-text="TUTORIAIS RETRÔ">TUTORIAIS RETRÔ</h1>
+        <p class="lead">Uma vitrine de tutoriais e projetos. Cada fase tem seu próprio visual: escolha um cartucho na tela abaixo e aperte <kbd>START</kbd>.</p>
+      </div>
+      <div class="sun" aria-hidden="true"></div>
+
+      <!-- Monitor / gabinete arcade -->
+      <div class="cabinet">
+        <div class="cabinet-marquee" aria-hidden="true"><span>★ ÚLTIMAS ADIÇÕES ★</span></div>
+        <div class="monitor">
+          <div class="screen" id="screen" aria-live="polite" aria-busy="true">
+            <div class="screen-inner">
+              <!-- O app.js troca o conteúdo: boot → vazio / lista / erro -->
+              <div class="boot" id="boot">
+                <p class="boot-line">CLEITINHO-OS v1.0 (c) 2026</p>
+                <p class="boot-line">MEMÓRIA ........ 640K OK</p>
+                <p class="boot-line">LENDO projects/projects.json<span class="dots"></span></p>
+                <div class="boot-bar" aria-hidden="true"><span></span></div>
+              </div>
+            </div>
+            <div class="screen-glare" aria-hidden="true"></div>
+          </div>
+          <div class="monitor-led" aria-hidden="true"><span class="led"></span> POWER</div>
+        </div>
+        <div class="controls" role="group" aria-label="Controles da tela">
+          <div class="dpad">
+            <button class="arcade-btn arcade-small" type="button" data-action="prev" aria-label="Projeto anterior">▲</button>
+            <button class="arcade-btn arcade-small" type="button" data-action="next" aria-label="Próximo projeto">▼</button>
+          </div>
+          <p class="controls-hint">↑ ↓ escolher · ENTER abrir</p>
+          <button class="arcade-btn arcade-start" type="button" data-action="open" aria-label="Abrir projeto selecionado">START</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== PROJETOS ===================== -->
+    <section class="panel" id="projetos" data-title="Projetos" aria-labelledby="t-projetos" hidden>
+      <h2 id="t-projetos" class="section-title">PROJETOS</h2>
+      <p class="lead">Todos os tutoriais e projetos, do mais novo ao mais antigo.</p>
+      <div class="filter-row">
+        <label for="filtro" class="sr-only">Filtrar projetos</label>
+        <input id="filtro" class="pixel-input" type="search" placeholder="&gt; buscar por nome ou tag_" autocomplete="off">
+        <p class="count" id="contador" aria-live="polite"></p>
+      </div>
+      <div class="cards" id="lista-projetos"></div>
+    </section>
+
+    <!-- ===================== SOBRE ===================== -->
+    <section class="panel" id="sobre" data-title="Sobre" aria-labelledby="t-sobre" hidden>
+      <h2 id="t-sobre" class="section-title">SOBRE</h2>
+      <p class="lead">Aqui eu guardo conhecimentos gerais em forma de tutoriais. Cada tutorial vive na sua própria pasta dentro de <code>projects/</code>, com HTML, CSS e estilo próprios — como cartuchos diferentes no mesmo console.</p>
+      <ol class="tutorials">
+        <li class="tutorial">
+          <span class="level">FASE 01</span>
+          <div><h3>Crie a pasta</h3><p>Copie <code>projects/_modelo/</code> para <code>projects/meu-tutorial/</code>.</p></div>
+          <span class="tag">Fácil</span>
+        </li>
+        <li class="tutorial">
+          <span class="level">FASE 02</span>
+          <div><h3>Dê seu estilo</h3><p>Edite o <code>index.html</code> e o <code>project.json</code> com título, descrição, data e tags.</p></div>
+          <span class="tag">Criativo</span>
+        </li>
+        <li class="tutorial">
+          <span class="level">FASE 03</span>
+          <div><h3>Faça o push</h3><p>O GitHub Actions atualiza o <code>projects.json</code> e o tutorial aparece na tela inicial.</p></div>
+          <span class="tag">Automático</span>
+        </li>
+      </ol>
+    </section>
+
+    <section class="panel" id="em-breve" data-title="Em breve" hidden>
+      <h2 class="section-title">EM BREVE</h2><p class="lead">Esta fase ainda está sendo carregada…</p>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <p>© 2026 CleitinhoDEV · Feito com pixels e <span class="heart" aria-label="amor">♥</span></p>
+    <p class="footer-hint">Dica: ← → no menu · ↑ ↓ na tela</p>
+  </footer>
+
+  <script src="assets/js/app.js"></script>
 </body>
 </html>
