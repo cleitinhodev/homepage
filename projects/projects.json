@@ -13,7 +13,8 @@
       "20 idiomas"
     ],
     "url": "projects/easy-game-translator-tutorial/",
-    "cover": "projects/easy-game-translator-tutorial/assets/img/pt-BR/box-game.webp"
+    "cover": "projects/easy-game-translator-tutorial/assets/img/pt-BR/box-game.webp",
+    "added": 1793105582
   },
   {
     "slug": "renemya-tutorial",
@@ -28,6 +29,7 @@
       "15 idiomas"
     ],
     "url": "projects/renemya-tutorial/",
-    "cover": "projects/renemya-tutorial/img/pt_BR/step-04-overview.webp"
+    "cover": "projects/renemya-tutorial/img/pt_BR/step-04-overview.webp",
+    "added": 1793101013
   }
 ]

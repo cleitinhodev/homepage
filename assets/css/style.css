@@ -417,3 +417,36 @@ code { font-family: var(--font-body); color: var(--pink); background: rgba(255,7
   .bg-grid { animation: none; }
   .link-btn:hover .link-icon { transform: none; }
 }
+
+/* ================= Categorias (Projetos / Tools / Games) ================= */
+.accent-red    { --acc: var(--red);    --acc-d: var(--red-d);    --acc-glow: var(--glow-r); }
+.accent-violet { --acc: var(--violet); --acc-d: var(--violet-d); --acc-glow: var(--glow-v); }
+.accent-pink   { --acc: var(--pink);   --acc-d: #a3175f;         --acc-glow: 0 0 6px rgba(255,79,163,.9), 0 0 18px rgba(255,79,163,.55); }
+
+/* selo de categoria na tela inicial */
+.cat-badge {
+  display: inline-block; vertical-align: middle; margin-right: 8px; padding: 2px 5px 1px;
+  font-family: var(--font-pixel); font-size: 7px; line-height: 1.4; letter-spacing: .5px;
+  color: #fff; background: var(--acc-d, var(--red-d)); border: 1px solid var(--acc, var(--red));
+  box-shadow: 2px 2px 0 rgba(0,0,0,.45);
+}
+.screen-item .cat-badge { margin-right: 6px; }
+.preview .meta .cat-badge { margin-right: 4px; }
+
+/* aba de categoria: título com ícone e cards na cor da categoria */
+.cat-panel .section-title .title-ico { display: inline-block; filter: drop-shadow(3px 3px 0 var(--acc-d)); margin-right: 4px; }
+.cat-panel .section-title::after { color: var(--acc); }
+.cat-panel .card { box-shadow: 6px 6px 0 var(--acc-d); }
+.cat-panel .card:hover { border-color: var(--acc); }
+.cat-panel .count { color: var(--acc); }
+.cat-panel .cards-empty { border-color: var(--acc-d); }
+.cat-panel .cards-empty strong { color: var(--acc); text-shadow: var(--acc-glow); }
+.cat-empty { display: grid; justify-items: center; gap: 6px; }
+.cat-empty-ico { font-size: 54px; line-height: 1; filter: drop-shadow(4px 4px 0 var(--acc-d)); animation: cat-bob 1.4s steps(2) infinite; }
+.cat-empty-title { color: #fff; font-size: clamp(11px, 2vw, 15px); text-shadow: 3px 3px 0 var(--acc-d); }
+.cat-empty strong { margin: 4px 0 6px; }
+@keyframes cat-bob { 50% { transform: translateY(-6px); } }
+/* aba ativa no menu ganha a cor da categoria */
+.nav-link.accent-violet.is-active { border-color: var(--violet); text-shadow: var(--glow-v); box-shadow: 4px 4px 0 var(--red), var(--glow-v); }
+.nav-link.accent-pink.is-active   { border-color: var(--pink);   text-shadow: var(--acc-glow); box-shadow: 4px 4px 0 var(--violet), var(--acc-glow); }
+@media (prefers-reduced-motion: reduce) { .cat-empty-ico { animation: none; } }

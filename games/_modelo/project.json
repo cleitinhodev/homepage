@@ -1,0 +1,7 @@
+{
+  "title": "Título do jogo",
+  "description": "Uma frase curta sobre o jogo e como se joga.",
+  "date": "2026-10-27",
+  "tags": ["arcade", "canvas"],
+  "cover": "capa.png"
+}

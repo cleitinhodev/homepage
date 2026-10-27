@@ -1,7 +1,9 @@
-# Atualiza projects/projects.json e publica o site no GitHub Pages.
+# Atualiza os manifestos (projects/projects.json, tools/tools.json, games/games.json...)
+# e publica o site no GitHub Pages.
 #
-# 1) Roda scripts/build-projects.mjs para listar as pastas de projects/.
-# 2) Se o manifesto mudou, faz commit de volta na main com [skip ci]
+# 1) Roda scripts/build-manifests.mjs, que lista as pastas de cada categoria
+#    definida em assets/js/categories.js.
+# 2) Se algum manifesto mudou, faz commit de volta na main com [skip ci]
 #    (commits feitos com GITHUB_TOKEN também não disparam novos workflows, então não há loop).
 # 3) Publica o site via GitHub Actions (Pages com source = "GitHub Actions").
 #    Obs.: com o modo "Deploy from a branch", commits feitos pelo GITHUB_TOKEN
@@ -14,7 +16,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write   # commitar o projects.json
+  contents: write   # commitar os manifestos
   pages: write      # publicar no Pages
   id-token: write   # exigido pelo deploy-pages
 
@@ -35,18 +37,19 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Gerar projects/projects.json
-        run: node scripts/build-projects.mjs
+      - name: Gerar manifestos (projects, tools, games...)
+        run: node scripts/build-manifests.mjs
 
-      - name: Commitar manifesto (se mudou)
+      - name: Commitar manifestos (se mudaram)
         run: |
-          if git diff --quiet -- projects/projects.json; then
-            echo "Manifesto já está em dia."
+          mapfile -t FILES < <(node scripts/build-manifests.mjs --list)
+          git add -- "${FILES[@]}"
+          if git diff --cached --quiet; then
+            echo "Manifestos já estão em dia."
           else
             git config user.name  "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add projects/projects.json
-            git commit -m "chore: atualiza projects/projects.json [skip ci]"
+            git commit -m "chore: atualiza manifestos [skip ci]"
             git push origin HEAD:main
           fi
 

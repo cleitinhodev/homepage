@@ -1,10 +1,28 @@
-/* CLEITINHO.DEV — navegação, tela CRT com os últimos projetos e lista completa */
+/* CLEITINHO.DEV — navegação, tela CRT com as últimas adições e uma aba por categoria */
 (function () {
   'use strict';
 
-  var MANIFEST = 'projects/projects.json'; // caminho relativo: funciona em /homepage/ no GitHub Pages
-  var SCREEN_MAX = 8;                       // quantos projetos aparecem na tela inicial
-  var NEW_DAYS = 14;                        // até quantos dias um projeto ganha o selo "NOVO"
+  var SCREEN_MAX = 8;                       // quantos itens aparecem na tela inicial (todas as categorias juntas)
+  var NEW_DAYS = 14;                        // até quantos dias um item ganha o selo "NOVO"
+
+  /* Categorias (Projetos, Tools, Games...) vêm de assets/js/categories.js.
+     Cada uma vira uma aba (antes de "Links") e lê <dir>/<dir>.json — caminhos relativos. */
+  var ACCENTS = ['red', 'violet', 'pink'];
+  var CATS = (window.SITE_CATEGORIES || []).filter(function (c) {
+    return c && /^[a-z0-9][\w-]*$/i.test(c.id || '') && /^[a-z0-9][\w-]*$/i.test(c.dir || '');
+  }).map(function (c, i) {
+    var empty = c.empty || {};
+    return {
+      id: c.id, dir: c.dir, order: i,
+      manifest: c.dir + '/' + c.dir + '.json',
+      tab: String(c.tab || c.id), badge: String(c.badge || c.id).toUpperCase(),
+      icon: String(c.icon || '🕹️'), accent: ACCENTS.indexOf(c.accent) >= 0 ? c.accent : ACCENTS[i % 3],
+      noun: String(c.noun || 'item(ns)'), lead: String(c.lead || ''),
+      empty: { title: String(empty.title || 'NADA AQUI AINDA...'), coin: String(empty.coin || 'INSERT COIN'), text: String(empty.text || '') },
+      open: String(c.open || '▶ Abrir'),
+      items: [], failed: false, els: null
+    };
+  });
 
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
   var nav = document.querySelector('.main-nav');
@@ -12,16 +30,14 @@
   var indicator = nav.querySelector('.nav-indicator');
   var toggle = document.querySelector('.menu-toggle');
   var main = document.getElementById('conteudo');
+  buildCategoryTabs(); // cria as abas antes de listar os painéis
   var panels = Array.prototype.slice.call(document.querySelectorAll('.panel'));
   var screen = document.getElementById('screen');
   var screenInner = screen.querySelector('.screen-inner');
   var controls = document.querySelector('.controls');
-  var cardsBox = document.getElementById('lista-projetos');
-  var filterInput = document.getElementById('filtro');
-  var counter = document.getElementById('contador');
   var DEFAULT = 'principal';
 
-  var projects = [];   // lista completa (mais novo primeiro)
+  var projects = [];   // últimas adições de TODAS as categorias (mais novo primeiro)
   var selected = 0;    // índice selecionado na tela
   var state = 'boot';  // boot | empty | list | error
 
@@ -41,27 +57,72 @@
     var d = new Date(+m[1], +m[2] - 1, +m[3]);
     return (Date.now() - d.getTime()) / 864e5 <= NEW_DAYS;
   }
-  function safeCover(c) {
+  function safeCover(c, cat) {
     if (typeof c !== 'string' || !c) return '';
-    return /^(projects\/[^:]*|https:\/\/[^\s"']+)$/.test(c) ? c : '';
+    if (/^https:\/\/[^\s"']+$/.test(c)) return c;
+    return c.indexOf(cat.dir + '/') === 0 && !/:|\.\.\//.test(c) ? c : '';
   }
-  function normalize(raw) {
+  /* mais novo primeiro; mesma data → entrou no repo por último ("added"; sem "added" = agora);
+     depois a ordem das categorias e a ordem do manifesto */
+  function byNewest(a, b) {
+    if (a.date !== b.date) return b.date < a.date ? -1 : 1;
+    var x = a.added == null ? Infinity : a.added, y = b.added == null ? Infinity : b.added;
+    if (x !== y) return x > y ? -1 : 1;
+    return (a.cat.order - b.cat.order) || (a._i - b._i);
+  }
+  function normalize(raw, cat) {
     if (!Array.isArray(raw)) return [];
     return raw.filter(function (p) {
       return p && typeof p.slug === 'string' && /^[A-Za-z0-9][\w.-]*$/.test(p.slug);
-    }).map(function (p) {
+    }).map(function (p, i) {
       return {
         slug: p.slug,
         title: String(p.title || p.slug),
         description: String(p.description || ''),
         date: String(p.date || ''),
+        added: typeof p.added === 'number' && isFinite(p.added) ? p.added : null,
         tags: Array.isArray(p.tags) ? p.tags.map(String).slice(0, 8) : [],
-        cover: safeCover(p.cover),
-        url: 'projects/' + encodeURIComponent(p.slug) + '/'
+        cover: safeCover(p.cover, cat),
+        url: cat.dir + '/' + encodeURIComponent(p.slug) + '/',  // sempre a pasta da categoria certa
+        cat: cat, _i: i
       };
-    }).map(function (p, i) { p._i = i; return p; }).sort(function (a, b) {
-      // mais novo primeiro; na mesma data, mantém a ordem do manifesto (o gerador já desempata)
-      return b.date < a.date ? -1 : b.date > a.date ? 1 : a._i - b._i;
+    }).sort(byNewest);
+  }
+  function badgeHtml(cat) {
+    return '<span class="cat-badge accent-' + cat.accent + '">' + esc(cat.badge) + '</span>';
+  }
+
+  /* ================= Abas de categoria (geradas a partir de CATS) ================= */
+  function buildCategoryTabs() {
+    var navList = document.querySelector('.nav-list');
+    var linksLi = navList.querySelector('a[href="#links"]');
+    linksLi = linksLi ? linksLi.parentNode : null;
+    var anchor = document.getElementById('principal');
+    CATS.forEach(function (cat) {
+      if (document.getElementById(cat.id)) return; // id já usado: não duplica
+      var li = document.createElement('li');
+      li.innerHTML = '<a class="btn nav-link accent-' + cat.accent + '" href="#' + cat.id + '"><span class="btn-label">' + esc(cat.tab) + '</span></a>';
+      navList.insertBefore(li, linksLi);
+
+      var sec = document.createElement('section');
+      sec.className = 'panel cat-panel accent-' + cat.accent;
+      sec.id = cat.id;
+      sec.hidden = true;
+      sec.dataset.title = cat.tab;
+      sec.setAttribute('aria-labelledby', 't-' + cat.id);
+      sec.innerHTML =
+        '<h2 id="t-' + cat.id + '" class="section-title"><span class="title-ico" aria-hidden="true">' + esc(cat.icon) + '</span> ' + esc(cat.tab) + '</h2>' +
+        '<p class="lead">' + esc(cat.lead) + '</p>' +
+        '<div class="filter-row">' +
+          '<label for="filtro-' + cat.id + '" class="sr-only">Filtrar ' + esc(cat.tab) + '</label>' +
+          '<input id="filtro-' + cat.id + '" class="pixel-input" type="search" placeholder="&gt; buscar por nome ou tag_" autocomplete="off">' +
+          '<p class="count" id="contador-' + cat.id + '" aria-live="polite"></p>' +
+        '</div>' +
+        '<div class="cards" id="lista-' + cat.id + '"></div>';
+      anchor.parentNode.insertBefore(sec, anchor.nextSibling);
+      anchor = sec;
+      cat.els = { input: sec.querySelector('input'), count: sec.querySelector('.count'), box: sec.querySelector('.cards') };
+      cat.els.input.addEventListener('input', function () { renderCards(cat); });
     });
   }
   function tagsHtml(tags) {
@@ -172,9 +233,10 @@
     swapScreen(
       '<div class="empty">' +
         '<div class="coin" aria-hidden="true">¢</div>' +
-        '<h3>NENHUM PROJETO AINDA...</h3>' +
+        '<h3>NENHUM CARTUCHO AINDA...</h3>' +
         '<p class="insert-coin">INSERT COIN</p>' +
-        '<p>O cartucho está vazio. Assim que um tutorial for adicionado em <code>projects/</code>, ele aparece aqui.</p>' +
+        '<p>O fliperama está vazio. Assim que algo for adicionado em ' +
+          CATS.map(function (c) { return '<code>' + esc(c.dir) + '/</code>'; }).join(', ') + ', aparece aqui.</p>' +
       '</div>'
     );
   }
@@ -187,7 +249,7 @@
         '<p class="insert-coin">GAME OVER</p>' +
         '<p>' + (isFile
           ? 'Abrindo via file:// o navegador bloqueia o fetch. Rode <code>python3 -m http.server</code> na pasta do site e acesse <code>http://localhost:8000</code>.'
-          : 'Não consegui carregar <code>projects/projects.json</code>. Recarregue a página para tentar de novo.') + '</p>' +
+          : 'Não consegui carregar os manifestos (' + CATS.map(function (c) { return '<code>' + esc(c.manifest) + '</code>'; }).join(', ') + '). Recarregue a página para tentar de novo.') + '</p>' +
       '</div>'
     );
   }
@@ -199,10 +261,10 @@
     var html =
       '<div class="screen-grid">' +
         '<div class="screen-head"><span>► ÚLTIMAS ADIÇÕES</span><span>' + String(projects.length).padStart(2, '0') + ' CARTUCHO(S)</span></div>' +
-        '<ul class="screen-list" id="screen-list" role="listbox" tabindex="0" aria-label="Últimos projetos — use as setas para escolher">' +
+        '<ul class="screen-list" id="screen-list" role="listbox" tabindex="0" aria-label="Últimas adições — use as setas para escolher">' +
         items.map(function (p, i) {
           return '<li class="screen-item" role="option" id="opt-' + i + '" data-index="' + i + '" aria-selected="' + (i === selected) + '">' +
-            esc(p.title) + (isNew(p.date) ? '<span class="new">NOVO</span>' : '') + '</li>';
+            badgeHtml(p.cat) + esc(p.title) + (isNew(p.date) ? '<span class="new">NOVO</span>' : '') + '</li>';
         }).join('') +
         '</ul>' +
         '<div class="preview" id="preview"></div>' +
@@ -228,12 +290,12 @@
     var p = projects[selected];
     var pv = document.getElementById('preview');
     pv.innerHTML =
-      '<div class="preview-cover">' + (p.cover ? '<img src="' + esc(p.cover) + '" alt="" loading="lazy">' : '<span aria-hidden="true">🕹️</span>') + '</div>' +
+      '<div class="preview-cover">' + (p.cover ? '<img src="' + esc(p.cover) + '" alt="" loading="lazy">' : '<span aria-hidden="true">' + esc(p.cat.icon) + '</span>') + '</div>' +
       '<h3>' + esc(p.title) + '</h3>' +
-      '<p class="meta">📅 ' + formatDate(p.date) + '</p>' +
+      '<p class="meta">' + badgeHtml(p.cat) + ' 📅 ' + formatDate(p.date) + '</p>' +
       (p.description ? '<p class="desc">' + esc(p.description) + '</p>' : '') +
       tagsHtml(p.tags) +
-      '<a class="btn btn-primary btn-small" href="' + esc(p.url) + '"><span class="btn-label">▶ Abrir projeto</span></a>';
+      '<a class="btn btn-primary btn-small" href="' + esc(p.url) + '"><span class="btn-label">' + esc(p.cat.open) + '</span></a>';
     if (animate) { pv.classList.remove('swap'); void pv.offsetWidth; pv.classList.add('swap'); }
   }
   function select(i) {
@@ -279,32 +341,39 @@
     if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { e.preventDefault(); pressFx(e.key === 'ArrowDown' ? 'next' : 'prev'); select(selected + (e.key === 'ArrowDown' ? 1 : -1)); }
   });
 
-  /* ================= Aba Projetos ================= */
-  function renderCards() {
-    var q = (filterInput.value || '').trim().toLowerCase();
-    var items = projects.filter(function (p) {
+  /* ================= Abas de categoria: cards + busca ================= */
+  function renderCards(cat) {
+    var all = cat.items, els = cat.els;
+    if (!els) return;
+    var q = (els.input.value || '').trim().toLowerCase();
+    var items = all.filter(function (p) {
       if (!q) return true;
       return (p.title + ' ' + p.description + ' ' + p.tags.join(' ')).toLowerCase().indexOf(q) >= 0;
     });
-    counter.textContent = items.length + ' de ' + projects.length + ' projeto(s)';
+    els.count.textContent = items.length + ' de ' + all.length + ' ' + cat.noun;
     if (!items.length) {
-      cardsBox.innerHTML = '<div class="cards-empty"><strong>INSERT COIN</strong>' +
-        (projects.length ? 'Nenhum projeto combina com a busca.' : 'Nenhum projeto ainda... os tutoriais aparecem aqui assim que forem adicionados.') + '</div>';
+      els.box.innerHTML = cat.failed
+        ? '<div class="cards-empty"><strong>GAME OVER</strong>Não consegui carregar <code>' + esc(cat.manifest) + '</code>. Recarregue a página.</div>'
+        : all.length
+          ? '<div class="cards-empty"><strong>' + esc(cat.empty.coin) + '</strong>Nada combina com a busca.</div>'
+          : '<div class="cards-empty cat-empty">' +
+              '<span class="cat-empty-ico" aria-hidden="true">' + esc(cat.icon) + '</span>' +
+              '<span class="cat-empty-title">' + esc(cat.empty.title) + '</span>' +
+              '<strong>' + esc(cat.empty.coin) + '</strong>' + esc(cat.empty.text) + '</div>';
       return;
     }
     var arts = ['art-1', 'art-2', 'art-3'];
-    cardsBox.innerHTML = items.map(function (p, i) {
+    els.box.innerHTML = items.map(function (p, i) {
       return '<article class="card">' +
-        '<div class="card-art ' + arts[i % 3] + '" aria-hidden="true">' + (p.cover ? '<img src="' + esc(p.cover) + '" alt="" loading="lazy">' : '👾') + '</div>' +
+        '<div class="card-art ' + arts[i % 3] + '" aria-hidden="true">' + (p.cover ? '<img src="' + esc(p.cover) + '" alt="" loading="lazy">' : esc(cat.icon)) + '</div>' +
         '<h3>' + esc(p.title) + '</h3>' +
         '<p class="meta">📅 ' + formatDate(p.date) + '</p>' +
         '<p>' + esc(p.description) + '</p>' +
         tagsHtml(p.tags) +
-        '<a class="btn btn-small" href="' + esc(p.url) + '"><span class="btn-label">▶ Abrir</span></a>' +
+        '<a class="btn btn-small" href="' + esc(p.url) + '"><span class="btn-label">' + esc(cat.open) + '</span></a>' +
       '</article>';
     }).join('');
   }
-  filterInput.addEventListener('input', renderCards);
 
   /* Capa que não carregou → volta para o ícone */
   document.addEventListener('error', function (e) {
@@ -318,27 +387,32 @@
   }, true);
 
   /* ================= Carregamento ================= */
+  function fetchJson(url) {
+    return fetch(url, { cache: 'no-cache' }).then(function (r) {
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return r.json();
+    });
+  }
   function load() {
     var bootTime = reduceMotion.matches ? 0 : 2700; // deixa a animação de boot terminar
     var started = Date.now();
     var isFile = location.protocol === 'file:';
-    var req = isFile ? Promise.reject(new Error('file')) :
-      fetch(MANIFEST, { cache: 'no-cache' }).then(function (r) {
-        if (!r.ok) throw new Error('HTTP ' + r.status);
-        return r.json();
+    Promise.all(CATS.map(function (cat) {
+      if (isFile) { cat.failed = true; return Promise.resolve(); }
+      return fetchJson(cat.manifest).then(function (data) {
+        cat.items = normalize(data, cat);
+      }, function (err) {
+        cat.failed = true; // uma categoria com erro não derruba as outras
+        if (window.console) console.warn('[CLEITINHO.DEV] falha ao ler', cat.manifest, err);
       });
-    req.then(function (data) {
-      projects = normalize(data);
-      return 'ok';
-    }, function (err) {
-      if (window.console) console.warn('[CLEITINHO.DEV] falha ao ler', MANIFEST, err);
-      return 'error';
-    }).then(function (res) {
+    })).then(function () {
+      projects = [].concat.apply([], CATS.map(function (c) { return c.items; })).sort(byNewest);
+      var allFailed = !CATS.length || CATS.every(function (c) { return c.failed; });
       setTimeout(function () {
-        if (res === 'error') renderError(isFile);
+        if (allFailed) renderError(isFile);
         else if (!projects.length) renderEmpty();
         else renderList();
-        renderCards();
+        CATS.forEach(renderCards);
       }, Math.max(0, bootTime - (Date.now() - started)));
     });
   }

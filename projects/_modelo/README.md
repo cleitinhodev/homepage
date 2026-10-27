@@ -26,4 +26,4 @@ Esta pasta é um **modelo**. Ela começa com `_`, então o gerador a **ignora** 
 
 4. Faça commit e push para `main`. O GitHub Actions atualiza `projects/projects.json` e o tutorial aparece na tela inicial.
 
-Quer ver antes? Rode `node scripts/build-projects.mjs` e depois `python3 -m http.server` na raiz do repositório.
+Quer ver antes? Rode `node scripts/build-manifests.mjs` e depois `python3 -m http.server` na raiz do repositório.
