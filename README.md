@@ -11,7 +11,9 @@ Minha homepage onde guardo conhecimentos gerais! Um site **retrô** (synthwave v
 ├── index.html                  # página principal (menu + tela CRT + abas)
 ├── assets/
 │   ├── css/style.css           # visual retrô do site principal
-│   └── js/app.js               # navegação, tela interativa, lista de projetos
+│   ├── js/app.js               # navegação, tela interativa, lista de projetos
+│   ├── js/game.js              # mini game RETRO INVADER (aba Links)
+│   └── audio/game-theme.mp3    # música do jogo (só toca ao dar play)
 ├── projects/
 │   ├── projects.json           # manifesto GERADO automaticamente (não edite à mão)
 │   ├── _modelo/                # modelo de tutorial (ignorado por começar com "_")
@@ -66,6 +68,15 @@ python3 -m http.server 8000       # na raiz do repositório
 - Clique num item para selecionar; clique de novo para abrir.
 - **← / →** navegam entre as abas do menu.
 - Respeita `prefers-reduced-motion` (animações reduzidas).
+
+## Aba Links + RETRO INVADER
+
+A aba **Links** (`#links`; o antigo `#sobre` redireciona pra ela) tem os botões para o site, doação, Patreon e canal do YouTube, e embaixo o mini game **RETRO INVADER**:
+
+- Fica parado na tela de título até apertar **Jogar**, **Enter** ou tocar na tela.
+- **← →** ou **A D** movem, **Espaço** atira, **P** ou **Esc** pausam. No celular aparecem botões de toque.
+- Ondas cada vez mais rápidas, tiros inimigos, disco voador bônus, 3 vidas e recorde salvo no `localStorage`.
+- A música (`assets/audio/game-theme.mp3`, `preload="none"`) só é baixada e tocada ao dar play. Ela pausa no pause, no game over e ao trocar de aba, e o botão **Som** fica salvo.
 
 ## Publicação (GitHub Pages)
 

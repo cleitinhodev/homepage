@@ -81,6 +81,7 @@
   function enabledLinks() { return links().filter(function (l) { return l.getAttribute('aria-disabled') !== 'true'; }); }
   function currentId() {
     var id = decodeURIComponent(location.hash.replace('#', ''));
+    if (id === 'sobre') { id = 'links'; history.replaceState(null, '', '#links'); } // aba antiga
     var link = enabledLinks().filter(function (l) { return l.getAttribute('href') === '#' + id; })[0];
     return link ? id : DEFAULT;
   }

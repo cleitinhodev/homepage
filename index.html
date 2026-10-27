@@ -42,7 +42,7 @@
       <ul class="nav-list">
         <li><a class="btn nav-link" href="#principal"><span class="btn-label">Principal</span></a></li>
         <li><a class="btn nav-link" href="#projetos"><span class="btn-label">Projetos</span></a></li>
-        <li><a class="btn nav-link" href="#sobre"><span class="btn-label">Sobre</span></a></li>
+        <li><a class="btn nav-link" href="#links"><span class="btn-label">Links</span></a></li>
         <li><a class="btn nav-link is-disabled" href="#em-breve" aria-disabled="true" tabindex="-1"><span class="btn-label">???</span><span class="badge">Em breve</span></a></li>
       </ul>
       <span class="nav-indicator" aria-hidden="true"></span>
@@ -101,27 +101,48 @@
       <div class="cards" id="lista-projetos"></div>
     </section>
 
-    <!-- ===================== SOBRE ===================== -->
-    <section class="panel" id="sobre" data-title="Sobre" aria-labelledby="t-sobre" hidden>
-      <h2 id="t-sobre" class="section-title">SOBRE</h2>
-      <p class="lead">Aqui eu guardo conhecimentos gerais em forma de tutoriais. Cada tutorial vive na sua própria pasta dentro de <code>projects/</code>, com HTML, CSS e estilo próprios — como cartuchos diferentes no mesmo console.</p>
-      <ol class="tutorials">
-        <li class="tutorial">
-          <span class="level">FASE 01</span>
-          <div><h3>Crie a pasta</h3><p>Copie <code>projects/_modelo/</code> para <code>projects/meu-tutorial/</code>.</p></div>
-          <span class="tag">Fácil</span>
-        </li>
-        <li class="tutorial">
-          <span class="level">FASE 02</span>
-          <div><h3>Dê seu estilo</h3><p>Edite o <code>index.html</code> e o <code>project.json</code> com título, descrição, data e tags.</p></div>
-          <span class="tag">Criativo</span>
-        </li>
-        <li class="tutorial">
-          <span class="level">FASE 03</span>
-          <div><h3>Faça o push</h3><p>O GitHub Actions atualiza o <code>projects.json</code> e o tutorial aparece na tela inicial.</p></div>
-          <span class="tag">Automático</span>
-        </li>
-      </ol>
+    <!-- ===================== LINKS ===================== -->
+    <section class="panel" id="links" data-title="Links" aria-labelledby="t-links" hidden>
+      <h2 id="t-links" class="section-title">LINKS</h2>
+      <p class="lead">Escolha seu destino, player. Todos abrem em uma nova aba.</p>
+      <ul class="link-grid">
+        <li><a class="btn link-btn" href="https://www.bugzinho.com/" target="_blank" rel="noopener">
+          <span class="link-icon" aria-hidden="true">🌐</span>
+          <span class="btn-label"><span class="link-title">Site</span><span class="link-sub">bugzinho.com</span></span>
+          <span class="sr-only">(abre em nova aba)</span></a></li>
+        <li><a class="btn link-btn link-red" href="https://www.bugzinho.com/donate" target="_blank" rel="noopener">
+          <span class="link-icon" aria-hidden="true">🪙</span>
+          <span class="btn-label"><span class="link-title">Doar</span><span class="link-sub">insira uma moeda</span></span>
+          <span class="sr-only">(abre em nova aba)</span></a></li>
+        <li><a class="btn link-btn" href="https://patreon.com/CleitinhoDEV" target="_blank" rel="noopener">
+          <span class="link-icon" aria-hidden="true">💖</span>
+          <span class="btn-label"><span class="link-title">Patreon</span><span class="link-sub">apoie todo mês</span></span>
+          <span class="sr-only">(abre em nova aba)</span></a></li>
+        <li><a class="btn link-btn link-red" href="https://www.youtube.com/@CleitinhoDEV" target="_blank" rel="noopener">
+          <span class="link-icon" aria-hidden="true">📺</span>
+          <span class="btn-label"><span class="link-title">Canal</span><span class="link-sub">YouTube</span></span>
+          <span class="sr-only">(abre em nova aba)</span></a></li>
+      </ul>
+
+      <!-- ===== Mini game: RETRO INVADER ===== -->
+      <div class="game" id="game" tabindex="0" aria-label="Jogo Retro Invader. Pressione Jogar para começar.">
+        <div class="cabinet-marquee" aria-hidden="true"><span>👾 RETRO INVADER 👾</span></div>
+        <div class="game-screen">
+          <canvas id="game-canvas" width="640" height="480" aria-describedby="game-help">Seu navegador não suporta canvas.</canvas>
+        </div>
+        <div class="game-bar">
+          <button class="btn btn-primary btn-small" type="button" id="game-play"><span class="btn-label">▶ Jogar</span></button>
+          <button class="btn btn-small" type="button" id="game-pause" disabled><span class="btn-label">❚❚ Pausar</span></button>
+          <button class="btn btn-small" type="button" id="game-mute" aria-pressed="false"><span class="btn-label">♪ Som: ON</span></button>
+        </div>
+        <div class="touch-pad" aria-hidden="true">
+          <button class="arcade-btn" type="button" data-touch="left" tabindex="-1">◀</button>
+          <button class="arcade-btn arcade-start" type="button" data-touch="fire" tabindex="-1">FOGO</button>
+          <button class="arcade-btn" type="button" data-touch="right" tabindex="-1">▶</button>
+        </div>
+        <p class="controls-hint" id="game-help">← → ou A D mover · ESPAÇO atirar · P ou ESC pausar</p>
+        <audio id="game-music" src="assets/audio/game-theme.mp3" preload="none" loop></audio>
+      </div>
     </section>
 
     <section class="panel" id="em-breve" data-title="Em breve" hidden>
@@ -136,5 +157,6 @@
   </footer>
 
   <script src="assets/js/app.js"></script>
+  <script src="assets/js/game.js"></script>
 </body>
 </html>
