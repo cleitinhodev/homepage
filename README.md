@@ -46,7 +46,7 @@ Minha homepage onde guardo conhecimentos gerais! Um site **retrô** (synthwave v
    Todos os campos são opcionais. Sem eles, o gerador usa o `<title>` e a `<meta name="description">` do `index.html` e a data do último commit da pasta. `cover` é um caminho relativo à pasta do tutorial.
 4. `git add . && git commit -m "novo tutorial" && git push`
 
-O workflow **Site (manifesto + Pages)** roda a cada push na `main`: recria `projects/projects.json` (mais novo primeiro), faz commit dele de volta com `[skip ci]` se mudou, e publica o site. Em 1–2 minutos o tutorial aparece na tela inicial e na aba **Projetos**.
+O workflow **Site (manifesto + Pages)** roda a cada push na `main`: recria `projects/projects.json` (mais novo primeiro; na mesma data, o que entrou no repositório por último vem antes), faz commit dele de volta com `[skip ci]` se mudou, e publica o site. Em 1–2 minutos o tutorial aparece na tela inicial e na aba **Projetos**.
 
 Regras do gerador: só entram pastas com `index.html`; pastas começando com `_` ou `.` são ignoradas; nomes de pasta só com letras, números, `-`, `_` e `.`.
 

@@ -11,7 +11,9 @@
  *  - Se existir projects/<pasta>/project.json, usa: title, description, date (AAAA-MM-DD), tags, cover.
  *  - O que faltar vem do index.html (<title> e <meta name="description">)
  *    e a data vem do último commit git da pasta (ou da data de modificação do arquivo).
- *  - Resultado ordenado do mais novo para o mais antigo.
+ *  - Resultado ordenado do mais novo para o mais antigo (pela "date").
+ *    Empate na mesma data: quem entrou no git por último vem primeiro
+ *    (pasta ainda não commitada conta como "agora"); depois, ordem alfabética.
  *
  * Sem dependências: só Node 18+.
  */
@@ -53,6 +55,15 @@ function gitDate(dir) {
     const out = execFileSync('git', ['log', '-1', '--format=%cs', '--', dir], { cwd: ROOT, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }).trim();
     return DATE_RE.test(out) ? out : '';
   } catch { return ''; }
+}
+
+// Momento em que a pasta entrou no repositório (primeiro commit que a tocou), em ms.
+function gitAddedMs(dir) {
+  try {
+    const out = execFileSync('git', ['log', '--format=%ct', '--', dir], { cwd: ROOT, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }).trim();
+    const lines = out.split('\n').filter(Boolean);
+    return lines.length ? Number(lines[lines.length - 1]) * 1000 : Date.now();
+  } catch { return Date.now(); }
 }
 
 function mtimeDate(dir) {
@@ -110,10 +121,13 @@ for (const e of entries) {
   };
   const cover = coverPath(e.name, meta.cover);
   if (cover) item.cover = cover;
+  Object.defineProperty(item, '_added', { value: gitAddedMs(dir), enumerable: false }); // só para ordenar, não vai pro JSON
   projects.push(item);
 }
 
-projects.sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : a.title.localeCompare(b.title, 'pt-BR')));
+projects.sort((a, b) =>
+  a.date < b.date ? 1 : a.date > b.date ? -1 :
+  b._added - a._added || a.title.localeCompare(b.title, 'pt-BR'));
 
 const json = JSON.stringify(projects, null, 2) + '\n';
 const current = existsSync(OUT) ? readFileSync(OUT, 'utf8') : '';

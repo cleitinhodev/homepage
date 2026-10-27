@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="pt-BR" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Easy Game Translator — Tutorial</title>
+<meta name="description" content="Easy Game Translator v4 — tutorial completo.">
+<meta name="theme-color" content="#1c1f44">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<link rel="stylesheet" href="assets/fonts.css">
+<link rel="stylesheet" href="assets/style.css">
+<script src="assets/img/sizes.js" defer></script>
+<script src="assets/app.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#content" data-t="ui.skip">Pular para o conteúdo</a>
+<header class="topbar">
+  <div class="topbar-in">
+    <a class="brand" href="#top" aria-label="Easy Game Translator">
+      <img src="assets/icon-192.png" alt="" width="34" height="34">
+      <span>Easy Game Translator <em>v4</em></span>
+    </a>
+    <button id="toc-toggle" class="toc-toggle" type="button" data-t="ui.toc">Neste tutorial</button>
+    <label class="lang-pick">
+      <span class="globe" aria-hidden="true">🌐</span>
+      <span class="sr" data-t="ui.language">Idioma</span>
+      <select id="lang" data-ta="aria-label:ui.language"></select>
+    </label>
+  </div>
+</header>
+
+<div class="hero" id="top">
+  <div class="stars" aria-hidden="true"></div>
+  <div class="hero-in">
+    <div class="hero-tx">
+      <span class="pill" data-t="hero.kicker">Tutorial oficial</span>
+      <h1 data-t="hero.title">Easy Game Translator</h1>
+      <p class="lead" data-t="hero.lead"></p>
+      <div id="hero-dl"></div>
+    </div>
+    <div class="hero-art">
+      <div class="game-frame">
+        <div class="game-bar"><i></i><i></i><i></i></div>
+        <img id="hero-shot" src="assets/img/pt-BR/box-game.webp" alt="" width="1100" height="619">
+      </div>
+      <img class="hero-nina" src="assets/nina.webp" alt="Nina" width="220" height="220">
+    </div>
+  </div>
+</div>
+
+<div class="layout">
+  <nav id="toc" class="toc" aria-labelledby="toc-title">
+    <div class="toc-card">
+      <h2 id="toc-title" data-t="ui.toc">Neste tutorial</h2>
+      <ol id="toc-list"></ol>
+    </div>
+  </nav>
+  <main id="content" class="content" tabindex="-1">
+    <noscript><p class="callout warn">This tutorial needs JavaScript enabled to show the text in your language.</p></noscript>
+  </main>
+</div>
+
+<footer class="foot">
+  <img src="assets/nina-help.webp" alt="" width="275" height="200" loading="lazy">
+  <p data-t="footer.p"></p>
+  <p class="foot-small" data-t="footer.fiction"></p>
+  <p class="foot-small">© <span id="year">2026</span> Cleitinho · GPL-3.0</p>
+  <p class="foot-small"><a href="../../"><span aria-hidden="true">←</span> CleitinhoDEV · Homepage</a></p>
+</footer>
+
+<button id="to-top" class="to-top" type="button" data-ta="aria-label:ui.top">↑</button>
+
+<div id="lightbox" class="lightbox" hidden role="dialog" aria-modal="true">
+  <button id="lb-close" class="lb-close" type="button" data-ta="aria-label:ui.close">✕</button>
+  <figure><img id="lb-img" src="" alt=""><figcaption id="lb-cap"></figcaption></figure>
+</div>
+</body>
+</html>

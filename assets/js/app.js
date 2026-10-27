@@ -59,7 +59,10 @@
         cover: safeCover(p.cover),
         url: 'projects/' + encodeURIComponent(p.slug) + '/'
       };
-    }).sort(function (a, b) { return b.date < a.date ? -1 : b.date > a.date ? 1 : a.title.localeCompare(b.title); });
+    }).map(function (p, i) { p._i = i; return p; }).sort(function (a, b) {
+      // mais novo primeiro; na mesma data, mantém a ordem do manifesto (o gerador já desempata)
+      return b.date < a.date ? -1 : b.date > a.date ? 1 : a._i - b._i;
+    });
   }
   function tagsHtml(tags) {
     if (!tags.length) return '';
