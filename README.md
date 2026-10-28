@@ -1,6 +1,8 @@
 # ▶ CLEITINHO.DEV — homepage
 
-Minha homepage onde guardo conhecimentos gerais! Um site **retrô** (synthwave vermelho + roxo, scanlines CRT, botões com glitch/neon) que funciona como **vitrine de tutoriais, ferramentas e jogos**. Cada categoria tem sua pasta e sua aba: **Projetos** (`projects/`), **Tools** (`tools/`) e **Games** (`games/`). A tela principal é um monitor de fliperama que mostra as últimas adições das três juntas, com um selo `PROJETO`, `TOOL` ou `GAME` em cada uma.
+Minha homepage onde guardo conhecimentos gerais! Um site **retrô** (synthwave vermelho + roxo, scanlines CRT, botões com glitch/neon) que funciona como **vitrine de tutoriais, ferramentas e jogos**. Cada categoria tem sua pasta e sua aba: **Projetos** (`projects/`), **Tools** (`tools/`), **Games** (`games/`) e **Educação** (`educacao/`). A tela principal é um monitor de fliperama que mostra as últimas adições de todas juntas, com um selo `PROJETO`, `TOOL`, `GAME` ou `EDU` em cada uma.
+
+O site principal está em **15 idiomas** (seletor 🌐 no topo). Veja [Idiomas](#idiomas-i18n).
 
 🌐 **Site:** https://cleitinhodev.github.io/homepage/
 
@@ -11,7 +13,9 @@ Minha homepage onde guardo conhecimentos gerais! Um site **retrô** (synthwave v
 ├── index.html                  # página principal (menu + tela CRT + abas)
 ├── assets/
 │   ├── css/style.css           # visual retrô do site principal
-│   ├── js/categories.js        # LISTA DE CATEGORIAS (Projetos, Tools, Games...) usada pelo site e pelo gerador
+│   ├── i18n/<código>.json      # textos do site em cada idioma (pt-BR.json é a fonte)
+│   ├── js/categories.js        # LISTA DE CATEGORIAS (Projetos, Tools, Games, Educação...) usada pelo site e pelo gerador
+│   ├── js/i18n.js              # idiomas: lista, detecção, seletor, traduções
 │   ├── js/app.js               # navegação, tela interativa, abas de categoria
 │   ├── js/game.js              # mini game RETRO INVADER (aba Links)
 │   └── audio/game-theme.mp3    # música do jogo (só toca ao dar play)
@@ -32,7 +36,12 @@ Minha homepage onde guardo conhecimentos gerais! Um site **retrô** (synthwave v
 │   ├── games.json              # manifesto GERADO
 │   ├── _modelo/
 │   └── <seu-jogo>/index.html
+├── educacao/                   # mesma ideia, para aulas e materiais de estudo
+│   ├── educacao.json           # manifesto GERADO
+│   ├── _modelo/
+│   └── <sua-aula>/index.html
 ├── scripts/build-manifests.mjs # gera os manifestos de todas as categorias
+├── scripts/check-i18n.mjs      # confere se todos os idiomas têm as mesmas chaves
 ├── scripts/build-projects.mjs  # nome antigo (ainda funciona: chama o build-manifests)
 └── .github/workflows/site.yml  # atualiza os manifestos e publica no GitHub Pages
 ```
@@ -49,11 +58,19 @@ Minha homepage onde guardo conhecimentos gerais! Um site **retrô** (synthwave v
      "description": "O que você vai aprender.",
      "date": "2026-11-02",
      "tags": ["css", "iniciante"],
-     "cover": "capa.png"
+     "cover": "capa.png",
+     "i18n": {
+       "en": { "title": "My tutorial", "description": "What you will learn." },
+       "es": { "title": "Mi tutorial", "description": "Lo que vas a aprender." }
+     },
+     "langs": ["pt-BR", "en", "es"]
    }
    ```
 
    Todos os campos são opcionais. Sem eles, o gerador usa o `<title>` e a `<meta name="description">` do `index.html` e a data do último commit da pasta. `cover` é um caminho relativo à pasta do tutorial.
+
+   - `i18n` (opcional): título e descrição em outros idiomas, por código (`en`, `es`, `ja`...). O site usa o do idioma escolhido e, se não houver, o texto padrão.
+   - `langs` (opcional): idiomas que a **página do tutorial** entende via `?lang=`, escritos do jeito que a página espera (`pt-BR` ou `pt_BR`, tanto faz). Se o idioma do site estiver na lista, os links para o tutorial ganham `?lang=<código>`; se não estiver, o link vai sem parâmetro.
 4. `git add . && git commit -m "novo tutorial" && git push`
 
 O workflow **Site (manifesto + Pages)** roda a cada push na `main`: recria os manifestos (`projects/projects.json`, `tools/tools.json`, `games/games.json`), faz commit deles de volta com `[skip ci]` se mudaram, e publica o site. Em 1–2 minutos o tutorial aparece na tela inicial e na aba **Projetos**.
@@ -62,16 +79,17 @@ Regras do gerador (iguais em todas as categorias): só entram pastas com `index.
 
 **Ordem:** mais novo primeiro pela `date`. Na mesma data, vem antes o que entrou no repositório por último. O gerador grava isso no campo `added` (segundos do primeiro commit da pasta). Uma pasta ainda não commitada fica sem `added` e conta como a mais nova; depois do push, o workflow preenche o campo e faz um commit `[skip ci]` só do manifesto. A tela inicial mistura as categorias com essa mesma regra e mostra até 8 itens.
 
-## Como adicionar uma tool ou um jogo
+## Como adicionar uma tool, um jogo ou uma aula
 
 É igual ao tutorial, só muda a pasta:
 
 ```bash
 cp -r tools/_modelo tools/minha-tool      # ferramenta → aba Tools, selo TOOL
 cp -r games/_modelo games/meu-jogo        # jogo → aba Games, selo GAME
+cp -r educacao/_modelo educacao/minha-aula  # aula → aba Educação, selo EDU
 ```
 
-Edite o `index.html` (visual próprio, caminhos relativos, link `../../` para voltar) e o `project.json` (mesmos campos do tutorial), depois faça commit e push. O item aparece na aba certa e na tela inicial, e o link aponta para `tools/minha-tool/` ou `games/meu-jogo/`.
+Edite o `index.html` (visual próprio, caminhos relativos, link `../../` para voltar) e o `project.json` (mesmos campos do tutorial), depois faça commit e push. O item aparece na aba certa e na tela inicial, e o link aponta para `tools/minha-tool/`, `games/meu-jogo/` ou `educacao/minha-aula/`.
 
 ## Como criar uma categoria nova
 
@@ -90,6 +108,44 @@ Basta **uma entrada** em `assets/js/categories.js`, por exemplo:
 - `accent` pode ser `red`, `violet` ou `pink`.
 - Crie a pasta `musicas/` com um `_modelo/` se quiser. Rode `node scripts/build-manifests.mjs` para criar `musicas/musicas.json`; o workflow também cria e faz commit dele.
 - O workflow já lê a lista de categorias, então não precisa mexer nele.
+- Textos traduzidos: adicione em `assets/i18n/*.json` as chaves `cat.musicas.tab`, `.badge`, `.noun`, `.lead`, `.emptyTitle`, `.emptyCoin`, `.emptyText` e `.open` (copie as de `cat.educacao.*`). Sem elas, a aba aparece com os textos de `categories.js` em qualquer idioma.
+
+## Idiomas (i18n)
+
+O site principal (menu, tela, abas, Links, jogo e rodapé) tem 15 idiomas:
+
+| Código | Idioma | | Código | Idioma |
+|---|---|---|---|---|
+| `pt-BR` | Português (Brasil), padrão | | `ru` | Русский |
+| `en` | English | | `bn` | বাংলা |
+| `es` | Español | | `ja` | 日本語 |
+| `zh-CN` | 简体中文 | | `de` | Deutsch |
+| `hi` | हिन्दी | | `id` | Bahasa Indonesia |
+| `ar` | العربية (direita → esquerda) | | `ko` | 한국어 |
+| `fr` | Français | | `tr` | Türkçe |
+| `it` | Italiano | | | |
+
+As páginas de cada tutorial têm seus próprios idiomas e não fazem parte disso.
+
+**Como o idioma é escolhido**, nesta ordem:
+
+1. `?lang=<código>` na URL (ex.: `?lang=ar`). Vale só para aquela visita e não é salvo.
+2. A escolha feita no seletor 🌐, salva no `localStorage` (`cleitinhodev.lang`).
+3. O idioma do navegador (`navigator.languages`). `pt-PT` usa `pt-BR`, `zh-TW` usa `zh-CN`, `es-MX` usa `es`, e assim por diante.
+4. Se o navegador estiver num idioma que o site não tem, usa **inglês**.
+
+O seletor funciona no teclado: Enter/Espaço abre, ↑ ↓ Home End navegam, digitar as letras pula para o idioma, Enter escolhe, Esc fecha. Trocar de idioma atualiza `<html lang>`, `dir="rtl"` no árabe, as datas (`Intl.DateTimeFormat`) e a fonte. Chinês, japonês, coreano, hindi, bengali e árabe carregam uma fonte própria do Google Fonts, porque a fonte pixel só tem letras latinas.
+
+**Arquivos:** cada idioma é `assets/i18n/<código>.json`, com as mesmas chaves do `pt-BR.json`. Chave faltando cai no pt-BR. `{nome}` é um valor que o site preenche (ex.: `{n}`, `{heart}`); mantenha-os no texto traduzido. Frases de fliperama como `INSERT COIN` e `PRESS START` ficam em inglês de propósito.
+
+**Para mudar um texto:** edite a chave no JSON do idioma e rode `node scripts/check-i18n.mjs` (o workflow também roda).
+
+**Para adicionar um idioma:**
+
+1. Copie `assets/i18n/en.json` para `assets/i18n/<código>.json` e traduza os valores.
+2. Adicione uma linha na lista `LANGS` de `assets/js/i18n.js` (código, sigla, nome nativo, `dir` e, se a escrita não for latina, a fonte do Google Fonts).
+3. Se precisar de outra fonte, adicione um bloco `:root:lang(<código>)` no fim de `assets/css/style.css`, como os que já existem.
+4. Rode `node scripts/check-i18n.mjs`.
 
 ## Rodando localmente
 
@@ -108,6 +164,7 @@ python3 -m http.server 8000       # na raiz do repositório
 - **↑ / ↓** (ou os botões ▲ ▼) escolhem o item; **Enter** ou **START** abre.
 - Clique num item para selecionar; clique de novo para abrir.
 - **← / →** navegam entre as abas do menu.
+- Em telas estreitas ou com idiomas de palavras longas, as abas vão para o menu ☰.
 - Respeita `prefers-reduced-motion` (animações reduzidas).
 
 ## Aba Links + RETRO INVADER

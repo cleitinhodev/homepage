@@ -2,6 +2,45 @@
   "title": "Easy Game Translator: o mega tutorial",
   "description": "Aprenda a usar o Easy Game Translator v4 passo a passo e traduza jogos em tempo real: instalação, seleção de região, Box Mode, canal duplo, IA (Gemini e Ollama) e todas as opções. Disponível em 20 idiomas.",
   "date": "2026-10-27",
-  "tags": ["easy game translator", "jogos", "tradução", "ocr", "ia", "20 idiomas"],
-  "cover": "assets/img/pt-BR/box-game.webp"
+  "tags": [
+    "easy game translator",
+    "jogos",
+    "tradução",
+    "ocr",
+    "ia",
+    "20 idiomas"
+  ],
+  "cover": "assets/img/pt-BR/box-game.webp",
+  "i18n": {
+    "en": {
+      "title": "Easy Game Translator: the mega tutorial",
+      "description": "Learn Easy Game Translator v4 step by step and translate games in real time: installation, region selection, Box Mode, dual channel, AI (Gemini and Ollama) and every option. Available in 20 languages."
+    },
+    "es": {
+      "title": "Easy Game Translator: el megatutorial",
+      "description": "Aprende a usar Easy Game Translator v4 paso a paso y traduce juegos en tiempo real: instalación, selección de región, modo Box, doble canal, IA (Gemini y Ollama) y todas las opciones. Disponible en 20 idiomas."
+    }
+  },
+  "langs": [
+    "pt-BR",
+    "en",
+    "es",
+    "fr",
+    "de",
+    "it",
+    "ru",
+    "uk",
+    "pl",
+    "tr",
+    "nl",
+    "id",
+    "vi",
+    "th",
+    "ar",
+    "hi",
+    "ja",
+    "ko",
+    "zh-CN",
+    "zh-TW"
+  ]
 }

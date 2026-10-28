@@ -18,6 +18,15 @@
   var W = canvas.width, H = canvas.height;
   var LS_HI = 'retroInvader.hiScore', LS_MUTE = 'retroInvader.muted';
   var FONT = '"Press Start 2P", ui-monospace, monospace';
+  /* textos traduzíveis (assets/i18n/*.json); o 2º argumento é a reserva em pt-BR */
+  function tr(key, fallback) { return window.I18N ? window.I18N.t(key, null, fallback) : fallback; }
+  /* fonte do canvas = a mesma --font-pixel do CSS (inclui a fonte do idioma: japonês, árabe...) */
+  var scriptScale = 1;
+  function syncFont() {
+    var cs = getComputedStyle(canvas);
+    if (cs.fontFamily) FONT = cs.fontFamily;
+    scriptScale = parseFloat(cs.getPropertyValue('--fs')) || 1;
+  }
   var C = { red: '#ff1f4b', violet: '#a855f7', pink: '#ff4fa3', white: '#f3e8ff', yellow: '#ffe066', cyan: '#00e5ff', muted: '#b9a1d9' };
 
   function lsGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
@@ -86,7 +95,7 @@
   function musicPause() { if (music && !music.paused) music.pause(); }
   function updateMuteBtn() {
     btnMute.setAttribute('aria-pressed', String(muted));
-    btnMute.querySelector('.btn-label').textContent = muted ? '♪ Som: OFF' : '♪ Som: ON';
+    btnMute.querySelector('.btn-label').textContent = muted ? tr('game.soundOff', '♪ Som: OFF') : tr('game.soundOn', '♪ Som: ON');
     if (music) music.muted = muted;
   }
 
@@ -149,7 +158,8 @@
   }
   function syncUi() {
     var playing = state === 'playing', paused = state === 'paused';
-    btnPlay.querySelector('.btn-label').textContent = paused ? '▶ Continuar' : (state === 'gameover' ? '↻ Jogar de novo' : (playing ? '↻ Reiniciar' : '▶ Jogar'));
+    btnPlay.querySelector('.btn-label').textContent = paused ? tr('game.continue', '▶ Continuar')
+      : (state === 'gameover' ? tr('game.again', '↻ Jogar de novo') : (playing ? tr('game.restart', '↻ Reiniciar') : tr('game.play', '▶ Jogar')));
     btnPause.disabled = !playing;
     wrap.classList.toggle('is-playing', playing);
   }
@@ -258,8 +268,13 @@
 
   /* ================= Desenho ================= */
   function pad(n, len) { n = String(n); while (n.length < len) n = '0' + n; return n; }
-  function text(t, x, y, size, color, align, glow) {
-    ctx.font = size + 'px ' + FONT; ctx.textAlign = align || 'center'; ctx.textBaseline = 'middle';
+  /* maxW: encolhe o texto até caber (frases traduzidas podem ser mais longas);
+     scale: aumenta um pouco letras de escritas complexas (CJK, árabe, devanágari...) */
+  function text(t, x, y, size, color, align, glow, maxW, scale) {
+    if (scale) size = Math.round(size * scriptScale);
+    ctx.font = size + 'px ' + FONT;
+    if (maxW) { var w = ctx.measureText(t).width; if (w > maxW) { size = Math.max(6, Math.floor(size * maxW / w)); ctx.font = size + 'px ' + FONT; } }
+    ctx.textAlign = align || 'center'; ctx.textBaseline = 'middle';
     ctx.shadowColor = glow || color; ctx.shadowBlur = 10; ctx.fillStyle = color; ctx.fillText(t, x, y); ctx.shadowBlur = 0;
   }
   function drawBg(t) {
@@ -315,13 +330,13 @@
       text(r[1], W / 2 - 30, y, 12, C.white, 'left', color);
     });
     if (blinkOn(t)) text('PRESS START', W / 2, 382, 18, C.red, 'center', C.red);
-    text('aperte JOGAR, ENTER ou toque na tela', W / 2, 414, 9, C.muted, 'center', C.violet);
+    text(tr('game.titleHint', 'aperte JOGAR, ENTER ou toque na tela'), W / 2, 414, 9, C.muted, 'center', C.violet, W - 40, true);
     text('HI-SCORE ' + pad(hiScore, 6), W / 2, 448, 12, C.pink, 'center');
   }
   function overlay(title, sub, t) {
     ctx.fillStyle = 'rgba(7,0,15,.72)'; ctx.fillRect(0, 0, W, H);
-    text(title, W / 2, H / 2 - 40, 30, C.white, 'center', C.red);
-    if (sub && blinkOn(t)) text(sub, W / 2, H / 2 + 14, 12, C.pink, 'center', C.violet);
+    text(title, W / 2, H / 2 - 40, 30, C.white, 'center', C.red, W - 40);
+    if (sub && blinkOn(t)) text(sub, W / 2, H / 2 + 14, 12, C.pink, 'center', C.violet, W - 40, true);
   }
 
   /* ================= Loop ================= */
@@ -337,9 +352,9 @@
     if (state === 'title') drawTitle(t);
     else {
       drawGame(t);
-      if (state === 'paused') overlay('PAUSADO', 'P / ESC para continuar', t);
+      if (state === 'paused') overlay(tr('game.paused', 'PAUSADO'), tr('game.pausedSub', 'P / ESC para continuar'), t);
       if (state === 'gameover') {
-        overlay('GAME OVER', 'PRESS START para jogar de novo', t);
+        overlay('GAME OVER', tr('game.overSub', 'PRESS START para jogar de novo'), t);
         text('SCORE ' + pad(score, 6) + '   HI ' + pad(hiScore, 6), W / 2, H / 2 + 60, 12, C.white, 'center', C.violet);
       }
     }
@@ -351,6 +366,7 @@
 
   function onKey(e, down) {
     if (panel.hidden || GAME_KEYS.indexOf(e.key) < 0 || e.altKey || e.ctrlKey || e.metaKey) return;
+    if (document.activeElement && document.activeElement.closest && document.activeElement.closest('.lang-picker')) return; // seletor de idioma usa as setas
     var focused = wrap.contains(document.activeElement);
     var active = state === 'playing' || state === 'paused';
     if (!active && !focused) return;
@@ -407,6 +423,14 @@
   window.addEventListener('pagehide', pause);
   new MutationObserver(function () { if (panel.hidden) pause(); }).observe(panel, { attributes: true, attributeFilter: ['hidden'] });
 
+  // abrir o seletor de idioma pausa a partida; trocar de idioma atualiza botões e fonte do canvas
+  document.addEventListener('langpicker:open', pause);
+  document.addEventListener('i18n:change', function () {
+    syncFont(); updateMuteBtn(); syncUi();
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(syncFont);
+  });
+
+  syncFont();
   updateMuteBtn();
   syncUi();
   requestAnimationFrame(frame);

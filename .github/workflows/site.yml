@@ -37,6 +37,9 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Conferir traduções (assets/i18n)
+        run: node scripts/check-i18n.mjs
+
       - name: Gerar manifestos (projects, tools, games...)
         run: node scripts/build-manifests.mjs
 

@@ -10,7 +10,9 @@
  * Regras (iguais para todas as categorias; <dir> = pasta da categoria):
  *  - Cada subpasta de <dir>/ com um index.html vira um item; o manifesto é <dir>/<dir>.json.
  *  - Pastas que começam com "_" ou "." são ignoradas (ex.: <dir>/_modelo).
- *  - Se existir <dir>/<pasta>/project.json, usa: title, description, date (AAAA-MM-DD), tags, cover.
+ *  - Se existir <dir>/<pasta>/project.json, usa: title, description, date (AAAA-MM-DD), tags, cover,
+ *    i18n ({ "<código>": { title, description } }, traduções repassadas ao site)
+ *    e langs (códigos que a página aceita em ?lang=, repassados ao site).
  *  - O que faltar vem do index.html (<title> e <meta name="description">)
  *    e a data vem do último commit git da pasta (ou da data de modificação do arquivo).
  *  - "added" = segundos Unix do primeiro commit da pasta (omitido se ainda não commitada).
@@ -111,6 +113,23 @@ function coverPath(dirName, slug, cover) {
   return p.startsWith(`${dirName}/${slug}/`) ? p : undefined;
 }
 
+// Códigos de idioma: "en", "pt-BR", "pt_BR", "zh-CN"...
+const LANG_RE = /^[a-z]{2,3}(?:[-_][A-Za-z0-9]{2,8})*$/;
+
+// "i18n": { "en": { "title": "...", "description": "..." } } → só title/description em texto.
+function cleanI18n(raw, where) {
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return undefined;
+  const out = {};
+  for (const [code, v] of Object.entries(raw)) {
+    if (!LANG_RE.test(code) || !v || typeof v !== 'object') { console.warn(`⚠  ${where}: i18n "${code}" ignorado`); continue; }
+    const t = {};
+    if (typeof v.title === 'string' && v.title.trim()) t.title = v.title.trim();
+    if (typeof v.description === 'string' && v.description.trim()) t.description = v.description.trim();
+    if (Object.keys(t).length) out[code] = t;
+  }
+  return Object.keys(out).length ? out : undefined;
+}
+
 function buildCategory(dirName) {
   const base = join(ROOT, dirName);
   const items = [];
@@ -137,6 +156,10 @@ function buildCategory(dirName) {
     };
     const cover = coverPath(dirName, e.name, meta.cover);
     if (cover) item.cover = cover;
+    const i18n = cleanI18n(meta.i18n, `${dirName}/${e.name}`);
+    if (i18n) item.i18n = i18n;
+    const langs = Array.isArray(meta.langs) ? [...new Set(meta.langs.map(String).filter((c) => LANG_RE.test(c)))] : [];
+    if (langs.length) item.langs = langs;
     const added = gitAdded(dir);
     if (added) item.added = added;
     items.push(item);

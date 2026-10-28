@@ -1,0 +1,25 @@
+{
+  "title": "Título da aula",
+  "description": "Uma frase curta sobre o que a aula ensina.",
+  "date": "2026-10-27",
+  "tags": [
+    "estudo",
+    "iniciante"
+  ],
+  "cover": "capa.png",
+  "i18n": {
+    "en": {
+      "title": "Lesson title",
+      "description": "A short sentence about what the lesson teaches."
+    },
+    "es": {
+      "title": "Título de la clase",
+      "description": "Una frase corta sobre lo que enseña la clase."
+    }
+  },
+  "langs": [
+    "pt-BR",
+    "en",
+    "es"
+  ]
+}

@@ -13,7 +13,7 @@
   <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
-  <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
+  <a class="skip-link" href="#conteudo" data-i18n="skip">Pular para o conteúdo</a>
 
   <!-- Camadas decorativas: grade, brilho e scanlines CRT -->
   <div class="bg-grid" aria-hidden="true"></div>
@@ -21,16 +21,24 @@
   <div class="crt" aria-hidden="true"></div>
 
   <header class="site-header">
-    <a class="brand" href="#principal" aria-label="CLEITINHO.DEV — ir para Principal">
+    <a class="brand" href="#principal" aria-label="CLEITINHO.DEV — ir para Principal" data-i18n-attr="aria-label:brand.aria">
       <span class="brand-icon" aria-hidden="true">▶</span>CLEITINHO.DEV
     </a>
+
+    <!-- Seletor de idioma: a lista de idiomas é montada pelo assets/js/i18n.js -->
+    <div class="lang-picker">
+      <button class="lang-btn" type="button" aria-haspopup="listbox" aria-expanded="false" aria-controls="lang-list" aria-label="Idioma: Português (Brasil). Trocar idioma">
+        <span class="lang-globe" aria-hidden="true">🌐</span><span class="lang-code" aria-hidden="true">PT</span><span class="lang-name">Português (Brasil)</span><span class="lang-caret" aria-hidden="true">▾</span>
+      </button>
+      <ul class="lang-list" id="lang-list" role="listbox" tabindex="-1" aria-label="Idioma" hidden></ul>
+    </div>
 
     <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="menu-principal">
       <span class="sr-only">Abrir menu</span>
       <span class="bar"></span><span class="bar"></span><span class="bar"></span>
     </button>
 
-    <nav class="main-nav" id="menu-principal" aria-label="Navegação principal">
+    <nav class="main-nav" id="menu-principal" aria-label="Navegação principal" data-i18n-attr="aria-label:nav.aria">
       <!--
         COMO ADICIONAR UMA NOVA CATEGORIA (aba que lista pastas, tipo Projetos/Tools/Games)
         → só adicione um objeto em assets/js/categories.js (veja o README).
@@ -41,12 +49,13 @@
            e o <span class="badge">Em breve</span>.
         2) Crie uma <section class="panel" id="nome" data-title="Título" hidden>.
         3) O assets/js/app.js detecta as abas automaticamente.
+        4) Textos traduzíveis: data-i18n="chave" + a chave em TODOS os assets/i18n/*.json.
       -->
       <ul class="nav-list">
-        <li><a class="btn nav-link" href="#principal"><span class="btn-label">Principal</span></a></li>
+        <li><a class="btn nav-link" href="#principal"><span class="btn-label" data-i18n="nav.principal">Principal</span></a></li>
         <!-- Projetos, Tools, Games... entram aqui (antes de Links), vindos de assets/js/categories.js -->
-        <li><a class="btn nav-link" href="#links"><span class="btn-label">Links</span></a></li>
-        <li><a class="btn nav-link is-disabled" href="#em-breve" aria-disabled="true" tabindex="-1"><span class="btn-label">???</span><span class="badge">Em breve</span></a></li>
+        <li><a class="btn nav-link" href="#links"><span class="btn-label" data-i18n="nav.links">Links</span></a></li>
+        <li><a class="btn nav-link is-disabled" href="#em-breve" aria-disabled="true" tabindex="-1"><span class="btn-label">???</span><span class="badge" data-i18n="nav.soon">Em breve</span></a></li>
       </ul>
       <span class="nav-indicator" aria-hidden="true"></span>
     </nav>
@@ -55,25 +64,25 @@
   <main id="conteudo" tabindex="-1">
 
     <!-- ===================== PRINCIPAL ===================== -->
-    <section class="panel" id="principal" data-title="Principal" aria-labelledby="t-principal">
+    <section class="panel" id="principal" data-title="Principal" data-i18n-attr="data-title:nav.principal" aria-labelledby="t-principal">
       <div class="hero hero-compact">
-        <p class="eyebrow">// PLAYER 1 — PRESS START</p>
-        <h1 id="t-principal" class="glitch" data-text="TUTORIAIS RETRÔ">TUTORIAIS RETRÔ</h1>
-        <p class="lead">Uma vitrine de tutoriais, ferramentas e jogos. Cada fase tem seu próprio visual: escolha um cartucho na tela abaixo e aperte <kbd>START</kbd>.</p>
+        <p class="eyebrow" data-i18n="hero.eyebrow">// PLAYER 1 — PRESS START</p>
+        <h1 id="t-principal" class="glitch" data-text="TUTORIAIS RETRÔ" data-i18n="hero.title" data-i18n-attr="data-text:hero.title">TUTORIAIS RETRÔ</h1>
+        <p class="lead" data-i18n-html="hero.lead">Uma vitrine de tutoriais, ferramentas e jogos. Cada fase tem seu próprio visual: escolha um cartucho na tela abaixo e aperte <kbd data-i18n-var="start">START</kbd>.</p>
       </div>
       <div class="sun" aria-hidden="true"></div>
 
       <!-- Monitor / gabinete arcade -->
       <div class="cabinet">
-        <div class="cabinet-marquee" aria-hidden="true"><span>★ ÚLTIMAS ADIÇÕES ★</span></div>
+        <div class="cabinet-marquee" aria-hidden="true"><span data-i18n="screen.marquee">★ ÚLTIMAS ADIÇÕES ★</span></div>
         <div class="monitor">
           <div class="screen" id="screen" aria-live="polite" aria-busy="true">
             <div class="screen-inner">
               <!-- O app.js troca o conteúdo: boot → vazio / lista / erro -->
               <div class="boot" id="boot">
-                <p class="boot-line">CLEITINHO-OS v1.0 (c) 2026</p>
-                <p class="boot-line">MEMÓRIA ........ 640K OK</p>
-                <p class="boot-line">LENDO CARTUCHOS (projects · tools · games)<span class="dots"></span></p>
+                <p class="boot-line" data-i18n="boot.os">CLEITINHO-OS v1.0 (c) 2026</p>
+                <p class="boot-line" data-i18n="boot.memory">MEMÓRIA ........ 640K OK</p>
+                <p class="boot-line"><span data-i18n="boot.loading">LENDO CARTUCHOS</span><span class="dots"></span></p>
                 <div class="boot-bar" aria-hidden="true"><span></span></div>
               </div>
             </div>
@@ -81,13 +90,13 @@
           </div>
           <div class="monitor-led" aria-hidden="true"><span class="led"></span> POWER</div>
         </div>
-        <div class="controls" role="group" aria-label="Controles da tela">
+        <div class="controls" role="group" aria-label="Controles da tela" data-i18n-attr="aria-label:controls.aria">
           <div class="dpad">
-            <button class="arcade-btn arcade-small" type="button" data-action="prev" aria-label="Item anterior">▲</button>
-            <button class="arcade-btn arcade-small" type="button" data-action="next" aria-label="Próximo item">▼</button>
+            <button class="arcade-btn arcade-small" type="button" data-action="prev" aria-label="Item anterior" data-i18n-attr="aria-label:controls.prev">▲</button>
+            <button class="arcade-btn arcade-small" type="button" data-action="next" aria-label="Próximo item" data-i18n-attr="aria-label:controls.next">▼</button>
           </div>
-          <p class="controls-hint">↑ ↓ escolher · ENTER abrir</p>
-          <button class="arcade-btn arcade-start" type="button" data-action="open" aria-label="Abrir item selecionado">START</button>
+          <p class="controls-hint" data-i18n="controls.hint">↑ ↓ escolher · ENTER abrir</p>
+          <button class="arcade-btn arcade-start" type="button" data-action="open" aria-label="Abrir item selecionado" data-i18n-attr="aria-label:controls.open">START</button>
         </div>
       </div>
     </section>
@@ -97,61 +106,62 @@
          pelo assets/js/app.js a partir de assets/js/categories.js e entram aqui. -->
 
     <!-- ===================== LINKS ===================== -->
-    <section class="panel" id="links" data-title="Links" aria-labelledby="t-links" hidden>
-      <h2 id="t-links" class="section-title">LINKS</h2>
-      <p class="lead">Escolha seu destino, player. Todos abrem em uma nova aba.</p>
+    <section class="panel" id="links" data-title="Links" data-i18n-attr="data-title:nav.links" aria-labelledby="t-links" hidden>
+      <h2 id="t-links" class="section-title" data-i18n="links.title">LINKS</h2>
+      <p class="lead" data-i18n="links.lead">Escolha seu destino, player. Todos abrem em uma nova aba.</p>
       <ul class="link-grid">
         <li><a class="btn link-btn" href="https://www.bugzinho.com/" target="_blank" rel="noopener">
           <span class="link-icon" aria-hidden="true">🌐</span>
-          <span class="btn-label"><span class="link-title">Site</span><span class="link-sub">bugzinho.com</span></span>
-          <span class="sr-only">(abre em nova aba)</span></a></li>
+          <span class="btn-label"><span class="link-title" data-i18n="links.site">Site</span><span class="link-sub" data-i18n="links.siteSub">bugzinho.com</span></span>
+          <span class="sr-only" data-i18n="links.newTab">(abre em nova aba)</span></a></li>
         <li><a class="btn link-btn link-red" href="https://www.bugzinho.com/donate" target="_blank" rel="noopener">
           <span class="link-icon" aria-hidden="true">🪙</span>
-          <span class="btn-label"><span class="link-title">Doar</span><span class="link-sub">insira uma moeda</span></span>
-          <span class="sr-only">(abre em nova aba)</span></a></li>
+          <span class="btn-label"><span class="link-title" data-i18n="links.donate">Doar</span><span class="link-sub" data-i18n="links.donateSub">insira uma moeda</span></span>
+          <span class="sr-only" data-i18n="links.newTab">(abre em nova aba)</span></a></li>
         <li><a class="btn link-btn" href="https://patreon.com/CleitinhoDEV" target="_blank" rel="noopener">
           <span class="link-icon" aria-hidden="true">💖</span>
-          <span class="btn-label"><span class="link-title">Patreon</span><span class="link-sub">apoie todo mês</span></span>
-          <span class="sr-only">(abre em nova aba)</span></a></li>
+          <span class="btn-label"><span class="link-title" data-i18n="links.patreon">Patreon</span><span class="link-sub" data-i18n="links.patreonSub">apoie todo mês</span></span>
+          <span class="sr-only" data-i18n="links.newTab">(abre em nova aba)</span></a></li>
         <li><a class="btn link-btn link-red" href="https://www.youtube.com/@CleitinhoDEV" target="_blank" rel="noopener">
           <span class="link-icon" aria-hidden="true">📺</span>
-          <span class="btn-label"><span class="link-title">Canal</span><span class="link-sub">YouTube</span></span>
-          <span class="sr-only">(abre em nova aba)</span></a></li>
+          <span class="btn-label"><span class="link-title" data-i18n="links.channel">Canal</span><span class="link-sub" data-i18n="links.channelSub">YouTube</span></span>
+          <span class="sr-only" data-i18n="links.newTab">(abre em nova aba)</span></a></li>
       </ul>
 
       <!-- ===== Mini game: RETRO INVADER ===== -->
-      <div class="game" id="game" tabindex="0" aria-label="Jogo Retro Invader. Pressione Jogar para começar.">
+      <div class="game" id="game" tabindex="0" aria-label="Jogo Retro Invader. Pressione Jogar para começar." data-i18n-attr="aria-label:game.aria">
         <div class="cabinet-marquee" aria-hidden="true"><span>👾 RETRO INVADER 👾</span></div>
         <div class="game-screen">
-          <canvas id="game-canvas" width="640" height="480" aria-describedby="game-help">Seu navegador não suporta canvas.</canvas>
+          <canvas id="game-canvas" width="640" height="480" aria-describedby="game-help" dir="ltr" data-i18n="game.noCanvas">Seu navegador não suporta canvas.</canvas>
         </div>
         <div class="game-bar">
           <button class="btn btn-primary btn-small" type="button" id="game-play"><span class="btn-label">▶ Jogar</span></button>
-          <button class="btn btn-small" type="button" id="game-pause" disabled><span class="btn-label">❚❚ Pausar</span></button>
+          <button class="btn btn-small" type="button" id="game-pause" disabled><span class="btn-label" data-i18n="game.pause">❚❚ Pausar</span></button>
           <button class="btn btn-small" type="button" id="game-mute" aria-pressed="false"><span class="btn-label">♪ Som: ON</span></button>
         </div>
         <div class="touch-pad" aria-hidden="true">
           <button class="arcade-btn" type="button" data-touch="left" tabindex="-1">◀</button>
-          <button class="arcade-btn arcade-start" type="button" data-touch="fire" tabindex="-1">FOGO</button>
+          <button class="arcade-btn arcade-start" type="button" data-touch="fire" tabindex="-1" data-i18n="game.fire">FOGO</button>
           <button class="arcade-btn" type="button" data-touch="right" tabindex="-1">▶</button>
         </div>
-        <p class="controls-hint" id="game-help">← → ou A D mover · ESPAÇO atirar · P ou ESC pausar</p>
+        <p class="controls-hint" id="game-help" data-i18n="game.help">← → ou A D mover · ESPAÇO atirar · P ou ESC pausar</p>
         <audio id="game-music" src="assets/audio/game-theme.mp3" preload="none" loop></audio>
       </div>
     </section>
 
-    <section class="panel" id="em-breve" data-title="Em breve" hidden>
-      <h2 class="section-title">EM BREVE</h2><p class="lead">Esta fase ainda está sendo carregada…</p>
+    <section class="panel" id="em-breve" data-title="Em breve" data-i18n-attr="data-title:nav.soon" hidden>
+      <h2 class="section-title" data-i18n="soon.title">EM BREVE</h2><p class="lead" data-i18n="soon.lead">Esta fase ainda está sendo carregada…</p>
     </section>
 
   </main>
 
   <footer class="site-footer">
-    <p>© 2026 CleitinhoDEV · Feito com pixels e <span class="heart" aria-label="amor">♥</span></p>
-    <p class="footer-hint">Dica: ← → no menu · ↑ ↓ na tela</p>
+    <p data-i18n-html="footer.made">© 2026 CleitinhoDEV · Feito com pixels e <span class="heart" role="img" aria-label="amor" data-i18n-var="heart" data-i18n-attr="aria-label:footer.love">♥</span></p>
+    <p class="footer-hint" data-i18n="footer.hint">Dica: ← → no menu · ↑ ↓ na tela</p>
   </footer>
 
   <script src="assets/js/categories.js"></script>
+  <script src="assets/js/i18n.js"></script>
   <script src="assets/js/app.js"></script>
   <script src="assets/js/game.js"></script>
 </body>

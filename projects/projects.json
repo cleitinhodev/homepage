@@ -14,6 +14,38 @@
     ],
     "url": "projects/easy-game-translator-tutorial/",
     "cover": "projects/easy-game-translator-tutorial/assets/img/pt-BR/box-game.webp",
+    "i18n": {
+      "en": {
+        "title": "Easy Game Translator: the mega tutorial",
+        "description": "Learn Easy Game Translator v4 step by step and translate games in real time: installation, region selection, Box Mode, dual channel, AI (Gemini and Ollama) and every option. Available in 20 languages."
+      },
+      "es": {
+        "title": "Easy Game Translator: el megatutorial",
+        "description": "Aprende a usar Easy Game Translator v4 paso a paso y traduce juegos en tiempo real: instalación, selección de región, modo Box, doble canal, IA (Gemini y Ollama) y todas las opciones. Disponible en 20 idiomas."
+      }
+    },
+    "langs": [
+      "pt-BR",
+      "en",
+      "es",
+      "fr",
+      "de",
+      "it",
+      "ru",
+      "uk",
+      "pl",
+      "tr",
+      "nl",
+      "id",
+      "vi",
+      "th",
+      "ar",
+      "hi",
+      "ja",
+      "ko",
+      "zh-CN",
+      "zh-TW"
+    ],
     "added": 1793105582
   },
   {
@@ -30,6 +62,33 @@
     ],
     "url": "projects/renemya-tutorial/",
     "cover": "projects/renemya-tutorial/img/pt_BR/step-04-overview.webp",
+    "i18n": {
+      "en": {
+        "title": "Renemya: step-by-step tutorial",
+        "description": "Learn how to use Renemya 1.1.0, the safe and reversible batch file renamer for Windows and Linux: installation, rules, preview, undo, history and presets. Available in 15 languages."
+      },
+      "es": {
+        "title": "Renemya: tutorial paso a paso",
+        "description": "Aprende a usar Renemya 1.1.0, el renombrador de archivos por lotes seguro y reversible para Windows y Linux: instalación, reglas, vista previa, deshacer, historial y preajustes. Disponible en 15 idiomas."
+      }
+    },
+    "langs": [
+      "pt_BR",
+      "en",
+      "es",
+      "zh_CN",
+      "hi",
+      "ar",
+      "fr",
+      "ru",
+      "bn",
+      "ja",
+      "de",
+      "id",
+      "ko",
+      "tr",
+      "it"
+    ],
     "added": 1793101013
   }
 ]

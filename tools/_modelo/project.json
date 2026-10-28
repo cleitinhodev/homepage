@@ -2,6 +2,24 @@
   "title": "Título da ferramenta",
   "description": "Uma frase curta explicando o que a ferramenta faz.",
   "date": "2026-10-27",
-  "tags": ["utilitário", "web"],
-  "cover": "capa.png"
+  "tags": [
+    "utilitário",
+    "web"
+  ],
+  "cover": "capa.png",
+  "i18n": {
+    "en": {
+      "title": "Tool title",
+      "description": "A short sentence explaining what the tool does."
+    },
+    "es": {
+      "title": "Título de la herramienta",
+      "description": "Una frase corta que explica lo que hace la herramienta."
+    }
+  },
+  "langs": [
+    "pt-BR",
+    "en",
+    "es"
+  ]
 }

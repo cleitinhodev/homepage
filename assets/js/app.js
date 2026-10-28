@@ -1,4 +1,6 @@
-/* CLEITINHO.DEV — navegação, tela CRT com as últimas adições e uma aba por categoria */
+/* CLEITINHO.DEV — navegação, tela CRT com as últimas adições e uma aba por categoria.
+   Textos vêm do window.I18N (assets/js/i18n.js + assets/i18n/<idioma>.json); os textos
+   em português escritos aqui e em categories.js são só a reserva caso falte uma chave. */
 (function () {
   'use strict';
 
@@ -24,6 +26,56 @@
     };
   });
 
+  /* ================= Idioma ================= */
+  var I18N = window.I18N || {
+    lang: 'pt-BR', ready: Promise.resolve('pt-BR'), onChange: function () {}, apply: function () {}, pick: function () { return null; },
+    t: function (k, v, f) { var s = f != null ? String(f) : k; return v ? s.replace(/\{(\w+)\}/g, function (m, x) { return x in v ? v[x] : m; }) : s; },
+    html: null
+  };
+  function t(key, vars, fallback) { return I18N.t(key, vars, fallback); }
+  /* texto com {variáveis} em HTML: escapa o texto e insere as variáveis como estão */
+  function th(key, vars, fallback) {
+    if (I18N.html) return I18N.html(key, vars, fallback);
+    var s = esc(t(key, null, fallback));
+    return s.replace(/\{(\w+)\}/g, function (m, k) { return vars && k in vars ? vars[k] : m; });
+  }
+  /* textos de uma categoria: chave cat.<id>.<campo> nos JSON, senão o que está em categories.js */
+  function ct(cat, field) {
+    var def = { tab: cat.tab, badge: cat.badge, noun: cat.noun, lead: cat.lead, open: cat.open,
+      emptyTitle: cat.empty.title, emptyCoin: cat.empty.coin, emptyText: cat.empty.text }[field];
+    return t('cat.' + cat.id + '.' + field, null, def);
+  }
+  var dateFmt = null, dateFmtLang = null;
+  function formatDate(iso) {
+    var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(iso || '');
+    if (!m) return '??/??/????';
+    try {
+      if (dateFmtLang !== I18N.lang) {
+        dateFmt = new Intl.DateTimeFormat(I18N.lang, { day: '2-digit', month: '2-digit', year: 'numeric', timeZone: 'UTC' });
+        dateFmtLang = I18N.lang;
+      }
+      return dateFmt.format(new Date(Date.UTC(+m[1], +m[2] - 1, +m[3])));
+    } catch (e) { return m[3] + '/' + m[2] + '/' + m[1]; }
+  }
+  /* título/descrição no idioma atual (project.json → "i18n": {"en": {"title", "description"}}) */
+  function loc(p) {
+    var o = I18N.pick(p.i18n) || {};
+    return { title: o.title || p.title, description: o.description || p.description };
+  }
+  /* link da página: acrescenta ?lang=<código da página> se ela declarar suporte ao idioma atual ("langs") */
+  function normCode(c) { return String(c).replace(/_/g, '-').toLowerCase(); }
+  function pageLang(p) {
+    if (!p.langs.length) return null;
+    var want = normCode(I18N.lang), i;
+    for (i = 0; i < p.langs.length; i++) if (normCode(p.langs[i]) === want) return p.langs[i];
+    for (i = 0; i < p.langs.length; i++) if (normCode(p.langs[i]).split('-')[0] === want) return p.langs[i]; // "en" ↔ "en-US"
+    return null;
+  }
+  function itemUrl(p) {
+    var code = pageLang(p);
+    return code ? p.url + '?lang=' + encodeURIComponent(code) : p.url;
+  }
+
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
   var nav = document.querySelector('.main-nav');
   var list = nav.querySelector('.nav-list');
@@ -46,10 +98,6 @@
     return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
       return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
     });
-  }
-  function formatDate(iso) {
-    var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(iso || '');
-    return m ? m[3] + '/' + m[2] + '/' + m[1] : '??/??/????';
   }
   function isNew(iso) {
     var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(iso || '');
@@ -83,13 +131,28 @@
         added: typeof p.added === 'number' && isFinite(p.added) ? p.added : null,
         tags: Array.isArray(p.tags) ? p.tags.map(String).slice(0, 8) : [],
         cover: safeCover(p.cover, cat),
+        i18n: cleanI18n(p.i18n),
+        langs: Array.isArray(p.langs) ? p.langs.filter(function (c) { return typeof c === 'string' && /^[a-z]{2,3}([-_][a-z0-9]{2,8})*$/i.test(c); }) : [],
         url: cat.dir + '/' + encodeURIComponent(p.slug) + '/',  // sempre a pasta da categoria certa
         cat: cat, _i: i
       };
     }).sort(byNewest);
   }
+  function cleanI18n(raw) {
+    if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return null;
+    var out = {}, n = 0;
+    Object.keys(raw).forEach(function (code) {
+      var v = raw[code];
+      if (!v || typeof v !== 'object') return;
+      var e = {};
+      if (typeof v.title === 'string' && v.title.trim()) e.title = v.title;
+      if (typeof v.description === 'string' && v.description.trim()) e.description = v.description;
+      if (e.title || e.description) { out[code] = e; n++; }
+    });
+    return n ? out : null;
+  }
   function badgeHtml(cat) {
-    return '<span class="cat-badge accent-' + cat.accent + '">' + esc(cat.badge) + '</span>';
+    return '<span class="cat-badge accent-' + cat.accent + '">' + esc(ct(cat, 'badge')) + '</span>';
   }
 
   /* ================= Abas de categoria (geradas a partir de CATS) ================= */
@@ -102,6 +165,7 @@
       if (document.getElementById(cat.id)) return; // id já usado: não duplica
       var li = document.createElement('li');
       li.innerHTML = '<a class="btn nav-link accent-' + cat.accent + '" href="#' + cat.id + '"><span class="btn-label">' + esc(cat.tab) + '</span></a>';
+      var tabLabel = li.querySelector('.btn-label');
       navList.insertBefore(li, linksLi);
 
       var sec = document.createElement('section');
@@ -111,7 +175,7 @@
       sec.dataset.title = cat.tab;
       sec.setAttribute('aria-labelledby', 't-' + cat.id);
       sec.innerHTML =
-        '<h2 id="t-' + cat.id + '" class="section-title"><span class="title-ico" aria-hidden="true">' + esc(cat.icon) + '</span> ' + esc(cat.tab) + '</h2>' +
+        '<h2 id="t-' + cat.id + '" class="section-title"><span class="title-ico" aria-hidden="true">' + esc(cat.icon) + '</span> <span class="title-txt">' + esc(cat.tab) + '</span></h2>' +
         '<p class="lead">' + esc(cat.lead) + '</p>' +
         '<div class="filter-row">' +
           '<label for="filtro-' + cat.id + '" class="sr-only">Filtrar ' + esc(cat.tab) + '</label>' +
@@ -121,8 +185,23 @@
         '<div class="cards" id="lista-' + cat.id + '"></div>';
       anchor.parentNode.insertBefore(sec, anchor.nextSibling);
       anchor = sec;
-      cat.els = { input: sec.querySelector('input'), count: sec.querySelector('.count'), box: sec.querySelector('.cards') };
+      cat.els = { input: sec.querySelector('input'), count: sec.querySelector('.count'), box: sec.querySelector('.cards'),
+        tab: tabLabel, sec: sec, title: sec.querySelector('.title-txt'), lead: sec.querySelector('.lead'), label: sec.querySelector('label') };
       cat.els.input.addEventListener('input', function () { renderCards(cat); });
+    });
+  }
+  /* (re)escreve os textos fixos das abas de categoria no idioma atual */
+  function applyCatTexts() {
+    CATS.forEach(function (cat) {
+      var e = cat.els;
+      if (!e) return;
+      var tab = ct(cat, 'tab');
+      e.tab.textContent = tab;
+      e.title.textContent = tab;
+      e.sec.dataset.title = tab;
+      e.lead.textContent = ct(cat, 'lead');
+      e.label.textContent = t('list.filterLabel', { name: tab }, 'Filtrar ' + tab);
+      e.input.placeholder = t('list.search', null, '> buscar por nome ou tag_');
     });
   }
   function tagsHtml(tags) {
@@ -157,7 +236,7 @@
       if (active) l.setAttribute('aria-current', 'page'); else l.removeAttribute('aria-current');
     });
     var panel = document.getElementById(id);
-    document.title = (panel.dataset.title || 'Início') + ' — CLEITINHO.DEV';
+    document.title = (panel.dataset.title || t('page.home', null, 'Início')) + ' — CLEITINHO.DEV';
     placeIndicator();
     closeMenu();
     if (moveFocus) { main.focus({ preventScroll: true }); window.scrollTo({ top: 0, behavior: reduceMotion.matches ? 'auto' : 'smooth' }); }
@@ -209,8 +288,9 @@
   }
 
   /* ================= Menu mobile ================= */
-  function openMenu() { nav.classList.add('is-open'); toggle.setAttribute('aria-expanded', 'true'); toggle.querySelector('.sr-only').textContent = 'Fechar menu'; }
-  function closeMenu() { nav.classList.remove('is-open'); toggle.setAttribute('aria-expanded', 'false'); toggle.querySelector('.sr-only').textContent = 'Abrir menu'; }
+  function menuLabel() { toggle.querySelector('.sr-only').textContent = nav.classList.contains('is-open') ? t('menu.close', null, 'Fechar menu') : t('menu.open', null, 'Abrir menu'); }
+  function openMenu() { nav.classList.add('is-open'); toggle.setAttribute('aria-expanded', 'true'); menuLabel(); }
+  function closeMenu() { nav.classList.remove('is-open'); toggle.setAttribute('aria-expanded', 'false'); menuLabel(); }
   toggle.addEventListener('click', function () { nav.classList.contains('is-open') ? closeMenu() : openMenu(); });
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && nav.classList.contains('is-open')) { closeMenu(); toggle.focus(); } });
 
@@ -233,23 +313,27 @@
     swapScreen(
       '<div class="empty">' +
         '<div class="coin" aria-hidden="true">¢</div>' +
-        '<h3>NENHUM CARTUCHO AINDA...</h3>' +
+        '<h3>' + esc(t('screen.emptyTitle', null, 'NENHUM CARTUCHO AINDA...')) + '</h3>' +
         '<p class="insert-coin">INSERT COIN</p>' +
-        '<p>O fliperama está vazio. Assim que algo for adicionado em ' +
-          CATS.map(function (c) { return '<code>' + esc(c.dir) + '/</code>'; }).join(', ') + ', aparece aqui.</p>' +
+        '<p>' + th('screen.emptyText', { dirs: CATS.map(function (c) { return '<code dir="ltr">' + esc(c.dir) + '/</code>'; }).join(', ') },
+          'O fliperama está vazio. Assim que algo for adicionado em {dirs}, aparece aqui.') + '</p>' +
       '</div>'
     );
   }
+  var lastIsFile = false;
   function renderError(isFile) {
+    lastIsFile = isFile;
     state = 'error';
     setControls(false);
     swapScreen(
       '<div class="empty error">' +
-        '<h3>ERRO 404: CARTUCHO NÃO LIDO</h3>' +
+        '<h3>' + esc(t('screen.errorTitle', null, 'ERRO 404: CARTUCHO NÃO LIDO')) + '</h3>' +
         '<p class="insert-coin">GAME OVER</p>' +
         '<p>' + (isFile
-          ? 'Abrindo via file:// o navegador bloqueia o fetch. Rode <code>python3 -m http.server</code> na pasta do site e acesse <code>http://localhost:8000</code>.'
-          : 'Não consegui carregar os manifestos (' + CATS.map(function (c) { return '<code>' + esc(c.manifest) + '</code>'; }).join(', ') + '). Recarregue a página para tentar de novo.') + '</p>' +
+          ? th('screen.errorFile', { cmd: '<code dir="ltr">python3 -m http.server</code>', url: '<code dir="ltr">http://localhost:8000</code>' },
+              'Abrindo via file:// o navegador bloqueia o fetch. Rode {cmd} na pasta do site e acesse {url}.')
+          : th('screen.errorFetch', { files: CATS.map(function (c) { return '<code dir="ltr">' + esc(c.manifest) + '</code>'; }).join(', ') },
+              'Não consegui carregar os manifestos ({files}). Recarregue a página para tentar de novo.')) + '</p>' +
       '</div>'
     );
   }
@@ -260,11 +344,11 @@
     selected = Math.min(selected, items.length - 1);
     var html =
       '<div class="screen-grid">' +
-        '<div class="screen-head"><span>► ÚLTIMAS ADIÇÕES</span><span>' + String(projects.length).padStart(2, '0') + ' CARTUCHO(S)</span></div>' +
-        '<ul class="screen-list" id="screen-list" role="listbox" tabindex="0" aria-label="Últimas adições — use as setas para escolher">' +
+        '<div class="screen-head"><span>' + esc(t('screen.head', null, '► ÚLTIMAS ADIÇÕES')) + '</span><span>' + esc(t('screen.count', { n: String(projects.length).padStart(2, '0') }, '{n} CARTUCHO(S)')) + '</span></div>' +
+        '<ul class="screen-list" id="screen-list" role="listbox" tabindex="0" aria-label="' + esc(t('screen.listAria', null, 'Últimas adições — use as setas para escolher')) + '">' +
         items.map(function (p, i) {
           return '<li class="screen-item" role="option" id="opt-' + i + '" data-index="' + i + '" aria-selected="' + (i === selected) + '">' +
-            badgeHtml(p.cat) + esc(p.title) + (isNew(p.date) ? '<span class="new">NOVO</span>' : '') + '</li>';
+            badgeHtml(p.cat) + '<span class="item-title">' + esc(loc(p).title) + '</span>' + (isNew(p.date) ? '<span class="new">' + esc(t('badge.new', null, 'NOVO')) + '</span>' : '') + '</li>';
         }).join('') +
         '</ul>' +
         '<div class="preview" id="preview"></div>' +
@@ -287,15 +371,15 @@
     ul.setAttribute('aria-activedescendant', 'opt-' + selected);
     var cur = ul.children[selected];
     if (cur && cur.scrollIntoView) cur.scrollIntoView({ block: 'nearest' });
-    var p = projects[selected];
+    var p = projects[selected], L = loc(p);
     var pv = document.getElementById('preview');
     pv.innerHTML =
       '<div class="preview-cover">' + (p.cover ? '<img src="' + esc(p.cover) + '" alt="" loading="lazy">' : '<span aria-hidden="true">' + esc(p.cat.icon) + '</span>') + '</div>' +
-      '<h3>' + esc(p.title) + '</h3>' +
-      '<p class="meta">' + badgeHtml(p.cat) + ' 📅 ' + formatDate(p.date) + '</p>' +
-      (p.description ? '<p class="desc">' + esc(p.description) + '</p>' : '') +
+      '<h3>' + esc(L.title) + '</h3>' +
+      '<p class="meta">' + badgeHtml(p.cat) + ' <span aria-hidden="true">📅</span> <span class="sr-only">' + esc(t('date.label', null, 'Data')) + ': </span><time datetime="' + esc(p.date) + '">' + esc(formatDate(p.date)) + '</time></p>' +
+      (L.description ? '<p class="desc">' + esc(L.description) + '</p>' : '') +
       tagsHtml(p.tags) +
-      '<a class="btn btn-primary btn-small" href="' + esc(p.url) + '"><span class="btn-label">' + esc(p.cat.open) + '</span></a>';
+      '<a class="btn btn-primary btn-small" href="' + esc(itemUrl(p)) + '"><span class="btn-label">' + esc(ct(p.cat, 'open')) + '</span></a>';
     if (animate) { pv.classList.remove('swap'); void pv.offsetWidth; pv.classList.add('swap'); }
   }
   function select(i) {
@@ -306,7 +390,7 @@
   }
   function openSelected() {
     var p = projects[selected];
-    if (state === 'list' && p) location.href = p.url;
+    if (state === 'list' && p) location.href = itemUrl(p);
   }
   function screenKeys(e) {
     if (state !== 'list') return;
@@ -348,29 +432,31 @@
     var q = (els.input.value || '').trim().toLowerCase();
     var items = all.filter(function (p) {
       if (!q) return true;
-      return (p.title + ' ' + p.description + ' ' + p.tags.join(' ')).toLowerCase().indexOf(q) >= 0;
+      var L = loc(p);
+      return (L.title + ' ' + L.description + ' ' + p.title + ' ' + p.description + ' ' + p.tags.join(' ')).toLowerCase().indexOf(q) >= 0;
     });
-    els.count.textContent = items.length + ' de ' + all.length + ' ' + cat.noun;
+    els.count.textContent = t('list.count', { n: items.length, total: all.length, noun: ct(cat, 'noun') }, '{n} de {total} {noun}');
     if (!items.length) {
       els.box.innerHTML = cat.failed
-        ? '<div class="cards-empty"><strong>GAME OVER</strong>Não consegui carregar <code>' + esc(cat.manifest) + '</code>. Recarregue a página.</div>'
+        ? '<div class="cards-empty"><strong>GAME OVER</strong>' + th('list.failed', { file: '<code dir="ltr">' + esc(cat.manifest) + '</code>' }, 'Não consegui carregar {file}. Recarregue a página.') + '</div>'
         : all.length
-          ? '<div class="cards-empty"><strong>' + esc(cat.empty.coin) + '</strong>Nada combina com a busca.</div>'
+          ? '<div class="cards-empty"><strong>' + esc(ct(cat, 'emptyCoin')) + '</strong>' + esc(t('list.noMatch', null, 'Nada combina com a busca.')) + '</div>'
           : '<div class="cards-empty cat-empty">' +
               '<span class="cat-empty-ico" aria-hidden="true">' + esc(cat.icon) + '</span>' +
-              '<span class="cat-empty-title">' + esc(cat.empty.title) + '</span>' +
-              '<strong>' + esc(cat.empty.coin) + '</strong>' + esc(cat.empty.text) + '</div>';
+              '<span class="cat-empty-title">' + esc(ct(cat, 'emptyTitle')) + '</span>' +
+              '<strong>' + esc(ct(cat, 'emptyCoin')) + '</strong>' + esc(ct(cat, 'emptyText')) + '</div>';
       return;
     }
     var arts = ['art-1', 'art-2', 'art-3'];
     els.box.innerHTML = items.map(function (p, i) {
+      var L = loc(p);
       return '<article class="card">' +
         '<div class="card-art ' + arts[i % 3] + '" aria-hidden="true">' + (p.cover ? '<img src="' + esc(p.cover) + '" alt="" loading="lazy">' : esc(cat.icon)) + '</div>' +
-        '<h3>' + esc(p.title) + '</h3>' +
-        '<p class="meta">📅 ' + formatDate(p.date) + '</p>' +
-        '<p>' + esc(p.description) + '</p>' +
+        '<h3>' + esc(L.title) + '</h3>' +
+        '<p class="meta"><span aria-hidden="true">📅</span> <span class="sr-only">' + esc(t('date.label', null, 'Data')) + ': </span><time datetime="' + esc(p.date) + '">' + esc(formatDate(p.date)) + '</time></p>' +
+        '<p>' + esc(L.description) + '</p>' +
         tagsHtml(p.tags) +
-        '<a class="btn btn-small" href="' + esc(p.url) + '"><span class="btn-label">' + esc(cat.open) + '</span></a>' +
+        '<a class="btn btn-small" href="' + esc(itemUrl(p)) + '"><span class="btn-label">' + esc(ct(cat, 'open')) + '</span></a>' +
       '</article>';
     }).join('');
   }
@@ -417,7 +503,41 @@
     });
   }
 
+  /* troca de idioma: reescreve tudo o que o app desenhou */
+  function relabel() {
+    applyCatTexts();
+    menuLabel();
+    if (state === 'list') renderList();
+    else if (state === 'empty') renderEmpty();
+    else if (state === 'error') renderError(lastIsFile);
+    CATS.forEach(renderCards);
+    route(false);
+    requestAnimationFrame(placeIndicator);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(placeIndicator);
+  }
+  I18N.onChange(relabel);
+
+  /* menu compacto: se as abas não cabem numa linha (idiomas com palavras longas), usa o menu ☰ */
+  var header = document.querySelector('.site-header');
+  function fitNav() {
+    header.classList.remove('is-compact');
+    var items = list.querySelectorAll('.nav-link');
+    var wraps = items.length && items[items.length - 1].getBoundingClientRect().top - items[0].getBoundingClientRect().top > 4;
+    var brand = header.querySelector('.brand').getBoundingClientRect();
+    var navBox = nav.getBoundingClientRect();
+    var overlap = getComputedStyle(nav).position !== 'absolute' && (document.documentElement.dir === 'rtl' ? navBox.right > brand.left : navBox.left < brand.right);
+    if (wraps || overlap) { header.classList.add('is-compact'); }
+    else if (nav.classList.contains('is-open')) closeMenu();
+    placeIndicator();
+  }
+  var fitTimer;
+  window.addEventListener('resize', function () { clearTimeout(fitTimer); fitTimer = setTimeout(fitNav, 60); });
+  I18N.onChange(function () { fitNav(); if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitNav); });
+
+  applyCatTexts();
   setControls(false);
   route(false);
+  fitNav();
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitNav);
   load();
 })();

@@ -2,6 +2,24 @@
   "title": "Título do jogo",
   "description": "Uma frase curta sobre o jogo e como se joga.",
   "date": "2026-10-27",
-  "tags": ["arcade", "canvas"],
-  "cover": "capa.png"
+  "tags": [
+    "arcade",
+    "canvas"
+  ],
+  "cover": "capa.png",
+  "i18n": {
+    "en": {
+      "title": "Game title",
+      "description": "A short sentence about the game and how to play it."
+    },
+    "es": {
+      "title": "Título del juego",
+      "description": "Una frase corta sobre el juego y cómo se juega."
+    }
+  },
+  "langs": [
+    "pt-BR",
+    "en",
+    "es"
+  ]
 }

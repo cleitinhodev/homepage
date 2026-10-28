@@ -1,4 +1,4 @@
-# 📦 Modelo de tutorial
+# 📦 Modelo de tutorial (`projects/`)
 
 Esta pasta é um **modelo**. Ela começa com `_`, então o gerador a **ignora** e ela não aparece no site.
 
@@ -10,20 +10,37 @@ Esta pasta é um **modelo**. Ela começa com `_`, então o gerador a **ignora** 
    cp -r projects/_modelo projects/meu-primeiro-tutorial
    ```
 
-2. Edite `projects/meu-primeiro-tutorial/index.html` — o visual é todo seu (CSS próprio, fontes, cores...).
+2. Edite `projects/meu-primeiro-tutorial/index.html`: o visual é todo seu (CSS próprio, fontes, cores...). Use caminhos relativos e deixe um link `../../` para voltar ao site.
 3. Edite `project.json`:
 
-   | campo         | obrigatório | exemplo                          |
-   |---------------|-------------|----------------------------------|
-   | `title`       | não*        | `"Flexbox na prática"`           |
-   | `description` | não*        | `"Aprenda a alinhar tudo"`       |
-   | `date`        | não*        | `"2026-11-02"` (AAAA-MM-DD)      |
-   | `tags`        | não         | `["css", "layout"]`              |
-   | `cover`       | não         | `"capa.png"` (relativo à pasta)  |
+   | campo         | obrigatório | exemplo                                    |
+   |---------------|-------------|--------------------------------------------|
+   | `title`       | não*        | `"Flexbox na prática"`                              |
+   | `description` | não*        | `"Uma frase curta"`                        |
+   | `date`        | não*        | `"2026-11-02"` (AAAA-MM-DD)                |
+   | `tags`        | não         | `["css", "layout"]`                        |
+   | `cover`       | não         | `"capa.png"` (relativo à pasta)            |
+   | `i18n`        | não         | traduções do título e da descrição (abaixo) |
+   | `langs`       | não         | idiomas que a página aceita em `?lang=`    |
 
    \* Sem `project.json` (ou faltando campos), o gerador usa o `<title>` e a `<meta name="description">` do `index.html`, e a data do último commit da pasta.
    Se não tiver capa, apague a linha `cover` (ou coloque um arquivo `capa.png` na pasta).
 
-4. Faça commit e push para `main`. O GitHub Actions atualiza `projects/projects.json` e o tutorial aparece na tela inicial.
+### Traduções (`i18n`) e idioma da página (`langs`)
+
+O site principal tem 15 idiomas. Para o tutorial aparecer traduzido nas listas, adicione `i18n` com o código do idioma (os mesmos de `assets/i18n/`: `en`, `es`, `fr`, `de`, `it`, `ru`, `tr`, `id`, `ar`, `hi`, `bn`, `ja`, `ko`, `zh-CN`):
+
+```json
+"i18n": {
+  "en": { "title": "Tutorial title", "description": "A short sentence explaining what people will learn." },
+  "es": { "title": "Título del tutorial", "description": "Una frase corta que explica lo que se va a aprender." }
+}
+```
+
+Idioma sem tradução usa o `title`/`description` padrão. Só `title` e `description` são lidos.
+
+Se a sua página aceitar `?lang=<código>` na URL, liste os códigos em `langs` (do jeito que a página espera, ex.: `"pt_BR"` ou `"pt-BR"`). Quando o idioma escolhido no site estiver na lista, o link abre como `projects/meu-primeiro-tutorial/?lang=<código>`. Sem `langs`, o link abre sem parâmetro. Se a página não tiver idiomas, apague `i18n` e `langs`.
+
+4. Faça commit e push para `main`. O GitHub Actions atualiza `projects/projects.json` e o tutorial aparece na aba **Projetos** e na tela inicial.
 
 Quer ver antes? Rode `node scripts/build-manifests.mjs` e depois `python3 -m http.server` na raiz do repositório.

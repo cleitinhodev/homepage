@@ -2,6 +2,24 @@
   "title": "Título do tutorial",
   "description": "Uma frase curta explicando o que a pessoa vai aprender.",
   "date": "2026-10-27",
-  "tags": ["html", "iniciante"],
-  "cover": "capa.png"
+  "tags": [
+    "html",
+    "iniciante"
+  ],
+  "cover": "capa.png",
+  "i18n": {
+    "en": {
+      "title": "Tutorial title",
+      "description": "A short sentence explaining what people will learn."
+    },
+    "es": {
+      "title": "Título del tutorial",
+      "description": "Una frase corta que explica lo que se va a aprender."
+    }
+  },
+  "langs": [
+    "pt-BR",
+    "en",
+    "es"
+  ]
 }
