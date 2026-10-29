@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tutorial — Yomuchu</title>
+<meta name="description" content="Tutorial do Yomuchu, leitor de mangá e quadrinhos para Windows e Linux.">
+<link rel="icon" type="image/png" href="imagens/comum/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
+<style>
+/* ========== Tema / marca (valores iniciais; applyConfig sobrescreve as CSS vars) ========== */
+.ymt {
+  --lilac: #c210ef;
+  --purple: #5623ab;
+  --aqua: #4ffff0;
+  --bg: #0c0814;
+  --panel: rgba(36, 24, 58, 0.72);
+  --panel-solid: #1a1230;
+  --border: rgba(194, 16, 239, 0.22);
+  --text: #f4eefc;
+  --muted: #b5a6cc;
+  --card-glow: 0 0 0 1px rgba(194,16,239,.18), 0 18px 50px rgba(0,0,0,.45), 0 0 40px rgba(86,35,171,.18);
+  --radius: 18px;
+  --max: 1120px;
+  --sidebar: 240px;
+  --font-head: "Outfit", system-ui, sans-serif;
+  --font-body: "DM Sans", system-ui, sans-serif;
+  --on-accent: #fff;
+}
+html { scroll-behavior: smooth; scroll-padding-top: 1.5rem; }
+body { margin: 0; background: #0c0814; }
+.ymt *, .ymt *::before, .ymt *::after { box-sizing: border-box; }
+.ymt {
+  font-family: var(--font-body);
+  font-size: 1.05rem;
+  line-height: 1.65;
+  color: var(--text);
+  background:
+    radial-gradient(1200px 600px at 10% -10%, rgba(194,16,239,.18), transparent 55%),
+    radial-gradient(900px 500px at 100% 0%, rgba(79,255,240,.08), transparent 50%),
+    radial-gradient(800px 400px at 50% 100%, rgba(86,35,171,.2), transparent 60%),
+    var(--bg);
+  min-height: 100vh;
+  width: 100%;
+  overflow-x: hidden;
+}
+/* Árabe, hindi e tailandês: fontes do sistema cobrem melhor esses alfabetos */
+.ymt:lang(ar), .ymt:lang(hi), .ymt:lang(th), .ymt:lang(ja), .ymt:lang(zh-CN), .ymt:lang(ko) {
+  --font-body: system-ui, "Noto Sans", "Segoe UI", sans-serif;
+}
+.ymt a { color: var(--aqua); text-decoration: none; }
+.ymt a:hover { text-decoration: underline; text-underline-offset: 3px; }
+.ymt img { max-width: 100%; height: auto; display: block; }
+.ymt code, .ymt kbd, .ymt .tree, .ymt .fname {
+  font-family: ui-monospace, "Cascadia Code", "SF Mono", Menlo, Consolas, monospace;
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+.ymt kbd {
+  display: inline-block;
+  padding: .12em .45em;
+  border-radius: 6px;
+  background: #24183a;
+  border: 1px solid rgba(255,255,255,.12);
+  box-shadow: 0 2px 0 rgba(0,0,0,.35);
+  font-size: .85em;
+  color: var(--aqua);
+  white-space: nowrap;
+}
+.ymt .wrap {
+  max-width: calc(var(--max) + var(--sidebar) + 3rem);
+  margin: 0 auto;
+  padding: 0 1.25rem 4rem;
+  display: grid;
+  grid-template-columns: var(--sidebar) minmax(0, 1fr);
+  gap: 2.5rem;
+}
+@media (max-width: 920px) {
+  .ymt .wrap { grid-template-columns: 1fr; gap: 1rem; }
+  .ymt .toc { position: static !important; }
+  .ymt .toc-nav { display: none; }
+  .ymt .toc.details-open .toc-nav { display: block; }
+}
+
+/* ========== Índice lateral ========== */
+.ymt .toc {
+  position: sticky;
+  top: 1.25rem;
+  align-self: start;
+  max-height: calc(100vh - 2rem);
+  overflow: auto;
+  padding: 1rem;
+  border-radius: var(--radius);
+  background: var(--panel);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border);
+  box-shadow: var(--card-glow);
+}
+.ymt .toc-title {
+  font-family: var(--font-head);
+  font-weight: 700;
+  font-size: .95rem;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--aqua);
+  margin: 0 0 .75rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .5rem;
+}
+.ymt .toc-toggle {
+  display: none;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 8px;
+  padding: .25rem .55rem;
+  cursor: pointer;
+  font: inherit;
+}
+@media (max-width: 920px) { .ymt .toc-toggle { display: inline-block; } }
+.ymt .toc-nav ol { list-style: none; margin: 0; padding: 0; counter-reset: toc; }
+.ymt .toc-nav li { margin: 0; }
+.ymt .toc-nav a {
+  display: block;
+  padding: .4rem .55rem;
+  border-radius: 8px;
+  color: var(--muted);
+  font-size: .92rem;
+  text-decoration: none;
+  transition: background .15s, color .15s;
+}
+.ymt .toc-nav a::before {
+  counter-increment: toc;
+  content: counter(toc) ". ";
+  color: var(--lilac);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.ymt .toc-nav a:hover, .ymt .toc-nav a.active {
+  background: rgba(194,16,239,.14);
+  color: var(--text);
+  text-decoration: none;
+}
+
+/* ========== Cabeçalho (centralizado no próprio contêiner) ========== */
+.ymt .hero-wrap {
+  max-width: calc(var(--max) + var(--sidebar) + 3rem);
+  margin: 0 auto;
+  padding: 1.5rem 1.25rem 2rem;
+}
+.ymt .hero {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  margin: 0 auto;
+  padding: 3.25rem 2rem 2.5rem;
+  border-radius: calc(var(--radius) + 6px);
+  background:
+    linear-gradient(135deg, rgba(194,16,239,.22), rgba(86,35,171,.35) 45%, rgba(12,8,20,.6)),
+    var(--panel-solid);
+  border: 1px solid var(--border);
+  box-shadow: var(--card-glow);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+.ymt .hero::after {
+  content: "";
+  position: absolute;
+  inset: auto -20% -40% 40%;
+  height: 80%;
+  background: radial-gradient(circle, rgba(79,255,240,.18), transparent 65%);
+  pointer-events: none;
+}
+.ymt .hero-logo {
+  width: 112px;
+  height: 112px;
+  object-fit: contain;
+  margin: 0 auto 1rem;
+  filter: drop-shadow(0 8px 24px rgba(194,16,239,.45));
+  position: relative;
+  z-index: 1;
+}
+.ymt .hero-text {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+.ymt .hero h1 {
+  font-family: var(--font-head);
+  font-weight: 800;
+  font-size: clamp(2rem, 5vw, 3rem);
+  margin: .6rem 0 .4rem;
+  letter-spacing: -.02em;
+  background: linear-gradient(90deg, #fff, var(--aqua));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.ymt .hero .tagline {
+  margin: 0 auto 1rem;
+  color: var(--muted);
+  font-size: 1.12rem;
+  max-width: 38rem;
+}
+.ymt .badge {
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  padding: .28rem .75rem;
+  border-radius: 999px;
+  background: rgba(79,255,240,.12);
+  border: 1px solid rgba(79,255,240,.35);
+  color: var(--aqua);
+  font-family: var(--font-head);
+  font-weight: 600;
+  font-size: .85rem;
+  letter-spacing: .03em;
+}
+.ymt .hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .7rem;
+  margin-top: 1.1rem;
+}
+.ymt .hero .hero-actions { justify-content: center; }
+.ymt .btn {
+  display: inline-flex;
+  align-items: center;
+  gap: .45rem;
+  padding: .7rem 1.15rem;
+  border-radius: 999px;
+  font-family: var(--font-head);
+  font-weight: 600;
+  font-size: .95rem;
+  border: none;
+  cursor: pointer;
+  text-decoration: none !important;
+  transition: transform .15s, box-shadow .15s, filter .15s;
+}
+.ymt .btn:hover { transform: translateY(-1px); filter: brightness(1.08); }
+.ymt .btn-primary {
+  color: var(--on-accent);
+  background: linear-gradient(135deg, var(--lilac), var(--purple));
+  box-shadow: 0 8px 24px rgba(194,16,239,.35);
+}
+.ymt .btn-ghost {
+  color: var(--text);
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.14);
+}
+/* Seletor de idioma */
+.ymt .lang-pick {
+  position: absolute;
+  top: 1rem;
+  inset-inline-end: 1rem;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  padding: .25rem .35rem .25rem .7rem;
+  border-radius: 999px;
+  background: rgba(12,8,20,.55);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  font-size: .88rem;
+}
+.ymt .lang-pick svg { flex-shrink: 0; color: var(--aqua); }
+.ymt .lang-pick select {
+  appearance: none;
+  -webkit-appearance: none;
+  background: transparent;
+  color: var(--text);
+  border: none;
+  font: inherit;
+  font-weight: 600;
+  padding: .3rem 1.6rem .3rem .4rem;
+  border-radius: 999px;
+  cursor: pointer;
+  background-image: linear-gradient(45deg, transparent 50%, var(--aqua) 50%), linear-gradient(135deg, var(--aqua) 50%, transparent 50%);
+  background-position: calc(100% - 13px) 55%, calc(100% - 8px) 55%;
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+}
+.ymt[dir="rtl"] .lang-pick select { padding: .3rem .4rem .3rem 1.6rem; background-position: 13px 55%, 8px 55%; }
+.ymt .lang-pick select:focus-visible { outline: 2px solid var(--lilac); outline-offset: 2px; }
+.ymt .lang-pick option { background: #1a1230; color: #f4eefc; }
+@media (max-width: 640px) {
+  .ymt .hero { padding: 1.25rem 1.1rem 1.75rem; }
+  .ymt .lang-pick { position: static; margin: 0 auto 1rem; }
+  .ymt .hero-logo { width: 96px; height: 96px; }
+}
+
+/* ========== Conteúdo ========== */
+.ymt main { min-width: 0; padding-top: .5rem; }
+.ymt section.block {
+  margin: 0 0 2.75rem;
+  padding: 1.6rem 1.5rem 1.75rem;
+  border-radius: var(--radius);
+  background: var(--panel);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border);
+  box-shadow: var(--card-glow);
+  scroll-margin-top: 1.25rem;
+}
+.ymt section.block > h2 {
+  font-family: var(--font-head);
+  font-weight: 700;
+  font-size: 1.45rem;
+  margin: 0 0 .85rem;
+  display: flex;
+  align-items: baseline;
+  gap: .65rem;
+  letter-spacing: -.01em;
+}
+.ymt section.block > h2 .n {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--lilac), var(--purple));
+  color: #fff;
+  font-size: .95rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.ymt h3 {
+  font-family: var(--font-head);
+  font-weight: 600;
+  font-size: 1.12rem;
+  margin: 1.4rem 0 .55rem;
+  color: #fff;
+}
+.ymt p { margin: 0 0 .85rem; color: var(--text); }
+.ymt .lead { color: var(--muted); font-size: 1.05rem; }
+.ymt ul, .ymt ol { margin: 0 0 1rem; padding: 0; padding-inline-start: 1.25rem; color: var(--text); }
+.ymt li { margin: .3rem 0; }
+.ymt li::marker { color: var(--lilac); }
+
+/* Capturas de tela */
+.ymt .shot { margin: 1.1rem 0 1.35rem; }
+.ymt .shot figure {
+  margin: 0;
+  padding: .55rem;
+  border-radius: 16px;
+  background: rgba(0,0,0,.35);
+  border: 1px solid rgba(255,255,255,.08);
+  box-shadow: 0 0 0 1px rgba(194,16,239,.12), 0 16px 40px rgba(0,0,0,.4), 0 0 30px rgba(86,35,171,.2);
+}
+.ymt .shot img { border-radius: 12px; width: 100%; }
+.ymt .shot figcaption {
+  margin-top: .65rem;
+  padding: 0 .35rem .15rem;
+  font-size: .9rem;
+  color: var(--muted);
+  text-align: center;
+}
+.ymt .shot-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+@media (max-width: 700px) { .ymt .shot-row { grid-template-columns: 1fr; } }
+
+/* Avisos */
+.ymt .callout {
+  margin: 1rem 0 1.15rem;
+  padding-block: .95rem;
+  padding-inline: 1.15rem 1.05rem;
+  border-radius: 14px;
+  border: 1px solid transparent;
+  border-inline-start-width: 4px;
+  background: rgba(255,255,255,.04);
+}
+.ymt .callout strong { font-family: var(--font-head); }
+.ymt .callout.dica { border-inline-start-color: var(--aqua); background: rgba(79,255,240,.07); }
+.ymt .callout.atencao { border-inline-start-color: #ffb020; background: rgba(255,176,32,.08); }
+.ymt .callout.legal { border-inline-start-color: var(--lilac); background: rgba(194,16,239,.08); }
+.ymt .callout p:last-child { margin-bottom: 0; }
+
+/* Árvore de pastas (sempre da esquerda para a direita) */
+.ymt .tree {
+  margin: 1rem 0 1.2rem;
+  padding: 1rem 1.15rem;
+  border-radius: 12px;
+  background: #0a0612;
+  border: 1px solid rgba(255,255,255,.08);
+  color: var(--aqua);
+  font-size: .92rem;
+  line-height: 1.55;
+  overflow-x: auto;
+  white-space: pre;
+  text-align: left;
+}
+
+/* Passos numerados */
+.ymt .steps { counter-reset: step; list-style: none; padding: 0; margin: 0 0 1rem; }
+.ymt .steps > li {
+  counter-increment: step;
+  position: relative;
+  padding-block: .55rem;
+  padding-inline: 2.6rem 0;
+  border-bottom: 1px solid rgba(255,255,255,.06);
+}
+.ymt .steps > li:last-child { border-bottom: none; }
+.ymt .steps > li::before {
+  content: counter(step);
+  position: absolute;
+  inset-inline-start: 0;
+  top: .55rem;
+  width: 1.85rem;
+  height: 1.85rem;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--lilac), var(--purple));
+  color: #fff;
+  font-family: var(--font-head);
+  font-weight: 700;
+  font-size: .85rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Tabela de atalhos */
+.ymt .table-wrap { overflow-x: auto; margin: 1rem 0; border-radius: 14px; border: 1px solid rgba(255,255,255,.08); }
+.ymt table.keys { width: 100%; border-collapse: collapse; font-size: .95rem; }
+.ymt table.keys th, .ymt table.keys td { padding: .7rem .9rem; text-align: start; border-bottom: 1px solid rgba(255,255,255,.07); }
+.ymt table.keys td:first-child { white-space: nowrap; }
+.ymt table.keys th { font-family: var(--font-head); font-weight: 600; background: rgba(86,35,171,.35); color: var(--aqua); position: sticky; top: 0; }
+.ymt table.keys tr:nth-child(even) td { background: rgba(255,255,255,.02); }
+.ymt table.keys tr:hover td { background: rgba(194,16,239,.08); }
+
+/* Downloads */
+.ymt .dl-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1rem 0; }
+@media (max-width: 700px) { .ymt .dl-grid { grid-template-columns: 1fr; } }
+.ymt .dl-card { padding: 1.15rem 1.2rem; border-radius: 14px; background: rgba(0,0,0,.28); border: 1px solid var(--border); }
+.ymt .dl-card h3 { margin-top: 0; }
+.ymt .dl-card .fname { display: block; margin: .4rem 0 .8rem; font-size: .85rem; color: var(--aqua); word-break: break-all; }
+
+/* Rodapé */
+.ymt footer.page-foot {
+  grid-column: 1 / -1;
+  margin-top: 1rem;
+  padding: 1.5rem 1.25rem 2rem;
+  text-align: center;
+  color: var(--muted);
+  font-size: .92rem;
+  border-top: 1px solid rgba(255,255,255,.08);
+}
+.ymt footer.page-foot .foot-links { display: flex; flex-wrap: wrap; gap: .75rem 1.25rem; justify-content: center; margin: .75rem 0 1rem; }
+.ymt footer.page-foot a { color: var(--text); font-weight: 500; }
+.ymt footer.page-foot p { color: var(--muted); }
+.ymt footer.page-foot .foot-home { margin: .9rem 0 0; font-size: .95rem; }
+</style>
+</head>
+<body>
+
+<!--
+  =============================================================================
+  CONFIG — altere aqui versão, links, nomes de arquivo, cores e idioma padrão.
+  Os textos de cada idioma ficam em idiomas/<código>.js e as capturas de tela
+  em imagens/<código>/. Os textos usam marcadores como {version} e
+  {winInstaller}, que são preenchidos com os valores abaixo.
+  =============================================================================
+-->
+<script>
+/*
+  Chaves principais (todas editáveis):
+  - appName, version, tagline — nome, versão e frase do cabeçalho
+    (tagline vazia = usa a frase traduzida de cada idioma)
+  - defaultLang — idioma inicial fixo ("" = automático pelo navegador)
+  - githubRepo, githubReleases, githubProfile — links do GitHub
+  - siteUrl, donateUrl — site e página de doação
+  - winInstaller, linuxAppImage — nomes dos arquivos de download
+  - colors — marca (lilac, purple, aqua)
+  - license, year, authorName — rodapé / créditos
+  - imagesDir — pasta das imagens (relativa a este HTML)
+*/
+const CONFIG = {
+  appName: "Yomuchu",
+  version: "0.4.2",
+  tagline: "",
+
+  // "" = automático. Ordem: ?lang= na URL → escolha salva do leitor → defaultLang → idioma do navegador → inglês
+  defaultLang: "",
+
+  githubRepo: "https://github.com/cleitinhodev/yomuchu",
+  githubReleases: "https://github.com/cleitinhodev/yomuchu/releases",
+  githubProfile: "https://github.com/cleitinhodev/",
+
+  siteUrl: "https://www.bugzinho.com/",
+  donateUrl: "https://www.bugzinho.com/donate",
+
+  winInstaller: "Yomuchu-0.4.2-win-x64.exe",
+  linuxAppImage: "Yomuchu-0.4.2-linux-x64.AppImage",
+
+  colors: {
+    lilac: "#c210ef",
+    purple: "#5623ab",
+    aqua: "#4ffff0"
+  },
+
+  license: "GPL-3.0-or-later",
+  year: "2026",
+  authorName: "Bugzinho / cleitinhodev",
+
+  imagesDir: "imagens"
+};
+
+// Idiomas disponíveis (os mesmos do app). A ordem é a do seletor; cada um tem idiomas/<código>.js.
+const LANGS = ["pt-BR", "en", "es", "fr", "de", "it", "ru", "ja", "zh-CN", "ko", "ar", "hi", "id", "nl", "pl", "th", "tr", "vi"];
+// Ids das 11 seções (âncoras do índice), na ordem do tutorial.
+const SECTION_IDS = ["o-que-e", "baixar", "organizar", "biblioteca", "abrir-link", "leitor", "atalhos", "aparencia", "config", "apoiar", "dicas"];
+
+</script>
+<!-- Traduções: um arquivo por idioma (carregados com <script>, funcionam até abrindo o HTML direto do disco). -->
+<script src="idiomas/pt-BR.js"></script>
+<script src="idiomas/en.js"></script>
+<script src="idiomas/es.js"></script>
+<script src="idiomas/fr.js"></script>
+<script src="idiomas/de.js"></script>
+<script src="idiomas/it.js"></script>
+<script src="idiomas/ru.js"></script>
+<script src="idiomas/ja.js"></script>
+<script src="idiomas/zh-CN.js"></script>
+<script src="idiomas/ko.js"></script>
+<script src="idiomas/ar.js"></script>
+<script src="idiomas/hi.js"></script>
+<script src="idiomas/id.js"></script>
+<script src="idiomas/nl.js"></script>
+<script src="idiomas/pl.js"></script>
+<script src="idiomas/th.js"></script>
+<script src="idiomas/tr.js"></script>
+<script src="idiomas/vi.js"></script>
+
+<div class="ymt" id="yomuchu-tutorial" lang="pt-BR" dir="ltr">
+
+<div class="hero-wrap">
+  <header class="hero">
+    <label class="lang-pick">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20M12 2a15 15 0 0 0 0 20"/></svg>
+      <span class="lang-label" data-t="langLabel">Idioma</span>
+      <select id="ymt-lang"></select>
+    </label>
+    <img class="hero-logo" data-common="logo" width="112" height="112" alt="Yomuchu">
+    <div class="hero-text">
+      <span class="badge" id="version-badge">v0.4.2</span>
+      <h1 id="ymt-title">Yomuchu</h1>
+      <p class="tagline" id="ymt-tagline"></p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="{githubReleases}" data-t="heroDownload"></a>
+        <a class="btn btn-ghost" href="#o-que-e" data-t="heroStart"></a>
+      </div>
+    </div>
+  </header>
+</div>
+
+<div class="wrap">
+  <aside class="toc">
+    <p class="toc-title">
+      <span data-t="tocTitle"></span>
+      <button type="button" class="toc-toggle" aria-expanded="false" aria-controls="toc-nav" data-t="tocMenu"></button>
+    </p>
+    <nav class="toc-nav" id="toc-nav"><ol id="ymt-toc"></ol></nav>
+  </aside>
+
+  <main id="ymt-main"></main>
+
+  <footer class="page-foot">
+    <div class="foot-links">
+      <a href="{githubReleases}" data-t="footReleases"></a>
+      <a href="{githubRepo}">GitHub</a>
+      <a href="{donateUrl}" data-t="footDonate"></a>
+      <a href="{siteUrl}" data-t="footSite"></a>
+    </div>
+    <p id="ymt-foot-credits"></p>
+    <p id="ymt-foot-version" style="margin:0;opacity:.8"></p>
+    <p class="foot-home"><a href="../../"><span aria-hidden="true">←</span> CleitinhoDEV · Homepage</a></p>
+  </footer>
+</div>
+
+</div>
+
+<script>
+/* ========== Idioma, textos e imagens ========== */
+const I18N = window.YOMUCHU_TUTORIAL_I18N || {};
+const STORE_KEY = "yomuchu-tutorial-lang";
+const ROOT = document.getElementById("yomuchu-tutorial");
+
+/** Troca {chave} pelos valores do CONFIG (ex.: {version}, {winInstaller}). */
+function fill(text) {
+  return String(text == null ? "" : text).replace(/\{(\w+)\}/g, (m, k) => (CONFIG[k] != null && typeof CONFIG[k] !== "object" ? String(CONFIG[k]) : m));
+}
+/** Converte um código qualquer (ex.: "pt-PT", "zh-TW", "en-US") para um idioma disponível. */
+function matchLang(tag) {
+  if (!tag) return null;
+  const t = String(tag).trim().toLowerCase();
+  const avail = LANGS.filter((l) => I18N[l]);
+  const exact = avail.find((l) => l.toLowerCase() === t);
+  if (exact) return exact;
+  const base = t.split(/[-_]/)[0];
+  if (base === "pt") return avail.includes("pt-BR") ? "pt-BR" : null;
+  if (base === "zh") return avail.includes("zh-CN") ? "zh-CN" : null;
+  return avail.find((l) => l.toLowerCase().split("-")[0] === base) || null;
+}
+function storedLang() { try { return localStorage.getItem(STORE_KEY); } catch (e) { return null; } }
+function saveLang(l) { try { localStorage.setItem(STORE_KEY, l); } catch (e) { /* armazenamento indisponível: só não lembra */ } }
+/** Ordem: ?lang= → escolha salva → idioma fixo do CONFIG → navegador → inglês. */
+function initialLang() {
+  let q = null;
+  try { q = new URLSearchParams(location.search).get("lang"); } catch (e) {}
+  const nav = (navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language]);
+  for (const c of [q, storedLang(), CONFIG.defaultLang, ...nav]) { const m = matchLang(c); if (m) return m; }
+  return I18N.en ? "en" : (LANGS.find((l) => I18N[l]) || "pt-BR");
+}
+
+function applyConfig() {
+  if (CONFIG.colors) {
+    if (CONFIG.colors.lilac) ROOT.style.setProperty("--lilac", CONFIG.colors.lilac);
+    if (CONFIG.colors.purple) ROOT.style.setProperty("--purple", CONFIG.colors.purple);
+    if (CONFIG.colors.aqua) ROOT.style.setProperty("--aqua", CONFIG.colors.aqua);
+  }
+  ROOT.querySelectorAll("a[href*='{']").forEach((a) => a.setAttribute("href", fill(a.getAttribute("href"))));
+}
+
+let current = null;
+function render(lang) {
+  const T = I18N[lang];
+  if (!T) return;
+  current = lang;
+  ROOT.setAttribute("lang", lang);
+  ROOT.setAttribute("dir", T.dir === "rtl" ? "rtl" : "ltr");
+  document.title = fill(T.htmlTitle);
+
+  ROOT.querySelectorAll("[data-t]").forEach((el) => { el.innerHTML = fill(T[el.getAttribute("data-t")]); });
+  document.getElementById("ymt-title").textContent = CONFIG.appName;
+  document.getElementById("ymt-tagline").textContent = fill(CONFIG.tagline || T.tagline);
+  document.getElementById("version-badge").textContent = "v" + CONFIG.version;
+
+  document.getElementById("ymt-toc").innerHTML = SECTION_IDS.map((id, i) => '<li><a href="#' + id + '">' + fill(T.toc[i]) + "</a></li>").join("");
+  document.getElementById("ymt-main").innerHTML = SECTION_IDS.map((id, i) => {
+    let body = fill(T.s[i]);
+    if (i === 0) body += '<div class="callout dica"><p>' + fill(T.guideVersion) + "</p></div>";
+    return '<section class="block" id="' + id + '"><h2><span class="n">' + (i + 1) + "</span> " + fill(T.toc[i]) + "</h2>" + body + "</section>";
+  }).join("");
+
+  // Capturas do idioma (imagens/<idioma>/) e imagens comuns (imagens/comum/)
+  ROOT.querySelectorAll("img[data-shot]").forEach((img) => { img.src = CONFIG.imagesDir + "/" + lang + "/" + img.getAttribute("data-shot") + ".png"; });
+  ROOT.querySelectorAll("img[data-common]").forEach((img) => { img.src = CONFIG.imagesDir + "/comum/" + img.getAttribute("data-common") + ".png"; });
+  ROOT.querySelector(".hero-logo").alt = fill(T.logoAlt);
+
+  document.getElementById("ymt-foot-credits").textContent =
+    CONFIG.appName + " " + CONFIG.version + " · " + T.footLicense + " " + CONFIG.license + " · © " + CONFIG.year + " " + CONFIG.authorName;
+  document.getElementById("ymt-foot-version").innerHTML = fill(T.guideVersion);
+
+  const sel = document.getElementById("ymt-lang");
+  sel.value = lang;
+  sel.setAttribute("aria-label", T.langLabel);
+  ROOT.querySelector("aside.toc").setAttribute("aria-label", T.tocTitle);
+  setActive();
+}
+
+/* Índice: destaque da seção atual e menu recolhível no celular */
+function setActive() {
+  const links = [...ROOT.querySelectorAll(".toc-nav a")];
+  const y = window.scrollY + 120;
+  let cur = null;
+  for (const a of links) { const s = document.getElementById(a.getAttribute("href").slice(1)); if (s && s.getBoundingClientRect().top + window.scrollY <= y) cur = a; }
+  links.forEach((a) => a.classList.toggle("active", a === (cur || links[0])));
+}
+
+(function init() {
+  applyConfig();
+  const sel = document.getElementById("ymt-lang");
+  sel.innerHTML = LANGS.filter((l) => I18N[l]).map((l) => '<option value="' + l + '" lang="' + l + '">' + I18N[l].name + "</option>").join("");
+  sel.addEventListener("change", () => { saveLang(sel.value); render(sel.value); });
+  const toc = ROOT.querySelector(".toc"), toggle = ROOT.querySelector(".toc-toggle");
+  toggle.addEventListener("click", () => {
+    toc.classList.toggle("details-open");
+    toggle.setAttribute("aria-expanded", toc.classList.contains("details-open") ? "true" : "false");
+  });
+  window.addEventListener("scroll", setActive, { passive: true });
+  render(initialLang());
+})();
+</script>
+</body>
+</html>

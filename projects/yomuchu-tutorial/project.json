@@ -1,0 +1,18 @@
+{
+  "title": "Yomuchu: tutorial do leitor de mangá",
+  "description": "Aprenda a usar o Yomuchu 0.4.2, leitor de mangá e quadrinhos para Windows e Linux com livro virtual flutuante na área de trabalho: instalação, organização da pasta, biblioteca, Abrir link, leitor, atalhos, aparência e configurações. Disponível em 18 idiomas.",
+  "date": "2026-10-29",
+  "tags": ["yomuchu", "mangá", "quadrinhos", "leitor", "windows", "linux", "18 idiomas"],
+  "cover": "imagens/pt-BR/biblioteca-escura.png",
+  "i18n": {
+    "en": {
+      "title": "Yomuchu: manga reader tutorial",
+      "description": "Learn how to use Yomuchu 0.4.2, the manga and comics reader for Windows and Linux with a virtual book floating on your desktop: installation, folder organization, library, Open link, reader, shortcuts, appearance and settings. Available in 18 languages."
+    },
+    "es": {
+      "title": "Yomuchu: tutorial del lector de manga",
+      "description": "Aprende a usar Yomuchu 0.4.2, el lector de manga y cómics para Windows y Linux con un libro virtual flotante en el escritorio: instalación, organización de la carpeta, biblioteca, Abrir enlace, lector, atajos, apariencia y configuración. Disponible en 18 idiomas."
+    }
+  },
+  "langs": ["pt-BR", "en", "es", "fr", "de", "it", "ru", "ja", "zh-CN", "ko", "ar", "hi", "id", "nl", "pl", "th", "tr", "vi"]
+}
