@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-title="Tutorial do Orguine {versao} — organize suas pastas com prévia, backup e desfazer">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--
+  ╔══════════════════════════════════════════════════════════════════════╗
+  ║  TUTORIAL DO ORGUINE — página solta (não é a index do site)          ║
+  ║  Idioma desta página: Português (Brasil)                             ║
+  ║                                                                      ║
+  ║  👉 Versão, data e links NÃO ficam aqui: edite SÓ o arquivo          ║
+  ║        assets/config.js                                              ║
+  ║     Ele vale para todos os idiomas (este .html e o .en.html).        ║
+  ║                                                                      ║
+  ║  Envie os arquivos .html JUNTO com a pasta "assets/" para o site.    ║
+  ╚══════════════════════════════════════════════════════════════════════╝
+-->
+<script src="assets/config.js"></script>
+<script src="assets/lang.js"></script>
+
+<title>Tutorial do Orguine — organize suas pastas com prévia, backup e desfazer</title>
+<meta name="description" content="Tutorial completo do Orguine: como baixar, instalar e usar o organizador de pastas com prévia, duplicados por SHA-256, proteção de arquivos sensíveis, backup e desfazer.">
+<meta name="theme-color" content="#14121f">
+<link rel="alternate" hreflang="pt-BR" href="index.html">
+<link rel="alternate" hreflang="en" href="tutorial-orguine.en.html">
+<link rel="alternate" hreflang="x-default" href="index.html">
+<link rel="icon" href="assets/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="assets/favicon-64.png">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<meta property="og:title" content="Tutorial do Orguine">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:locale:alternate" content="en_US">
+<meta property="og:description" content="Organize suas pastas com prévia, backup e desfazer — sem sustos.">
+<meta property="og:image" content="assets/img/pt-BR/03-grafico.webp">
+<link rel="stylesheet" href="assets/tutorial.css">
+</head>
+<body>
+<div class="bg-fx" aria-hidden="true"></div>
+<div class="progress" id="progress" aria-hidden="true"></div>
+
+<!-- ===================== TOPO ===================== -->
+<header class="top">
+  <div class="wrap">
+    <a class="btn-back" data-cfg-href="links.voltar" href="#" title="Voltar para a página principal">← Voltar</a>
+    <a class="brand" href="#inicio"><img src="assets/favicon-64.png" alt="" width="36" height="36">Orguine <span class="badge">v<span data-cfg-text="versao">—</span></span></a>
+    <div class="lang-switch" role="group" aria-label="Idioma / Language">
+      <span class="globe" aria-hidden="true">🌐</span>
+      <a href="index.html" hreflang="pt-BR" lang="pt-BR" data-lang="pt-BR" aria-current="page" title="Português (Brasil)">PT</a>
+      <a href="tutorial-orguine.en.html" hreflang="en" lang="en" data-lang="en" title="English">EN</a>
+    </div>
+    <button class="menu-btn" id="menuBtn" aria-label="Abrir menu" aria-expanded="false">☰</button>
+    <nav class="nav" id="nav">
+      <a href="#download">Download</a>
+      <a href="#passo-a-passo">Passo a passo</a>
+      <a href="#modos">Modos</a>
+      <a href="#seguranca">Segurança</a>
+      <a href="#cli">Linha de comando</a>
+      <a href="#faq">Dúvidas</a>
+    </nav>
+  </div>
+  <div class="neon-line"></div>
+</header>
+
+<main id="inicio">
+<!-- ===================== INÍCIO ===================== -->
+<div class="hero">
+  <div class="wrap">
+    <img class="mascot" src="assets/orguine-icon-256.png" alt="Mascote do Orguine: um robozinho segurando caixas de arquivos" width="150" height="150">
+    <span class="badge">Tutorial · versão <span data-cfg-text="versao">—</span></span>
+    <h1><span class="grad">Orguine</span></h1>
+    <p class="lead">Organize pastas bagunçadas (como <b>Downloads</b> e <b>Área de Trabalho</b>) em poucos cliques, <b>vendo antes como tudo vai ficar</b>. Com backup, proteção de arquivos sensíveis e <b>desfazer</b> com um clique.</p>
+    <div class="cta">
+      <a class="btn btn-primary" href="#download">⬇️ Baixar grátis</a>
+      <a class="btn btn-ghost" href="#passo-a-passo">📖 Ver o passo a passo</a>
+    </div>
+    <div class="meta">Grátis e de código aberto (GPL-3.0) · Windows, Linux e macOS · versão <span data-cfg-text="versao">—</span> de <span data-cfg-text="dataRelease">—</span></div>
+
+    <div class="window reveal" id="heroShot">
+      <div class="window-in">
+        <div class="window-bar"><i></i><i></i><i></i><span>Orguine — efeitos neon animados</span></div>
+        <img src="assets/img/pt-BR/neon.gif" alt="Janela do Orguine com a linha neon animada, o gráfico de tipos de arquivo e a barra de progresso" width="1000" height="632" data-zoom data-caption="O Orguine em ação, com as animações neon">
+      </div>
+    </div>
+
+    <div class="stats reveal">
+      <div class="stat"><b data-count="4">4</b><span>modos de organização</span></div>
+      <div class="stat"><b data-count="9">9</b><span>camadas de segurança</span></div>
+      <div class="stat"><b data-count="0">0</b><span>arquivos sobrescritos</span></div>
+      <div class="stat"><b data-count="1">1</b><span>clique para desfazer</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== O QUE É ===================== -->
+<section id="o-que-e">
+  <div class="wrap">
+    <div class="sec-head reveal"><span class="eyebrow">O que é</span><h2>Um organizador de pastas que <span class="grad">não te dá sustos</span></h2><div class="neon-line"></div></div>
+    <p class="sub reveal">O Orguine lê uma pasta, separa os arquivos em pastas (por categoria, extensão, data ou letra) e mostra uma <b>prévia "como ficará"</b>. Nada é movido até você confirmar. Ele nunca sobrescreve nada, deixa os arquivos importantes no lugar e guarda um diário para você desfazer depois.</p>
+    <div class="grid g4">
+      <div class="card reveal"><div class="ico n">👀</div><h3>Prévia antes de tudo</h3><p>Árvore com as pastas que serão criadas, tabela de detalhes e gráfico de tipos. Ela se atualiza sozinha quando você muda uma opção.</p></div>
+      <div class="card reveal"><div class="ico">🧠</div><h3>4 modos</h3><p>Categorias inteligentes, por extensão, por data (Ano/Mês, com EXIF nas fotos) e alfabética.</p></div>
+      <div class="card reveal"><div class="ico">🧬</div><h3>Duplicados de verdade</h3><p>Compara o <b>conteúdo</b> (SHA-256), não só o nome. As cópias podem ir para a lixeira do sistema.</p></div>
+      <div class="card reveal"><div class="ico n">🛡️</div><h3>Seguro e reversível</h3><p>Nunca sobrescreve, protege arquivos sensíveis, faz backup opcional e desfaz com um clique.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== DOWNLOAD ===================== -->
+<section id="download">
+  <div class="wrap">
+    <div class="sec-head reveal"><span class="eyebrow">Download e instalação</span><h2>Baixe e abra: <span class="grad">não precisa instalar</span></h2><div class="neon-line"></div></div>
+    <p class="sub reveal">Cada versão é um arquivo único: não precisa instalar Python nem nada mais. Os botões abaixo sempre baixam a <b>versão mais recente</b> (atual: <b>v<span data-cfg-text="versao">—</span></b>).</p>
+    <div class="grid g3">
+      <div class="card os reveal">
+        <div class="os-top"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#5b8cf5" d="M2 4.3 10 3.2v7.7H2zm9-1.2L22 1.5v9.4H11zM2 12h8v7.8l-8-1.1zm9 0h11v9.5l-11-1.6z"/></svg><h3>Windows 10/11 (64 bits)</h3></div>
+        <div class="file">Orguine-windows-amd64.exe</div>
+        <ol>
+          <li>Baixe o arquivo <b>.exe</b> e dê dois cliques nele.</li>
+          <li>Se aparecer <b>"O Windows protegeu o computador"</b> (SmartScreen), clique em <b>Mais informações</b> → <b>Executar assim mesmo</b>.</li>
+          <li>Pronto! Dá para criar um atalho para ele onde quiser.</li>
+        </ol>
+        <a class="btn btn-primary" data-cfg-href="links.downloadWindows" href="#">⬇️ Baixar para Windows</a>
+      </div>
+      <div class="card os reveal">
+        <div class="os-top"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#f5a623" d="M12 2c-2 0-3.3 1.8-3.3 4.4 0 1.3.2 2-.6 3.3C6.6 12 5 14.6 5.6 17.4c-1 .5-1.6 1.2-1.4 2 .3 1.4 2.4 1.1 3.6 1.9 1.3.9 2.6.8 3.3-.2h1.8c.7 1 2 1.1 3.3.2 1.2-.8 3.3-.5 3.6-1.9.2-.8-.4-1.5-1.4-2 .6-2.8-1-5.4-2.5-7.7-.8-1.3-.6-2-.6-3.3C15.3 3.8 14 2 12 2z"/><circle cx="10.4" cy="6.6" r=".9" fill="#0f0e17"/><circle cx="13.6" cy="6.6" r=".9" fill="#0f0e17"/></svg><h3>Linux (x86_64)</h3></div>
+        <div class="file">Orguine-linux-x86_64</div>
+        <ol>
+          <li>Baixe o arquivo (ele não tem extensão).</li>
+          <li>Dê permissão de execução: <code>chmod +x Orguine-linux-x86_64</code></li>
+          <li>Abra com <code>./Orguine-linux-x86_64</code>, ou com dois cliques no gerenciador de arquivos.</li>
+        </ol>
+        <a class="btn btn-primary" data-cfg-href="links.downloadLinux" href="#">⬇️ Baixar para Linux</a>
+      </div>
+      <div class="card os reveal">
+        <div class="os-top"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#ecebf7" d="M16.4 12.6c0-2.5 2-3.6 2.1-3.7a4.6 4.6 0 0 0-3.6-2c-1.5-.2-3 .9-3.7.9-.8 0-2-.9-3.2-.8A4.8 4.8 0 0 0 4 9.4c-1.7 3-.4 7.4 1.2 9.8.8 1.2 1.8 2.5 3 2.4 1.2 0 1.7-.8 3.2-.8s1.9.8 3.2.8 2.1-1.2 2.9-2.4c.9-1.3 1.3-2.7 1.3-2.8 0 0-2.4-1-2.4-3.8zM14 5.3c.7-.8 1.1-1.9 1-3-1 0-2.1.7-2.8 1.5-.6.7-1.2 1.8-1 2.9 1 .1 2.1-.6 2.8-1.4z"/></svg><h3>macOS (Apple Silicon)</h3></div>
+        <div class="file">Orguine-macos-arm64.zip</div>
+        <ol>
+          <li>Baixe e descompacte o <b>.zip</b>: aparece o app <b>Orguine</b>.</li>
+          <li>Na primeira vez, clique com o <b>botão direito</b> no app → <b>Abrir</b> → <b>Abrir</b>. É o Gatekeeper avisando que o app não é assinado.</li>
+          <li>Se ainda não abrir: <b>Ajustes do Sistema → Privacidade e Segurança → Abrir Mesmo Assim</b>.</li>
+        </ol>
+        <a class="btn btn-primary" data-cfg-href="links.downloadMac" href="#">⬇️ Baixar para macOS</a>
+      </div>
+    </div>
+    <div class="note reveal"><span>⚠️</span><div><b>Por que aparece um aviso de segurança?</b> O executável é novo e não tem assinatura digital paga, então o Windows (SmartScreen) e o macOS (Gatekeeper) avisam na primeira vez. O código é aberto, e cada arquivo tem um <code>.sha256</code> na <a data-cfg-href="links.release" href="#">página da versão</a> para você conferir a integridade.</div></div>
+    <div class="note ok reveal"><span>🐍</span><div><b>Prefere rodar pelo código-fonte?</b> Com Python 3.10+, clone o <a data-cfg-href="links.repo" href="#">repositório</a> e rode <code>pip install -e ".[exif]"</code> e depois <code>python -m orguine</code>.</div></div>
+  </div>
+</section>
+
+<!-- ===================== PASSO A PASSO ===================== -->
+<section id="passo-a-passo">
+  <div class="wrap">
+    <div class="sec-head reveal"><span class="eyebrow">Como usar</span><h2>Passo a passo, <span class="grad">do começo ao fim</span></h2><div class="neon-line"></div></div>
+    <p class="sub reveal">O caminho é sempre o mesmo: escolher a pasta → ajustar → ver a prévia → organizar. E, se mudar de ideia, desfazer.</p>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-txt reveal">
+          <div class="step-num">1</div>
+          <h3>Escolha a pasta</h3>
+          <p>Clique em <b>Procurar</b> ou <b>arraste uma pasta</b> para a janela. A sua pasta de <b>Downloads</b> é um ótimo começo.</p>
+          <p>Pastas do sistema (como <code>C:\Windows</code> ou <code>/usr</code>) são bloqueadas. Se você escolher a sua <b>pasta pessoal inteira</b>, o Orguine pede para digitar <kbd>ORGANIZAR</kbd> antes de mexer em qualquer coisa.</p>
+        </div>
+        <figure class="reveal"><div class="shot"><img src="assets/img/pt-BR/00-inicial.webp" alt="Tela inicial do Orguine, ainda sem prévia" loading="lazy" width="1360" height="860" data-zoom data-caption="Tela inicial: escolha a pasta, o modo e as opções"></div></figure>
+      </div>
+
+      <div class="step">
+        <div class="step-txt reveal">
+          <div class="step-num">2</div>
+          <h3>Escolha o modo de organização</h3>
+          <ul>
+            <li><b>Categorias inteligentes</b>: Imagens, Documentos, Vídeos, Músicas, Compactados, Instaladores, Código e Outros.</li>
+            <li><b>Por extensão</b>: uma pasta por formato (PDF, MP3, JPG…).</li>
+            <li><b>Por data</b>: Ano/Mês. Nas fotos, usa a data EXIF quando ela existe.</li>
+            <li><b>Alfabética</b>: A–Z, 0-9 e Outros.</li>
+          </ul>
+          <p>Veja exemplos de cada um na seção <a href="#modos">Modos</a>.</p>
+        </div>
+        <figure class="reveal"><div class="shot"><img src="assets/img/pt-BR/05-modo-data.webp" alt="Prévia no modo por data, com pastas de ano e mês" loading="lazy" width="1360" height="860" data-zoom data-caption="Modo por data: pastas Ano/Mês"></div></figure>
+      </div>
+
+      <div class="step">
+        <div class="step-txt reveal">
+          <div class="step-num">3</div>
+          <h3>Ajuste as opções</h3>
+          <ul>
+            <li><b>Incluir subpastas</b>: organiza também o que está dentro das subpastas. Pastas de projetos nunca são desmontadas.</li>
+            <li><b>Incluir arquivos sensíveis</b>: desmarcado por padrão (chaves, senhas, <code>.env</code>…).</li>
+            <li><b>Incluir arquivos ocultos</b>: também desmarcado por padrão.</li>
+            <li><b>Duplicados</b>: não procurar, detectar e deixar no lugar, manter o mais novo ou manter o original (as cópias vão para a lixeira).</li>
+            <li><b>Backup antes de mover</b>: sem backup, arquivo ZIP ou cópia em pasta.</li>
+            <li><b>Animações neon</b>: liga ou desliga os efeitos visuais.</li>
+          </ul>
+        </div>
+        <figure class="reveal"><div class="shot"><img src="assets/img/pt-BR/04-opcoes.webp" alt="Painel de opções: subpastas, sensíveis, ocultos, duplicados e backup" loading="lazy" width="1360" height="860" data-zoom data-caption="Opções: duplicados, backup e animações"></div></figure>
+      </div>
+
+      <div class="step">
+        <div class="step-txt reveal">
+          <div class="step-num">4</div>
+          <h3>Veja a prévia "como ficará"</h3>
+          <p>Clique em <b>Analisar e ver prévia</b>. Os cartões no topo mostram quantos arquivos serão movidos e renomeados, e quantos são duplicados, sensíveis e ignorados. Há três abas:</p>
+          <ul>
+            <li><b>Como ficará</b>: a árvore com as pastas novas, o que vai para a lixeira e o que <b>permanece no lugar</b>.</li>
+            <li><b>Detalhes</b>: tabela com busca, filtros e o <b>motivo</b> de cada decisão.</li>
+            <li><b>Tipos de arquivo</b>: gráfico de rosca por quantidade ou por tamanho.</li>
+          </ul>
+          <div class="note ok"><span>✨</span><div><b>Novo na versão <span data-cfg-text="versao">2.1.1</span>:</b> depois da primeira análise, a prévia <b>se atualiza sozinha</b> quando você troca o modo ou qualquer opção. Não precisa escolher a pasta de novo.</div></div>
+        </div>
+        <figure class="reveal">
+          <div class="shot"><img src="assets/img/pt-BR/01-preview.webp" alt="Aba Como ficará, com a árvore de pastas que serão criadas" loading="lazy" width="1360" height="860" data-zoom data-caption="Aba “Como ficará”: a árvore do resultado"></div>
+          <div class="shots-row mt">
+            <div class="shot"><img src="assets/img/pt-BR/02-detalhes.webp" alt="Aba Detalhes com tabela e filtros" loading="lazy" width="1360" height="860" data-zoom data-caption="Aba “Detalhes”: busca, filtros e o motivo de cada decisão"></div>
+            <div class="shot"><img src="assets/img/pt-BR/03-grafico.webp" alt="Aba Tipos de arquivo com gráfico de rosca" loading="lazy" width="1360" height="860" data-zoom data-caption="Aba “Tipos de arquivo”: gráfico por categoria"></div>
+          </div>
+        </figure>
+      </div>
+
+      <div class="step">
+        <div class="step-txt reveal">
+          <div class="step-num">5</div>
+          <h3>Organize</h3>
+          <p>Clique em <b>Organizar agora</b>. Antes de começar, o Orguine mostra um resumo: quantos arquivos serão movidos e para quantas pastas, quantos serão renomeados para não sobrescrever nada, quantos duplicados irão para a lixeira e qual backup será feito.</p>
+          <p>Se houver arquivos sensíveis incluídos, aparece um <b>aviso listando cada um</b>. Se você responder "Não", eles ficam onde estão. A organização roda em segundo plano, com barra de progresso e botão <b>Cancelar</b>.</p>
+        </div>
+        <figure class="reveal">
+          <div class="shots-row">
+            <div class="shot small"><img src="assets/img/pt-BR/08-confirmar.webp" alt="Diálogo de confirmação com o resumo da organização" loading="lazy" width="400" height="250" data-zoom data-caption="Confirmação com o resumo de tudo o que vai acontecer"></div>
+            <div class="shot small"><img src="assets/img/pt-BR/07-aviso-sensiveis.webp" alt="Aviso listando os arquivos sensíveis" loading="lazy" width="400" height="358" data-zoom data-caption="Aviso de arquivos sensíveis, listando cada um"></div>
+          </div>
+        </figure>
+      </div>
+
+      <div class="step">
+        <div class="step-txt reveal">
+          <div class="step-num">6</div>
+          <h3>Confira o resultado</h3>
+          <p>No fim aparece um resumo com o número de arquivos <b>movidos</b>, <b>renomeados</b>, enviados para a <b>lixeira</b>, <b>ignorados</b> e com <b>erros</b>. Tudo fica registrado num log, que você encontra pelo botão <b>Abrir pasta de dados</b>.</p>
+        </div>
+        <figure class="reveal">
+          <div class="shots-row">
+            <div class="shot small"><img src="assets/img/pt-BR/10-resultado.webp" alt="Resumo do resultado da organização" loading="lazy" width="302" height="160" data-zoom data-caption="Resultado: movidos, renomeados, lixeira, ignorados e erros"></div>
+            <div class="shot"><img src="assets/img/pt-BR/11-depois.webp" alt="Janela depois de organizar, com a mensagem de conclusão" loading="lazy" width="1360" height="860" data-zoom data-caption="Depois de organizar: a barra de status mostra o resumo"></div>
+          </div>
+        </figure>
+      </div>
+
+      <div class="step">
+        <div class="step-txt reveal">
+          <div class="step-num">7</div>
+          <h3>Mudou de ideia? Desfaça</h3>
+          <p>Clique em <b>Desfazer última organização</b>. Os arquivos voltam para o lugar e o nome originais, e as pastas criadas são removidas se ficarem vazias.</p>
+          <p>Se já existir outro arquivo com o nome original, o que volta recebe <code>(1)</code> no nome, para nada ser sobrescrito. Os duplicados que foram para a <b>lixeira</b> precisam ser restaurados pela lixeira do sistema, e o Orguine avisa quantos são.</p>
+        </div>
+        <figure class="reveal"><div class="shot small"><img src="assets/img/pt-BR/12-desfazer.webp" alt="Diálogo para desfazer a última organização" loading="lazy" width="400" height="196" data-zoom data-caption="Desfazer: tudo volta para o lugar original"></div></figure>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== MODOS ===================== -->
+<section id="modos">
+  <div class="wrap">
+    <div class="sec-head reveal"><span class="eyebrow">Modos de organização</span><h2>Quatro jeitos de <span class="grad">arrumar a casa</span></h2><div class="neon-line"></div></div>
+    <p class="sub reveal">Troque de modo à vontade: a prévia se recalcula na hora, e nada é movido até você confirmar.</p>
+    <div class="tabs reveal" role="tablist">
+      <button class="tab" role="tab" aria-selected="true" data-panel="m-cat">🧠 Categorias</button>
+      <button class="tab" role="tab" aria-selected="false" data-panel="m-ext">🏷️ Extensão</button>
+      <button class="tab" role="tab" aria-selected="false" data-panel="m-data">📅 Data</button>
+      <button class="tab" role="tab" aria-selected="false" data-panel="m-abc">🔤 Alfabética</button>
+    </div>
+    <div class="panel on reveal" id="m-cat" role="tabpanel">
+      <div>
+        <h3>Categorias inteligentes (padrão)</h3>
+        <p class="muted">Agrupa por tipo de conteúdo: <b>Imagens, Documentos, Vídeos, Músicas, Compactados, Instaladores e Código</b>. O que não se encaixa vai para <b>Outros</b>. Dá para personalizar nomes, cores e extensões com um <code>rules.json</code> (veja as <a href="#faq">dúvidas</a>).</p>
+<div class="tree"><span class="f">📁 Downloads</span>
+├─ <span class="f">📁 Imagens</span>       ferias_praia_2024.jpg, logo_empresa.png…
+├─ <span class="f">📁 Documentos</span>    boleto_internet_marco.pdf…
+├─ <span class="f">📁 Vídeos</span>        aula_python_01.mp4…
+├─ <span class="f">📁 Compactados</span>   projeto_backup.zip, drivers.7z…
+├─ <span class="f">📁 Instaladores</span>  setup_vscode.exe…
+└─ <span class="f">📁 Outros</span>        arquivo_estranho.xyz</div>
+      </div>
+      <div class="shot"><img src="assets/img/pt-BR/01-preview.webp" alt="Prévia no modo categorias" loading="lazy" width="1360" height="860" data-zoom data-caption="Modo categorias inteligentes"></div>
+    </div>
+    <div class="panel" id="m-ext" role="tabpanel">
+      <div>
+        <h3>Por extensão</h3>
+        <p class="muted">Uma pasta por formato, com o nome da extensão em maiúsculas. Arquivos sem extensão vão para <b>Sem extensão</b>. Na linha de comando, o modo se chama <code>extensao</code> (ou <code>tipo</code>).</p>
+<div class="tree"><span class="f">📁 Downloads</span>
+├─ <span class="f">📁 PDF</span>   curriculo_2025.pdf, manual_tv.pdf…
+├─ <span class="f">📁 JPG</span>   foto_perfil.jpg, wallpaper_4k.jpg…
+├─ <span class="f">📁 MP3</span>   podcast_ep42.mp3…
+├─ <span class="f">📁 ZIP</span>   fontes.zip…
+└─ <span class="f">📁 Sem extensão</span></div>
+      </div>
+      <div class="shot"><img src="assets/img/pt-BR/02-detalhes.webp" alt="Tabela de detalhes da prévia" loading="lazy" width="1360" height="860" data-zoom data-caption="A aba Detalhes mostra o destino de cada arquivo"></div>
+    </div>
+    <div class="panel" id="m-data" role="tabpanel">
+      <div>
+        <h3>Por data (Ano/Mês)</h3>
+        <p class="muted">Usa a data de modificação do arquivo. Nas <b>fotos</b>, usa a data em que a foto foi tirada (EXIF), quando ela existe. É ótimo para as fotos do celular. Na linha de comando, <code>--sem-exif</code> usa só a data de modificação.</p>
+<div class="tree"><span class="f">📁 Fotos</span>
+├─ <span class="f">📁 2023</span>
+│  ├─ <span class="f">📁 01</span>
+│  └─ <span class="f">📁 12</span>
+└─ <span class="f">📁 2024</span>
+   └─ <span class="f">📁 03</span>   IMG_20240312_101522.jpg…</div>
+      </div>
+      <div class="shot"><img src="assets/img/pt-BR/05-modo-data.webp" alt="Prévia no modo data" loading="lazy" width="1360" height="860" data-zoom data-caption="Modo por data"></div>
+    </div>
+    <div class="panel" id="m-abc" role="tabpanel">
+      <div>
+        <h3>Alfabética</h3>
+        <p class="muted">Pela primeira letra do nome, de <b>A</b> a <b>Z</b>. Os acentos são ignorados, então <i>Ótimo.txt</i> vai para <b>O</b>. Nomes que começam com número vão para <b>0-9</b>, e os demais para <b>Outros</b>.</p>
+<div class="tree"><span class="f">📁 Downloads</span>
+├─ <span class="f">📁 0-9</span>
+├─ <span class="f">📁 A</span>   anotacoes.txt, artigo_tcc.pdf…
+├─ <span class="f">📁 B</span>   boleto_internet_marco.pdf…
+├─ <span class="f">📁 C</span>   contrato_aluguel.pdf…
+└─ <span class="f">📁 Outros</span></div>
+      </div>
+      <div class="shot"><img src="assets/img/pt-BR/06-modo-abc.webp" alt="Prévia no modo alfabético" loading="lazy" width="1360" height="860" data-zoom data-caption="Modo alfabético"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== SEGURANÇA ===================== -->
+<section id="seguranca">
+  <div class="wrap">
+    <div class="sec-head reveal"><span class="eyebrow">Segurança em camadas</span><h2>Feito para <span class="grad">nunca custar um arquivo</span></h2><div class="neon-line"></div></div>
+    <p class="sub reveal">Organizar não pode ser arriscado. Por isso o Orguine combina várias proteções:</p>
+    <div class="grid g3">
+      <div class="card layer reveal"><div class="n">1</div><div><h3>Prévia primeiro</h3><p>Nada é movido antes de você ver o resultado e confirmar.</p></div></div>
+      <div class="card layer reveal"><div class="n">2</div><div><h3>Nunca sobrescreve</h3><p>Se já existe um arquivo com o mesmo nome no destino, o novo vira <code>nome (1).ext</code>, <code>nome (2).ext</code>… Maiúsculas e minúsculas contam como o mesmo nome, como no Windows e no macOS.</p></div></div>
+      <div class="card layer reveal"><div class="n">3</div><div><h3>Pastas perigosas bloqueadas</h3><p>Raiz do disco, <code>C:\Windows</code>, <code>Program Files</code>, <code>/usr</code>, <code>/etc</code>, <code>AppData</code>, <code>~/.ssh</code>, <code>~/.config</code>… Para a pasta pessoal inteira, é preciso digitar <kbd>ORGANIZAR</kbd>.</p></div></div>
+      <div class="card layer reveal"><div class="n">4</div><div><h3>Sensíveis ficam no lugar</h3><p>Chaves (<code>id_rsa</code>, <code>.pem</code>, <code>.pfx</code>), <code>.env</code>, cofres de senha (<code>.kdbx</code>), carteiras, dados de navegador e nomes como "senha" ou "password" <b>não são movidos por padrão</b>. E só vão para a lixeira depois de um aviso reforçado.</p></div></div>
+      <div class="card layer reveal"><div class="n">5</div><div><h3>Sistema e ocultos ignorados</h3><p><code>desktop.ini</code>, <code>Thumbs.db</code>, <code>.DS_Store</code>, downloads incompletos (<code>.crdownload</code>, <code>.part</code>), temporários, links simbólicos e o próprio executável do Orguine. Os ocultos só entram se você marcar a opção.</p></div></div>
+      <div class="card layer reveal"><div class="n">6</div><div><h3>Lixeira, nunca apagar</h3><p>Duplicados vão para a <b>lixeira do sistema</b> (via Send2Trash). O Orguine não apaga nada de vez.</p></div></div>
+      <div class="card layer reveal"><div class="n">7</div><div><h3>Backup opcional</h3><p>Um <b>ZIP</b> (com a integridade conferida) ou uma <b>cópia da pasta</b>, feito antes de mover. Se o backup falhar, nada é movido.</p></div></div>
+      <div class="card layer reveal"><div class="n">8</div><div><h3>Diário de desfazer</h3><p>Cada passo é gravado num diário antes de acontecer. Se o programa fechar no meio, o desfazer ainda devolve tudo aos nomes e lugares originais.</p></div></div>
+      <div class="card layer reveal"><div class="n">9</div><div><h3>Conferência e log</h3><p>Se um arquivo mudou entre a prévia e a organização, ele não é movido e aparece como erro. Tudo fica num log com rotação automática.</p></div></div>
+    </div>
+    <div class="grid g2" style="margin-top:28px">
+      <figure class="reveal" style="margin:0"><div class="shot small"><img src="assets/img/pt-BR/07-aviso-sensiveis.webp" alt="Aviso de arquivos sensíveis" loading="lazy" width="400" height="358" data-zoom data-caption="Aviso de arquivos sensíveis"></div><figcaption>Ao incluir sensíveis, cada um é listado com o motivo.</figcaption></figure>
+      <figure class="reveal" style="margin:0"><div class="shot small"><img src="assets/img/pt-BR/09-pasta-pessoal.webp" alt="Confirmação extra pedindo para digitar ORGANIZAR" loading="lazy" width="345" height="178" data-zoom data-caption="Confirmação extra para a pasta pessoal inteira"></div><figcaption>Pasta pessoal inteira? Só depois de digitar ORGANIZAR.</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== DUPLICADOS ===================== -->
+<section id="duplicados">
+  <div class="wrap">
+    <div class="sec-head reveal"><span class="eyebrow">Duplicados</span><h2>Encontra cópias pelo <span class="grad">conteúdo</span></h2><div class="neon-line"></div></div>
+    <p class="sub reveal">Dois arquivos com nomes diferentes podem ser iguais (<i>curriculo_2025.pdf</i> e <i>curriculo_2025 (copia).pdf</i>). O Orguine compara o conteúdo em etapas, para ser rápido mesmo com muitos arquivos:</p>
+    <div class="flow reveal">
+      <div class="fs"><b>Etapa 1</b>Agrupa os arquivos com o <strong>mesmo tamanho</strong>. Arquivos de tamanhos diferentes não podem ser iguais.</div>
+      <div class="arrow">→</div>
+      <div class="fs"><b>Etapa 2</b>Compara o SHA-256 dos <strong>primeiros 64 KB</strong> de cada um.</div>
+      <div class="arrow">→</div>
+      <div class="fs"><b>Etapa 3</b>Confirma com o <strong>SHA-256 do arquivo inteiro</strong>. Só os idênticos de verdade contam como duplicados.</div>
+    </div>
+    <div class="table-wrap reveal">
+      <table>
+        <thead><tr><th>Opção na janela</th><th>O que acontece</th><th>Na CLI</th></tr></thead>
+        <tbody>
+          <tr><td>Não procurar</td><td>Duplicados não são verificados (padrão).</td><td><code>none</code></td></tr>
+          <tr><td>Detectar e deixar no lugar</td><td>Organiza o mais antigo; as cópias ficam onde estão.</td><td><code>skip</code></td></tr>
+          <tr><td>Manter o mais novo</td><td>Organiza o mais novo; os outros vão para a lixeira.</td><td><code>newest</code></td></tr>
+          <tr><td>Manter o original</td><td>Organiza o mais antigo; as cópias vão para a lixeira.</td><td><code>trash</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== REGRAS ===================== -->
+<section id="regras">
+  <div class="wrap">
+    <div class="sec-head reveal"><span class="eyebrow">Regras inteligentes</span><h2>Nomes de pastas e <span class="grad">pastas de projetos</span></h2><div class="neon-line"></div></div>
+    <div class="grid g2" style="margin-top:30px">
+      <div class="card reveal">
+        <div class="ico n">📂</div>
+        <h3>Pastas que já existem são reaproveitadas</h3>
+        <p>Se já existe uma pasta <b>Imagens</b> (ou <b>imagens</b>, com outra grafia), o Orguine coloca os arquivos dentro dela, sem criar uma "Imagens (2)".</p>
+        <p>O sufixo <code>(2)</code> só aparece quando o nome está ocupado por um <b>arquivo que vai continuar no lugar</b>, como um arquivo sensível chamado "PIN". Se esse arquivo também vai ser organizado, a pasta usa o nome normal. Por exemplo, um arquivo chamado <b>A</b> vai para <b>A/A</b>.</p>
+      </div>
+      <div class="card reveal">
+        <div class="ico">🧩</div>
+        <h3>Projetos nunca são desmontados</h3>
+        <p>Com <b>Incluir subpastas</b> ligado, o Orguine pula as pastas que parecem projetos de software, ou seja, as que têm <code>.git</code>, <code>.hg</code>, <code>.svn</code>, <code>package.json</code>, <code>Cargo.toml</code>, <code>node_modules</code> ou <code>pyvenv.cfg</code>. Pastas como <code>__pycache__</code>, <code>.venv</code> e a Lixeira do Windows também ficam de fora.</p>
+        <p>Se a <b>própria pasta escolhida</b> parecer um projeto, a confirmação mostra um alerta e a resposta padrão passa a ser "Não".</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== VISUAL ===================== -->
+<section id="visual">
+  <div class="wrap">
+    <div class="sec-head reveal"><span class="eyebrow">Visual</span><h2>Tema claro, escuro e <span class="grad">neon</span></h2><div class="neon-line"></div></div>
+    <p class="sub reveal">A cor <b style="color:var(--neon)">#6ff8c8</b> do robozinho combina com o roxo do tema. Faixas de luz correm no cabeçalho, na aba ativa e na barra de progresso. As animações são leves, pausam com a janela minimizada e podem ser desligadas em <b>Opções → Animações neon</b>. A interface está em <b>português (Brasil)</b> e <b>inglês</b>: escolha na caixa de idioma no canto superior direito.</p>
+    <div class="grid g3">
+      <figure class="reveal" style="margin:0"><div class="shot"><img src="assets/img/pt-BR/01-preview-claro.webp" alt="Prévia no tema claro" loading="lazy" width="1360" height="860" data-zoom data-caption="Tema claro: prévia"></div><figcaption>Tema claro</figcaption></figure>
+      <figure class="reveal" style="margin:0"><div class="shot"><img src="assets/img/pt-BR/03-grafico-claro.webp" alt="Gráfico no tema claro" loading="lazy" width="1360" height="860" data-zoom data-caption="Tema claro: tipos de arquivo"></div><figcaption>Gráfico por categoria</figcaption></figure>
+      <figure class="reveal" style="margin:0"><div class="shot small"><img src="assets/img/pt-BR/13-sobre.webp" alt="Janela Sobre do Orguine" loading="lazy" width="460" height="363" data-zoom data-caption="Janela “Sobre”"></div><figcaption>Janela "Sobre", com os links</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== LINHA DE COMANDO ===================== -->
+<section id="cli">
+  <div class="wrap">
+    <div class="sec-head reveal"><span class="eyebrow">Para quem gosta de terminal</span><h2>Linha de <span class="grad">comando</span></h2><div class="neon-line"></div></div>
+    <p class="sub reveal">Rodando pelo código-fonte, use <code>python -m orguine</code> seguido de uma pasta (sem argumentos, ele abre a janela). Depois do <code>pip install</code>, o comando <code>orguine-cli</code> faz o mesmo.</p>
+    <div class="grid g2">
+      <div class="term reveal">
+        <div class="term-bar"><i></i><i></i><i></i><button data-copy="t1">copiar</button></div>
+<pre id="t1"><span class="c"># só ver a prévia (não mexe em nada)</span>
+<span class="p">$</span> python -m orguine ~/Downloads --dry-run
+
+<span class="c"># por categoria, com backup ZIP e cópias para a lixeira</span>
+<span class="p">$</span> python -m orguine ~/Downloads --backup zip --duplicados trash
+
+<span class="c"># por data, incluindo subpastas, sem perguntar</span>
+<span class="p">$</span> python -m orguine ~/Fotos --modo data --recursivo --sim
+
+<span class="c"># desfazer a última organização</span>
+<span class="p">$</span> python -m orguine --desfazer</pre>
+      </div>
+      <div class="table-wrap reveal">
+        <table>
+          <thead><tr><th>Opção</th><th>O que faz</th></tr></thead>
+          <tbody>
+            <tr><td><code>--dry-run</code>, <code>-n</code></td><td>Só mostra a prévia, não move nada.</td></tr>
+            <tr><td><code>--modo</code>, <code>-m</code></td><td><code>categoria</code> (padrão), <code>extensao</code> (ou <code>tipo</code>), <code>data</code>, <code>abc</code>.</td></tr>
+            <tr><td><code>--recursivo</code>, <code>-r</code></td><td>Inclui subpastas.</td></tr>
+            <tr><td><code>--duplicados</code></td><td><code>none</code> (padrão), <code>skip</code>, <code>newest</code>, <code>trash</code>.</td></tr>
+            <tr><td><code>--backup</code></td><td><code>none</code> (padrão), <code>zip</code>, <code>folder</code>.</td></tr>
+            <tr><td><code>--sim</code>, <code>-y</code></td><td>Não pergunta antes de mover. Atenção: também pula a confirmação "ORGANIZAR" da pasta pessoal.</td></tr>
+            <tr><td><code>--desfazer</code></td><td>Desfaz a última organização.</td></tr>
+            <tr><td><code>--incluir-sensiveis</code>, <code>--incluir-ocultos</code></td><td>Também move arquivos sensíveis ou ocultos.</td></tr>
+            <tr><td><code>--permitir-lixeira-sensiveis</code></td><td>Permite mandar sensíveis duplicados para a lixeira.</td></tr>
+            <tr><td><code>--sem-exif</code></td><td>No modo data, usa só a data de modificação.</td></tr>
+            <tr><td><code>--regras arquivo.json</code></td><td>Usa um arquivo de categorias personalizado.</td></tr>
+            <tr><td><code>--lang</code></td><td><code>pt_BR</code> (padrão) ou <code>en</code>.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== DÚVIDAS ===================== -->
+<section id="faq">
+  <div class="wrap">
+    <div class="sec-head reveal"><span class="eyebrow">Dúvidas frequentes</span><h2>Perguntas <span class="grad">e respostas</span></h2><div class="neon-line"></div></div>
+    <div class="reveal" style="margin-top:30px">
+      <details><summary>O Orguine é grátis? Precisa de internet?</summary><p>É grátis e de código aberto (licença GPL-3.0). Ele organiza tudo no seu computador, sem precisar de internet: os arquivos não são enviados para lugar nenhum.</p></details>
+      <details><summary>O Windows disse que "protegeu o computador". É vírus?</summary><p>Não. É o SmartScreen avisando que o executável é novo e não tem assinatura digital paga. Clique em <b>Mais informações → Executar assim mesmo</b>. Se quiser, confira o <code>.sha256</code> na <a data-cfg-href="links.release" href="#">página da versão</a> ou leia o <a data-cfg-href="links.repo" href="#">código-fonte</a>.</p></details>
+      <details><summary>Ele pode apagar ou sobrescrever meus arquivos?</summary><p>Não. Ele só move arquivos e nunca sobrescreve: se o nome já existe no destino, acrescenta <code>(1)</code>, <code>(2)</code>… Os duplicados, se você escolher, vão para a lixeira do sistema e nunca são apagados de vez.</p></details>
+      <details><summary>Como desfaço uma organização?</summary><p>Clique em <b>Desfazer última organização</b> (ou use <code>--desfazer</code> na linha de comando). Os arquivos voltam para o lugar e o nome originais. Os duplicados enviados para a lixeira precisam ser restaurados pela lixeira do sistema, e o Orguine avisa quantos são.</p></details>
+      <details><summary>Por que alguns arquivos "permanecem no lugar"?</summary><p>São arquivos protegidos ou ignorados: sensíveis (chaves, senhas, <code>.env</code>…), ocultos, de sistema (<code>desktop.ini</code>, <code>Thumbs.db</code>), downloads incompletos, links simbólicos ou cópias duplicadas que você mandou deixar no lugar. A aba <b>Detalhes</b> mostra o motivo de cada um.</p></details>
+      <details><summary>Por que minha pasta virou "Documentos (2)"?</summary><p>Porque já existe um <b>arquivo</b> (não uma pasta) chamado "Documentos" que vai continuar onde está, por exemplo por ser sensível ou ignorado. Se fosse uma pasta, ela seria reaproveitada. E se o arquivo também fosse organizado, a pasta usaria o nome normal.</p></details>
+      <details><summary>Posso mudar as categorias e as extensões?</summary><p>Sim. Copie o <code>default_rules.json</code> do <a data-cfg-href="links.repo" href="#">repositório</a> (fica em <code>orguine/resources/</code>) para um arquivo <code>rules.json</code> dentro da pasta de dados do app e edite nomes, cores e extensões. Cada categoria tem um nome por idioma (<code>pt_BR</code> e <code>en</code>). Na linha de comando, também dá para usar <code>--regras arquivo.json</code>.</p></details>
+      <details><summary>Onde ficam os backups, os logs e o diário de desfazer?</summary><p>Na pasta de dados do app, que o botão <b>Abrir pasta de dados</b> abre: <code>%APPDATA%\Orguine</code> no Windows, <code>~/Library/Application Support/Orguine</code> no macOS e <code>~/.local/share/orguine</code> no Linux. Para mudar o local, use a variável <code>ORGUINE_DATA_DIR</code>.</p></details>
+      <details><summary>Como mudo o programa para inglês?</summary><p>Use a caixa de idioma no canto superior direito da janela. Depois, gere a prévia de novo para que os nomes das pastas (Imagens, Documentos, Outros…) também mudem.</p></details>
+      <details><summary>As animações pesam no computador?</summary><p>Não. Elas usam um único temporizador leve e pausam com a janela minimizada. Dá para desligar em <b>Opções → Animações neon</b> ou com a variável <code>ORGUINE_NO_ANIM=1</code>.</p></details>
+      <details><summary>Tenho um Mac com processador Intel. Funciona?</summary><p>O arquivo pronto é para Macs com Apple Silicon (M1 ou mais novo). Em Macs com Intel, rode pelo código-fonte com Python 3.10+ (veja a seção <a href="#download">Download</a>).</p></details>
+      <details><summary>Achei um problema ou tenho uma ideia. Onde falo?</summary><p>Abra uma <a data-cfg-href="links.issues" href="#">issue no GitHub</a>. Toda ajuda é bem-vinda!</p></details>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== CHAMADA FINAL ===================== -->
+<section style="padding-top:20px">
+  <div class="wrap">
+    <div class="card final reveal">
+      <img src="assets/orguine-mascote-256.png" alt="" width="84" height="84">
+      <h2>Pronto para arrumar seus <span class="grad">Downloads</span>?</h2>
+      <p class="muted">Baixe o Orguine <b>v<span data-cfg-text="versao">—</span></b>, escolha uma pasta e veja a prévia. Se não gostar, é só desfazer.</p>
+      <div class="cta">
+        <a class="btn btn-primary" href="#download">⬇️ Baixar agora</a>
+        <a class="btn btn-neon" data-cfg-href="links.release" href="#">📦 Ver a versão no GitHub</a>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<!-- ===================== RODAPÉ ===================== -->
+<footer>
+  <div class="neon-line"></div>
+  <div class="wrap">
+    <div>
+      <a class="brand" href="#inicio"><img src="assets/favicon-64.png" alt="" width="36" height="36">Orguine</a>
+      <p>Organize suas pastas com prévia, backup e desfazer — sem sustos. Versão <span data-cfg-text="versao">—</span> (<span data-cfg-text="dataRelease">—</span>).</p>
+      <a class="donate" data-cfg-href="links.donate" href="#">💚 Apoiar / Doar</a>
+    </div>
+    <div class="links">
+      <h4>Projeto</h4>
+      <a data-cfg-href="links.release" href="#">Última versão (download)</a>
+      <a data-cfg-href="links.repo" href="#">Código-fonte no GitHub</a>
+      <a data-cfg-href="links.issues" href="#">Relatar um problema</a>
+    </div>
+    <div class="links">
+      <h4>Links</h4>
+      <a data-cfg-href="links.github" href="#">Meu GitHub</a>
+      <a data-cfg-href="links.site" href="#">bugzinho.com</a>
+      <a data-cfg-href="links.voltar" href="#">← Voltar para a página principal</a>
+      <a class="foot-home" href="../../"><span aria-hidden="true">←</span> CleitinhoDEV · Homepage</a>
+    </div>
+  </div>
+  <div class="copy">Orguine é software livre (GPL-3.0) © CleitinhoDEV</div>
+</footer>
+
+<button class="to-top" id="toTop" aria-label="Voltar ao topo">↑</button>
+<div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Imagem ampliada"><button aria-label="Fechar">✕</button><img alt=""><p></p></div>
+
+<script src="assets/tutorial.js"></script>
+</body>
+</html>

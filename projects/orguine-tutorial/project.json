@@ -1,0 +1,18 @@
+{
+  "title": "Orguine: tutorial do organizador de pastas",
+  "description": "Tutorial completo do Orguine 2.1.1: como baixar, instalar e usar o organizador de pastas com prévia, duplicados por SHA-256, proteção de arquivos sensíveis, backup e desfazer. Para Windows, Linux e macOS.",
+  "date": "2026-10-29",
+  "tags": ["orguine", "organizador", "pastas", "arquivos", "backup", "windows", "linux", "macos"],
+  "cover": "assets/img/pt-BR/01-preview.webp",
+  "i18n": {
+    "en": {
+      "title": "Orguine: folder organizer tutorial",
+      "description": "Complete Orguine 2.1.1 guide: how to download, install and use the folder organizer with a live preview, SHA-256 duplicate detection, sensitive-file protection, backup and one-click undo. For Windows, Linux and macOS."
+    },
+    "es": {
+      "title": "Orguine: tutorial del organizador de carpetas",
+      "description": "Tutorial completo de Orguine 2.1.1: cómo descargar, instalar y usar el organizador de carpetas con vista previa, detección de duplicados por SHA-256, protección de archivos sensibles, copia de seguridad y deshacer. Para Windows, Linux y macOS."
+    }
+  },
+  "langs": ["pt-BR", "en"]
+}

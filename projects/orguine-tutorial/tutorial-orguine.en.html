@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en" data-title="Orguine {versao} tutorial — organize your folders with preview, backup and undo">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--
+  ╔══════════════════════════════════════════════════════════════════════╗
+  ║  ORGUINE TUTORIAL — standalone page (not the site's index)           ║
+  ║  Language of this page: English                                      ║
+  ║                                                                      ║
+  ║  👉 Version, date and links are NOT here: edit ONLY the file         ║
+  ║        assets/config.js                                              ║
+  ║     It is shared by every language (this file and the pt-BR one).    ║
+  ║                                                                      ║
+  ║  Upload the .html files TOGETHER with the "assets/" folder.          ║
+  ╚══════════════════════════════════════════════════════════════════════╝
+-->
+<script src="assets/config.js"></script>
+<script src="assets/lang.js"></script>
+
+<title>Orguine tutorial — organize your folders with preview, backup and undo</title>
+<meta name="description" content="Complete Orguine guide: how to download, install and use the folder organizer with a live preview, SHA-256 duplicate detection, sensitive-file protection, backup and one-click undo.">
+<meta name="theme-color" content="#14121f">
+<link rel="alternate" hreflang="pt-BR" href="index.html">
+<link rel="alternate" hreflang="en" href="tutorial-orguine.en.html">
+<link rel="alternate" hreflang="x-default" href="index.html">
+<link rel="icon" href="assets/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="assets/favicon-64.png">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<meta property="og:title" content="Orguine tutorial">
+<meta property="og:locale" content="en_US">
+<meta property="og:locale:alternate" content="pt_BR">
+<meta property="og:description" content="Organize your folders with preview, backup and undo — no surprises.">
+<meta property="og:image" content="assets/img/en/03-grafico.webp">
+<link rel="stylesheet" href="assets/tutorial.css">
+</head>
+<body>
+<div class="bg-fx" aria-hidden="true"></div>
+<div class="progress" id="progress" aria-hidden="true"></div>
+
+<!-- ===================== HEADER ===================== -->
+<header class="top">
+  <div class="wrap">
+    <a class="btn-back" data-cfg-href="links.voltar" href="#" title="Back to the main page">← Back</a>
+    <a class="brand" href="#inicio"><img src="assets/favicon-64.png" alt="" width="36" height="36">Orguine <span class="badge">v<span data-cfg-text="versao">—</span></span></a>
+    <div class="lang-switch" role="group" aria-label="Idioma / Language">
+      <span class="globe" aria-hidden="true">🌐</span>
+      <a href="index.html" hreflang="pt-BR" lang="pt-BR" data-lang="pt-BR" title="Português (Brasil)">PT</a>
+      <a href="tutorial-orguine.en.html" hreflang="en" lang="en" data-lang="en" aria-current="page" title="English">EN</a>
+    </div>
+    <button class="menu-btn" id="menuBtn" aria-label="Open menu" aria-expanded="false">☰</button>
+    <nav class="nav" id="nav">
+      <a href="#download">Download</a>
+      <a href="#passo-a-passo">Step by step</a>
+      <a href="#modos">Modes</a>
+      <a href="#seguranca">Safety</a>
+      <a href="#cli">Command line</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+  </div>
+  <div class="neon-line"></div>
+</header>
+
+<main id="inicio">
+<!-- ===================== HERO ===================== -->
+<div class="hero">
+  <div class="wrap">
+    <img class="mascot" src="assets/orguine-icon-256.png" alt="Orguine's mascot: a little robot carrying file boxes" width="150" height="150">
+    <span class="badge">Tutorial · version <span data-cfg-text="versao">—</span></span>
+    <h1><span class="grad">Orguine</span></h1>
+    <p class="lead">Tidy up messy folders (like <b>Downloads</b> and your <b>Desktop</b>) in a few clicks, <b>seeing exactly how everything will look first</b>. With backups, sensitive-file protection and one-click <b>undo</b>.</p>
+    <div class="cta">
+      <a class="btn btn-primary" href="#download">⬇️ Download for free</a>
+      <a class="btn btn-ghost" href="#passo-a-passo">📖 See the step-by-step guide</a>
+    </div>
+    <div class="meta">Free and open source (GPL-3.0) · Windows, Linux and macOS · version <span data-cfg-text="versao">—</span>, released <span data-cfg-text="dataRelease">—</span></div>
+
+    <div class="window reveal" id="heroShot">
+      <div class="window-in">
+        <div class="window-bar"><i></i><i></i><i></i><span>Orguine — animated neon effects</span></div>
+        <img src="assets/img/en/neon.gif" alt="Orguine window with the animated neon line, the file-type chart and the progress bar" width="1000" height="632" data-zoom data-caption="Orguine in action, with its neon animations">
+      </div>
+    </div>
+
+    <div class="stats reveal">
+      <div class="stat"><b data-count="4">4</b><span>organization modes</span></div>
+      <div class="stat"><b data-count="9">9</b><span>layers of safety</span></div>
+      <div class="stat"><b data-count="0">0</b><span>files overwritten</span></div>
+      <div class="stat"><b data-count="1">1</b><span>click to undo</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== WHAT IT IS ===================== -->
+<section id="o-que-e">
+  <div class="wrap">
+    <div class="sec-head reveal"><span class="eyebrow">What it is</span><h2>A folder organizer <span class="grad">with no nasty surprises</span></h2><div class="neon-line"></div></div>
+    <p class="sub reveal">Orguine scans a folder, sorts the files into subfolders (by category, extension, date or first letter) and shows you a <b>"result preview"</b>. Nothing is moved until you confirm. It never overwrites anything, leaves important files alone and keeps a journal so you can undo it all later.</p>
+    <div class="grid g4">
+      <div class="card reveal"><div class="ico n">👀</div><h3>Preview first</h3><p>A tree of the folders that will be created, a details table and a file-type chart. It refreshes by itself whenever you change an option.</p></div>
+      <div class="card reveal"><div class="ico">🧠</div><h3>4 modes</h3><p>Smart categories, by extension, by date (Year/Month, using EXIF for photos) and alphabetical.</p></div>
+      <div class="card reveal"><div class="ico">🧬</div><h3>Real duplicate detection</h3><p>Compares the <b>content</b> (SHA-256), not just the name. Copies can be sent to the system trash.</p></div>
+      <div class="card reveal"><div class="ico n">🛡️</div><h3>Safe and reversible</h3><p>Never overwrites, protects sensitive files, makes an optional backup and undoes everything in one click.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== DOWNLOAD ===================== -->
+<section id="download">
+  <div class="wrap">
+    <div class="sec-head reveal"><span class="eyebrow">Download and setup</span><h2>Download and run: <span class="grad">no installation needed</span></h2><div class="neon-line"></div></div>
+    <p class="sub reveal">Each release is a single file: no need to install Python or anything else. The buttons below always download the <b>latest version</b> (currently <b>v<span data-cfg-text="versao">—</span></b>).</p>
+    <div class="grid g3">
+      <div class="card os reveal">
+        <div class="os-top"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#5b8cf5" d="M2 4.3 10 3.2v7.7H2zm9-1.2L22 1.5v9.4H11zM2 12h8v7.8l-8-1.1zm9 0h11v9.5l-11-1.6z"/></svg><h3>Windows 10/11 (64-bit)</h3></div>
+        <div class="file">Orguine-windows-amd64.exe</div>
+        <ol>
+          <li>Download the <b>.exe</b> file and double-click it.</li>
+          <li>If you see <b>"Windows protected your PC"</b> (SmartScreen), click <b>More info</b> → <b>Run anyway</b>.</li>
+          <li>That's it! You can create a shortcut to it wherever you like.</li>
+        </ol>
+        <a class="btn btn-primary" data-cfg-href="links.downloadWindows" href="#">⬇️ Download for Windows</a>
+      </div>
+      <div class="card os reveal">
+        <div class="os-top"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#f5a623" d="M12 2c-2 0-3.3 1.8-3.3 4.4 0 1.3.2 2-.6 3.3C6.6 12 5 14.6 5.6 17.4c-1 .5-1.6 1.2-1.4 2 .3 1.4 2.4 1.1 3.6 1.9 1.3.9 2.6.8 3.3-.2h1.8c.7 1 2 1.1 3.3.2 1.2-.8 3.3-.5 3.6-1.9.2-.8-.4-1.5-1.4-2 .6-2.8-1-5.4-2.5-7.7-.8-1.3-.6-2-.6-3.3C15.3 3.8 14 2 12 2z"/><circle cx="10.4" cy="6.6" r=".9" fill="#0f0e17"/><circle cx="13.6" cy="6.6" r=".9" fill="#0f0e17"/></svg><h3>Linux (x86_64)</h3></div>
+        <div class="file">Orguine-linux-x86_64</div>
+        <ol>
+          <li>Download the file (it has no extension).</li>
+          <li>Make it executable: <code>chmod +x Orguine-linux-x86_64</code></li>
+          <li>Run it with <code>./Orguine-linux-x86_64</code>, or double-click it in your file manager.</li>
+        </ol>
+        <a class="btn btn-primary" data-cfg-href="links.downloadLinux" href="#">⬇️ Download for Linux</a>
+      </div>
+      <div class="card os reveal">
+        <div class="os-top"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#ecebf7" d="M16.4 12.6c0-2.5 2-3.6 2.1-3.7a4.6 4.6 0 0 0-3.6-2c-1.5-.2-3 .9-3.7.9-.8 0-2-.9-3.2-.8A4.8 4.8 0 0 0 4 9.4c-1.7 3-.4 7.4 1.2 9.8.8 1.2 1.8 2.5 3 2.4 1.2 0 1.7-.8 3.2-.8s1.9.8 3.2.8 2.1-1.2 2.9-2.4c.9-1.3 1.3-2.7 1.3-2.8 0 0-2.4-1-2.4-3.8zM14 5.3c.7-.8 1.1-1.9 1-3-1 0-2.1.7-2.8 1.5-.6.7-1.2 1.8-1 2.9 1 .1 2.1-.6 2.8-1.4z"/></svg><h3>macOS (Apple Silicon)</h3></div>
+        <div class="file">Orguine-macos-arm64.zip</div>
+        <ol>
+          <li>Download and unzip the <b>.zip</b>: you get the <b>Orguine</b> app.</li>
+          <li>The first time, <b>right-click</b> the app → <b>Open</b> → <b>Open</b>. That's Gatekeeper warning you that the app isn't signed.</li>
+          <li>Still won't open? Go to <b>System Settings → Privacy &amp; Security → Open Anyway</b>.</li>
+        </ol>
+        <a class="btn btn-primary" data-cfg-href="links.downloadMac" href="#">⬇️ Download for macOS</a>
+      </div>
+    </div>
+    <div class="note reveal"><span>⚠️</span><div><b>Why is there a security warning?</b> The app is new and doesn't have a paid code-signing certificate, so Windows (SmartScreen) and macOS (Gatekeeper) warn you the first time. The code is open source, and every file has a <code>.sha256</code> checksum on the <a data-cfg-href="links.release" href="#">release page</a> so you can verify it.</div></div>
+    <div class="note ok reveal"><span>🐍</span><div><b>Prefer running from source?</b> With Python 3.10+, clone the <a data-cfg-href="links.repo" href="#">repository</a>, run <code>pip install -e ".[exif]"</code> and then <code>python -m orguine</code>.</div></div>
+  </div>
+</section>
+
+<!-- ===================== STEP BY STEP ===================== -->
+<section id="passo-a-passo">
+  <div class="wrap">
+    <div class="sec-head reveal"><span class="eyebrow">How to use it</span><h2>Step by step, <span class="grad">from start to finish</span></h2><div class="neon-line"></div></div>
+    <p class="sub reveal">It's always the same routine: pick a folder → adjust → check the preview → organize. And if you change your mind, undo.</p>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-txt reveal">
+          <div class="step-num">1</div>
+          <h3>Pick a folder</h3>
+          <p>Click <b>Browse</b> or <b>drag a folder</b> onto the window. Your <b>Downloads</b> folder is a great place to start.</p>
+          <p>System folders (like <code>C:\Windows</code> or <code>/usr</code>) are blocked. If you pick your <b>entire home folder</b>, Orguine asks you to type <kbd>ORGANIZE</kbd> before it touches anything.</p>
+        </div>
+        <figure class="reveal"><div class="shot"><img src="assets/img/en/00-inicial.webp" alt="Orguine's start screen, before any preview" loading="lazy" width="1360" height="860" data-zoom data-caption="Start screen: choose the folder, the mode and the options"></div></figure>
+      </div>
+
+      <div class="step">
+        <div class="step-txt reveal">
+          <div class="step-num">2</div>
+          <h3>Choose the organization mode</h3>
+          <ul>
+            <li><b>Smart categories</b>: Images, Documents, Videos, Music, Archives, Installers, Code and Others.</li>
+            <li><b>By extension</b>: one folder per format (PDF, MP3, JPG…).</li>
+            <li><b>By date</b>: Year/Month. For photos it uses the EXIF date when available.</li>
+            <li><b>Alphabetical</b>: A–Z, 0-9 and Others.</li>
+          </ul>
+          <p>See examples of each one in the <a href="#modos">Modes</a> section.</p>
+        </div>
+        <figure class="reveal"><div class="shot"><img src="assets/img/en/05-modo-data.webp" alt="Preview in By date mode, with year and month folders" loading="lazy" width="1360" height="860" data-zoom data-caption="By date mode: Year/Month folders"></div></figure>
+      </div>
+
+      <div class="step">
+        <div class="step-txt reveal">
+          <div class="step-num">3</div>
+          <h3>Adjust the options</h3>
+          <ul>
+            <li><b>Include subfolders</b>: also organizes what's inside subfolders. Project folders are never split up.</li>
+            <li><b>Include sensitive files</b>: off by default (keys, passwords, <code>.env</code>…).</li>
+            <li><b>Include hidden files</b>: also off by default.</li>
+            <li><b>Duplicates</b>: don't look for them, detect and leave in place, keep newest, or keep original (copies go to the trash).</li>
+            <li><b>Backup before moving</b>: no backup, ZIP archive or folder copy.</li>
+            <li><b>Neon animations</b>: turns the visual effects on or off.</li>
+          </ul>
+        </div>
+        <figure class="reveal"><div class="shot"><img src="assets/img/en/04-opcoes.webp" alt="Options panel: subfolders, sensitive, hidden, duplicates and backup" loading="lazy" width="1360" height="860" data-zoom data-caption="Options: duplicates, backup and animations"></div></figure>
+      </div>
+
+      <div class="step">
+        <div class="step-txt reveal">
+          <div class="step-num">4</div>
+          <h3>Check the result preview</h3>
+          <p>Click <b>Analyze and preview</b>. The cards at the top show how many files will be moved and renamed, and how many are duplicates, sensitive or skipped. There are three tabs:</p>
+          <ul>
+            <li><b>Result preview</b>: the tree of new folders, what goes to the trash and what will <b>stay in place</b>.</li>
+            <li><b>Details</b>: a searchable, filterable table with the <b>reason</b> behind every decision.</li>
+            <li><b>File types</b>: a donut chart by count or by size.</li>
+          </ul>
+          <div class="note ok"><span>✨</span><div><b>New in version <span data-cfg-text="versao">2.1.1</span>:</b> after the first analysis, the preview <b>refreshes automatically</b> when you switch modes or change any option. No need to pick the folder again.</div></div>
+        </div>
+        <figure class="reveal">
+          <div class="shot"><img src="assets/img/en/01-preview.webp" alt="Result preview tab, with the tree of folders to be created" loading="lazy" width="1360" height="860" data-zoom data-caption="“Result preview” tab: the tree of the final layout"></div>
+          <div class="shots-row mt">
+            <div class="shot"><img src="assets/img/en/02-detalhes.webp" alt="Details tab with table and filters" loading="lazy" width="1360" height="860" data-zoom data-caption="“Details” tab: search, filters and the reason for each decision"></div>
+            <div class="shot"><img src="assets/img/en/03-grafico.webp" alt="File types tab with a donut chart" loading="lazy" width="1360" height="860" data-zoom data-caption="“File types” tab: chart by category"></div>
+          </div>
+        </figure>
+      </div>
+
+      <div class="step">
+        <div class="step-txt reveal">
+          <div class="step-num">5</div>
+          <h3>Organize</h3>
+          <p>Click <b>Organize now</b>. Before it starts, Orguine shows a summary: how many files will be moved and into how many folders, how many will be renamed so nothing gets overwritten, how many duplicates will go to the trash and which backup will be made.</p>
+          <p>If sensitive files are included, a <b>warning lists each one</b>. Answer "No" and they stay where they are. Organizing runs in the background, with a progress bar and a <b>Cancel</b> button.</p>
+        </div>
+        <figure class="reveal">
+          <div class="shots-row">
+            <div class="shot small"><img src="assets/img/en/08-confirmar.webp" alt="Confirmation dialog with the organization summary" loading="lazy" width="372" height="232" data-zoom data-caption="Confirmation with a summary of everything that will happen"></div>
+            <div class="shot small"><img src="assets/img/en/07-aviso-sensiveis.webp" alt="Warning listing the sensitive files" loading="lazy" width="400" height="322" data-zoom data-caption="Sensitive-files warning, listing each one"></div>
+          </div>
+        </figure>
+      </div>
+
+      <div class="step">
+        <div class="step-txt reveal">
+          <div class="step-num">6</div>
+          <h3>Check the result</h3>
+          <p>At the end, a summary shows how many files were <b>moved</b>, <b>renamed</b>, sent to the <b>trash</b>, <b>skipped</b> or had <b>errors</b>. Everything is recorded in a log, which you can find with the <b>Open data folder</b> button.</p>
+        </div>
+        <figure class="reveal">
+          <div class="shots-row">
+            <div class="shot small"><img src="assets/img/en/10-resultado.webp" alt="Organization result summary" loading="lazy" width="250" height="160" data-zoom data-caption="Result: moved, renamed, trashed, skipped and errors"></div>
+            <div class="shot"><img src="assets/img/en/11-depois.webp" alt="Window after organizing, with the completion message" loading="lazy" width="1360" height="860" data-zoom data-caption="After organizing: the status bar shows the summary"></div>
+          </div>
+        </figure>
+      </div>
+
+      <div class="step">
+        <div class="step-txt reveal">
+          <div class="step-num">7</div>
+          <h3>Changed your mind? Undo</h3>
+          <p>Click <b>Undo last organization</b>. Files go back to their original place and name, and the folders that were created are removed if they end up empty.</p>
+          <p>If another file already has the original name, the returning file gets <code>(1)</code> added to its name, so nothing is overwritten. Duplicates that went to the <b>trash</b> must be restored from the system trash; Orguine tells you how many there are.</p>
+        </div>
+        <figure class="reveal"><div class="shot small"><img src="assets/img/en/12-desfazer.webp" alt="Dialog to undo the last organization" loading="lazy" width="400" height="196" data-zoom data-caption="Undo: everything goes back to where it was"></div></figure>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== MODES ===================== -->
+<section id="modos">
+  <div class="wrap">
+    <div class="sec-head reveal"><span class="eyebrow">Organization modes</span><h2>Four ways to <span class="grad">tidy things up</span></h2><div class="neon-line"></div></div>
+    <p class="sub reveal">Switch modes as often as you like: the preview is recalculated instantly, and nothing is moved until you confirm.</p>
+    <div class="tabs reveal" role="tablist">
+      <button class="tab" role="tab" aria-selected="true" data-panel="m-cat">🧠 Categories</button>
+      <button class="tab" role="tab" aria-selected="false" data-panel="m-ext">🏷️ Extension</button>
+      <button class="tab" role="tab" aria-selected="false" data-panel="m-data">📅 Date</button>
+      <button class="tab" role="tab" aria-selected="false" data-panel="m-abc">🔤 Alphabetical</button>
+    </div>
+    <div class="panel on reveal" id="m-cat" role="tabpanel">
+      <div>
+        <h3>Smart categories (default)</h3>
+        <p class="muted">Groups files by type of content: <b>Images, Documents, Videos, Music, Archives, Installers and Code</b>. Anything that doesn't fit goes to <b>Others</b>. You can customize names, colors and extensions with a <code>rules.json</code> file (see the <a href="#faq">FAQ</a>).</p>
+<div class="tree"><span class="f">📁 Downloads</span>
+├─ <span class="f">📁 Images</span>       beach_vacation_2024.jpg, company_logo.png…
+├─ <span class="f">📁 Documents</span>    internet_bill_march.pdf…
+├─ <span class="f">📁 Videos</span>       python_lesson_01.mp4…
+├─ <span class="f">📁 Archives</span>     project_backup.zip, drivers.7z…
+├─ <span class="f">📁 Installers</span>   setup_vscode.exe…
+└─ <span class="f">📁 Others</span>       weird_file.xyz</div>
+      </div>
+      <div class="shot"><img src="assets/img/en/01-preview.webp" alt="Preview in Smart categories mode" loading="lazy" width="1360" height="860" data-zoom data-caption="Smart categories mode"></div>
+    </div>
+    <div class="panel" id="m-ext" role="tabpanel">
+      <div>
+        <h3>By extension</h3>
+        <p class="muted">One folder per format, named after the extension in uppercase. Files without an extension go to <b>No extension</b>. On the command line, this mode is called <code>extensao</code> (or <code>tipo</code>/<code>type</code>).</p>
+<div class="tree"><span class="f">📁 Downloads</span>
+├─ <span class="f">📁 PDF</span>   resume_2025.pdf, tv_manual.pdf…
+├─ <span class="f">📁 JPG</span>   profile_photo.jpg, wallpaper_4k.jpg…
+├─ <span class="f">📁 MP3</span>   podcast_ep42.mp3…
+├─ <span class="f">📁 ZIP</span>   fonts.zip…
+└─ <span class="f">📁 No extension</span></div>
+      </div>
+      <div class="shot"><img src="assets/img/en/02-detalhes.webp" alt="Preview details table" loading="lazy" width="1360" height="860" data-zoom data-caption="The Details tab shows where each file will go"></div>
+    </div>
+    <div class="panel" id="m-data" role="tabpanel">
+      <div>
+        <h3>By date (Year/Month)</h3>
+        <p class="muted">Uses the file's modification date. For <b>photos</b>, it uses the date the picture was taken (EXIF) when available, which is perfect for phone photos. On the command line, <code>--sem-exif</code> uses the modification date only.</p>
+<div class="tree"><span class="f">📁 Photos</span>
+├─ <span class="f">📁 2023</span>
+│  ├─ <span class="f">📁 01</span>
+│  └─ <span class="f">📁 12</span>
+└─ <span class="f">📁 2024</span>
+   └─ <span class="f">📁 03</span>   IMG_20240312_101522.jpg…</div>
+      </div>
+      <div class="shot"><img src="assets/img/en/05-modo-data.webp" alt="Preview in By date mode" loading="lazy" width="1360" height="860" data-zoom data-caption="By date mode"></div>
+    </div>
+    <div class="panel" id="m-abc" role="tabpanel">
+      <div>
+        <h3>Alphabetical</h3>
+        <p class="muted">By the first letter of the name, from <b>A</b> to <b>Z</b>. Accents are ignored, so <i>Éclair.txt</i> goes to <b>E</b>. Names starting with a number go to <b>0-9</b>, and everything else to <b>Others</b>.</p>
+<div class="tree"><span class="f">📁 Downloads</span>
+├─ <span class="f">📁 0-9</span>
+├─ <span class="f">📁 A</span>   album_track01.flac, app_config.json…
+├─ <span class="f">📁 B</span>   beach_vacation_2024.jpg…
+├─ <span class="f">📁 C</span>   company_logo.png, cover_letter.docx…
+└─ <span class="f">📁 Others</span></div>
+      </div>
+      <div class="shot"><img src="assets/img/en/06-modo-abc.webp" alt="Preview in Alphabetical mode" loading="lazy" width="1360" height="860" data-zoom data-caption="Alphabetical mode"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== SAFETY ===================== -->
+<section id="seguranca">
+  <div class="wrap">
+    <div class="sec-head reveal"><span class="eyebrow">Layered safety</span><h2>Built to <span class="grad">never cost you a file</span></h2><div class="neon-line"></div></div>
+    <p class="sub reveal">Organizing shouldn't be risky. That's why Orguine combines several safeguards:</p>
+    <div class="grid g3">
+      <div class="card layer reveal"><div class="n">1</div><div><h3>Preview first</h3><p>Nothing is moved before you see the result and confirm.</p></div></div>
+      <div class="card layer reveal"><div class="n">2</div><div><h3>Never overwrites</h3><p>If a file with the same name already exists at the destination, the new one becomes <code>name (1).ext</code>, <code>name (2).ext</code>… Upper and lower case count as the same name, just like on Windows and macOS.</p></div></div>
+      <div class="card layer reveal"><div class="n">3</div><div><h3>Dangerous folders blocked</h3><p>Drive roots, <code>C:\Windows</code>, <code>Program Files</code>, <code>/usr</code>, <code>/etc</code>, <code>AppData</code>, <code>~/.ssh</code>, <code>~/.config</code>… For your entire home folder, you have to type <kbd>ORGANIZE</kbd>.</p></div></div>
+      <div class="card layer reveal"><div class="n">4</div><div><h3>Sensitive files stay put</h3><p>Keys (<code>id_rsa</code>, <code>.pem</code>, <code>.pfx</code>), <code>.env</code> files, password vaults (<code>.kdbx</code>), crypto wallets, browser data and names like "password" or "senha" <b>are not moved by default</b>. And they only go to the trash after an extra-strong warning.</p></div></div>
+      <div class="card layer reveal"><div class="n">5</div><div><h3>System and hidden files skipped</h3><p><code>desktop.ini</code>, <code>Thumbs.db</code>, <code>.DS_Store</code>, incomplete downloads (<code>.crdownload</code>, <code>.part</code>), temporary files, symbolic links and the Orguine executable itself. Hidden files are only included if you tick the option.</p></div></div>
+      <div class="card layer reveal"><div class="n">6</div><div><h3>Trash, never delete</h3><p>Duplicates go to the <b>system trash</b> (via Send2Trash). Orguine never permanently deletes anything.</p></div></div>
+      <div class="card layer reveal"><div class="n">7</div><div><h3>Optional backup</h3><p>A <b>ZIP archive</b> (with an integrity check) or a <b>folder copy</b>, made before anything moves. If the backup fails, nothing is moved.</p></div></div>
+      <div class="card layer reveal"><div class="n">8</div><div><h3>Undo journal</h3><p>Every step is written to a journal before it happens. Even if the app closes halfway through, undo still puts everything back with the original names and locations.</p></div></div>
+      <div class="card layer reveal"><div class="n">9</div><div><h3>Double-check and log</h3><p>If a file changed between the preview and the organization, it isn't moved and is reported as an error. Everything goes into a log with automatic rotation.</p></div></div>
+    </div>
+    <div class="grid g2" style="margin-top:28px">
+      <figure class="reveal" style="margin:0"><div class="shot small"><img src="assets/img/en/07-aviso-sensiveis.webp" alt="Sensitive files warning" loading="lazy" width="400" height="322" data-zoom data-caption="Sensitive files warning"></div><figcaption>When you include sensitive files, each one is listed with the reason.</figcaption></figure>
+      <figure class="reveal" style="margin:0"><div class="shot small"><img src="assets/img/en/09-pasta-pessoal.webp" alt="Extra confirmation asking you to type ORGANIZE" loading="lazy" width="319" height="178" data-zoom data-caption="Extra confirmation for the entire home folder"></div><figcaption>Your entire home folder? Only after typing ORGANIZE.</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== DUPLICATES ===================== -->
+<section id="duplicados">
+  <div class="wrap">
+    <div class="sec-head reveal"><span class="eyebrow">Duplicates</span><h2>Finds copies by their <span class="grad">content</span></h2><div class="neon-line"></div></div>
+    <p class="sub reveal">Two files with different names can be identical (<i>resume_2025.pdf</i> and <i>resume_2025 (copy).pdf</i>). Orguine compares the content in stages, so it stays fast even with lots of files:</p>
+    <div class="flow reveal">
+      <div class="fs"><b>Stage 1</b>Groups files with the <strong>same size</strong>. Files of different sizes can't be identical.</div>
+      <div class="arrow">→</div>
+      <div class="fs"><b>Stage 2</b>Compares the SHA-256 of the <strong>first 64 KB</strong> of each file.</div>
+      <div class="arrow">→</div>
+      <div class="fs"><b>Stage 3</b>Confirms with the <strong>SHA-256 of the whole file</strong>. Only truly identical files count as duplicates.</div>
+    </div>
+    <div class="table-wrap reveal">
+      <table>
+        <thead><tr><th>Option in the app</th><th>What happens</th><th>CLI</th></tr></thead>
+        <tbody>
+          <tr><td>Don't look for them</td><td>Duplicates aren't checked (default).</td><td><code>none</code></td></tr>
+          <tr><td>Detect and leave in place</td><td>Organizes the oldest one; the copies stay where they are.</td><td><code>skip</code></td></tr>
+          <tr><td>Keep newest (others → trash)</td><td>Organizes the newest one; the others go to the trash.</td><td><code>newest</code></td></tr>
+          <tr><td>Keep original (copies → trash)</td><td>Organizes the oldest one; the copies go to the trash.</td><td><code>trash</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== RULES ===================== -->
+<section id="regras">
+  <div class="wrap">
+    <div class="sec-head reveal"><span class="eyebrow">Smart rules</span><h2>Folder names and <span class="grad">project folders</span></h2><div class="neon-line"></div></div>
+    <div class="grid g2" style="margin-top:30px">
+      <div class="card reveal">
+        <div class="ico n">📂</div>
+        <h3>Existing folders are reused</h3>
+        <p>If there's already an <b>Images</b> folder (or <b>images</b>, in different case), Orguine puts the files inside it instead of creating an "Images (2)".</p>
+        <p>The <code>(2)</code> suffix only appears when the name is taken by a <b>file that is staying where it is</b>, such as a sensitive file called "PIN". If that file is being organized too, the folder keeps its normal name. For example, a file named <b>A</b> goes to <b>A/A</b>.</p>
+      </div>
+      <div class="card reveal">
+        <div class="ico">🧩</div>
+        <h3>Projects are never taken apart</h3>
+        <p>With <b>Include subfolders</b> on, Orguine skips folders that look like software projects, meaning those containing <code>.git</code>, <code>.hg</code>, <code>.svn</code>, <code>package.json</code>, <code>Cargo.toml</code>, <code>node_modules</code> or <code>pyvenv.cfg</code>. Folders like <code>__pycache__</code>, <code>.venv</code> and the Windows Recycle Bin are skipped too.</p>
+        <p>If the <b>folder you picked</b> looks like a project itself, the confirmation shows a warning and the default answer becomes "No".</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== LOOK & FEEL ===================== -->
+<section id="visual">
+  <div class="wrap">
+    <div class="sec-head reveal"><span class="eyebrow">Look &amp; feel</span><h2>Light, dark and <span class="grad">neon</span></h2><div class="neon-line"></div></div>
+    <p class="sub reveal">The robot's <b style="color:var(--neon)">#6ff8c8</b> green pairs with the purple theme. Light streaks run across the header, the active tab and the progress bar. The animations are lightweight, pause while the window is minimized and can be turned off under <b>Options → Neon animations</b>. The interface is available in <b>Portuguese (Brazil)</b> and <b>English</b>: pick yours in the language box at the top right.</p>
+    <div class="grid g3">
+      <figure class="reveal" style="margin:0"><div class="shot"><img src="assets/img/en/01-preview-claro.webp" alt="Preview in the light theme" loading="lazy" width="1360" height="860" data-zoom data-caption="Light theme: preview"></div><figcaption>Light theme</figcaption></figure>
+      <figure class="reveal" style="margin:0"><div class="shot"><img src="assets/img/en/03-grafico-claro.webp" alt="Chart in the light theme" loading="lazy" width="1360" height="860" data-zoom data-caption="Light theme: file types"></div><figcaption>Chart by category</figcaption></figure>
+      <figure class="reveal" style="margin:0"><div class="shot small"><img src="assets/img/en/13-sobre.webp" alt="Orguine About window" loading="lazy" width="460" height="363" data-zoom data-caption="“About” window"></div><figcaption>The "About" window, with links</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== COMMAND LINE ===================== -->
+<section id="cli">
+  <div class="wrap">
+    <div class="sec-head reveal"><span class="eyebrow">For terminal lovers</span><h2>Command <span class="grad">line</span></h2><div class="neon-line"></div></div>
+    <p class="sub reveal">When running from source, use <code>python -m orguine</code> followed by a folder (with no arguments, it opens the window). After <code>pip install</code>, the <code>orguine-cli</code> command does the same. The options keep their Portuguese names. Add <code>--lang en</code> for English folder names and messages.</p>
+    <div class="grid g2">
+      <div class="term reveal">
+        <div class="term-bar"><i></i><i></i><i></i><button data-copy="t1">copy</button></div>
+<pre id="t1"><span class="c"># preview only (doesn't touch anything)</span>
+<span class="p">$</span> python -m orguine ~/Downloads --dry-run --lang en
+
+<span class="c"># by category, with a ZIP backup and copies sent to the trash</span>
+<span class="p">$</span> python -m orguine ~/Downloads --backup zip --duplicados trash --lang en
+
+<span class="c"># by date, including subfolders, without asking</span>
+<span class="p">$</span> python -m orguine ~/Pictures --modo data --recursivo --sim --lang en
+
+<span class="c"># undo the last organization</span>
+<span class="p">$</span> python -m orguine --desfazer --lang en</pre>
+      </div>
+      <div class="table-wrap reveal">
+        <table>
+          <thead><tr><th>Option</th><th>What it does</th></tr></thead>
+          <tbody>
+            <tr><td><code>--dry-run</code>, <code>-n</code></td><td>Only shows the preview, moves nothing.</td></tr>
+            <tr><td><code>--modo</code>, <code>-m</code></td><td><code>categoria</code> (default), <code>extensao</code> (or <code>tipo</code>/<code>type</code>), <code>data</code>, <code>abc</code>.</td></tr>
+            <tr><td><code>--recursivo</code>, <code>-r</code></td><td>Includes subfolders.</td></tr>
+            <tr><td><code>--duplicados</code></td><td><code>none</code> (default), <code>skip</code>, <code>newest</code>, <code>trash</code>.</td></tr>
+            <tr><td><code>--backup</code></td><td><code>none</code> (default), <code>zip</code>, <code>folder</code>.</td></tr>
+            <tr><td><code>--sim</code>, <code>-y</code></td><td>Doesn't ask before moving. Careful: it also skips the "ORGANIZE" confirmation for the home folder.</td></tr>
+            <tr><td><code>--desfazer</code></td><td>Undoes the last organization.</td></tr>
+            <tr><td><code>--incluir-sensiveis</code>, <code>--incluir-ocultos</code></td><td>Also moves sensitive or hidden files.</td></tr>
+            <tr><td><code>--permitir-lixeira-sensiveis</code></td><td>Allows sensitive duplicates to be sent to the trash.</td></tr>
+            <tr><td><code>--sem-exif</code></td><td>In date mode, uses the modification date only.</td></tr>
+            <tr><td><code>--regras file.json</code></td><td>Uses a custom categories file.</td></tr>
+            <tr><td><code>--lang</code></td><td><code>pt_BR</code> (default) or <code>en</code>.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== FAQ ===================== -->
+<section id="faq">
+  <div class="wrap">
+    <div class="sec-head reveal"><span class="eyebrow">Frequently asked questions</span><h2>Questions <span class="grad">and answers</span></h2><div class="neon-line"></div></div>
+    <div class="reveal" style="margin-top:30px">
+      <details><summary>Is Orguine free? Does it need the internet?</summary><p>It's free and open source (GPL-3.0 license). It organizes everything on your computer, without an internet connection: your files are never sent anywhere.</p></details>
+      <details><summary>Windows said it "protected your PC". Is it a virus?</summary><p>No. That's SmartScreen warning you that the executable is new and doesn't have a paid digital signature. Click <b>More info → Run anyway</b>. If you like, check the <code>.sha256</code> on the <a data-cfg-href="links.release" href="#">release page</a> or read the <a data-cfg-href="links.repo" href="#">source code</a>.</p></details>
+      <details><summary>Can it delete or overwrite my files?</summary><p>No. It only moves files and never overwrites: if the name already exists at the destination, it adds <code>(1)</code>, <code>(2)</code>… Duplicates, if you choose so, go to the system trash and are never permanently deleted.</p></details>
+      <details><summary>How do I undo an organization?</summary><p>Click <b>Undo last organization</b> (or use <code>--desfazer</code> on the command line). Files go back to their original place and name. Duplicates sent to the trash must be restored from the system trash, and Orguine tells you how many there are.</p></details>
+      <details><summary>Why do some files "stay in place"?</summary><p>They're protected or skipped files: sensitive ones (keys, passwords, <code>.env</code>…), hidden files, system files (<code>desktop.ini</code>, <code>Thumbs.db</code>), incomplete downloads, symbolic links or duplicate copies you chose to leave in place. The <b>Details</b> tab shows the reason for each one.</p></details>
+      <details><summary>Why did my folder become "Documents (2)"?</summary><p>Because there's already a <b>file</b> (not a folder) called "Documents" that's staying where it is, for example because it's sensitive or skipped. If it were a folder, it would be reused. And if that file were being organized too, the folder would keep its normal name.</p></details>
+      <details><summary>Can I change the categories and extensions?</summary><p>Yes. Copy <code>default_rules.json</code> from the <a data-cfg-href="links.repo" href="#">repository</a> (it's in <code>orguine/resources/</code>) to a <code>rules.json</code> file in the app's data folder and edit the names, colors and extensions. Each category has a name per language (<code>pt_BR</code> and <code>en</code>). On the command line you can also use <code>--regras file.json</code>.</p></details>
+      <details><summary>Where are the backups, logs and undo journal stored?</summary><p>In the app's data folder, which the <b>Open data folder</b> button opens: <code>%APPDATA%\Orguine</code> on Windows, <code>~/Library/Application Support/Orguine</code> on macOS and <code>~/.local/share/orguine</code> on Linux. To change the location, set the <code>ORGUINE_DATA_DIR</code> environment variable.</p></details>
+      <details><summary>How do I switch the app to English?</summary><p>Use the language box at the top right of the window. Then build the preview again so the folder names (Images, Documents, Others…) are updated too.</p></details>
+      <details><summary>Do the animations slow my computer down?</summary><p>No. They use a single lightweight timer and pause while the window is minimized. You can turn them off under <b>Options → Neon animations</b> or with the <code>ORGUINE_NO_ANIM=1</code> environment variable.</p></details>
+      <details><summary>I have an Intel Mac. Does it work?</summary><p>The ready-made build is for Apple Silicon Macs (M1 or newer). On Intel Macs, run it from source with Python 3.10+ (see the <a href="#download">Download</a> section).</p></details>
+      <details><summary>Found a problem or have an idea. Where do I go?</summary><p>Open an <a data-cfg-href="links.issues" href="#">issue on GitHub</a>. All help is welcome!</p></details>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== FINAL CTA ===================== -->
+<section style="padding-top:20px">
+  <div class="wrap">
+    <div class="card final reveal">
+      <img src="assets/orguine-mascote-256.png" alt="" width="84" height="84">
+      <h2>Ready to tidy up your <span class="grad">Downloads</span>?</h2>
+      <p class="muted">Download Orguine <b>v<span data-cfg-text="versao">—</span></b>, pick a folder and check the preview. Don't like it? Just undo.</p>
+      <div class="cta">
+        <a class="btn btn-primary" href="#download">⬇️ Download now</a>
+        <a class="btn btn-neon" data-cfg-href="links.release" href="#">📦 See the release on GitHub</a>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<!-- ===================== FOOTER ===================== -->
+<footer>
+  <div class="neon-line"></div>
+  <div class="wrap">
+    <div>
+      <a class="brand" href="#inicio"><img src="assets/favicon-64.png" alt="" width="36" height="36">Orguine</a>
+      <p>Organize your folders with preview, backup and undo — no surprises. Version <span data-cfg-text="versao">—</span> (<span data-cfg-text="dataRelease">—</span>).</p>
+      <a class="donate" data-cfg-href="links.donate" href="#">💚 Support / Donate</a>
+    </div>
+    <div class="links">
+      <h4>Project</h4>
+      <a data-cfg-href="links.release" href="#">Latest version (download)</a>
+      <a data-cfg-href="links.repo" href="#">Source code on GitHub</a>
+      <a data-cfg-href="links.issues" href="#">Report a problem</a>
+    </div>
+    <div class="links">
+      <h4>Links</h4>
+      <a data-cfg-href="links.github" href="#">My GitHub</a>
+      <a data-cfg-href="links.site" href="#">bugzinho.com</a>
+      <a data-cfg-href="links.voltar" href="#">← Back to the main page</a>
+      <a class="foot-home" href="../../"><span aria-hidden="true">←</span> CleitinhoDEV · Homepage</a>
+    </div>
+  </div>
+  <div class="copy">Orguine is free software (GPL-3.0) © CleitinhoDEV</div>
+</footer>
+
+<button class="to-top" id="toTop" aria-label="Back to top">↑</button>
+<div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Enlarged image"><button aria-label="Close">✕</button><img alt=""><p></p></div>
+
+<script src="assets/tutorial.js"></script>
+</body>
+</html>

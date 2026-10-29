@@ -1,0 +1,56 @@
+TUTORIAL DO ORGUINE — como publicar e atualizar
+================================================
+
+IDIOMAS
+-------
+O tutorial existe nos mesmos idiomas do programa:
+  • index.html ..................... Português (Brasil) — página padrão
+  • tutorial-orguine.en.html ...... English
+
+Cada página tem textos e capturas de tela do programa no próprio idioma:
+  assets/img/pt-BR/  e  assets/img/en/
+
+No topo de cada página há o seletor de idioma "PT | EN":
+  • A escolha do visitante fica salva no navegador.
+  • Na primeira visita, sem escolha salva, a página usa o idioma do navegador. Um
+    navegador em inglês que abrir a página em português vai para a versão em inglês.
+  • Para forçar um idioma num link, acrescente ?lang=pt-BR ou ?lang=en.
+    Exemplo: index.html?lang=en
+  • Basta linkar a página em português no seu site: o resto é automático.
+
+1) PUBLICAR
+-----------
+Envie os DOIS arquivos .html junto com a pasta assets/ inteira, mantendo a mesma
+estrutura (os caminhos são relativos: assets/...).
+Exemplo: https://www.bugzinho.com/orguine/index.html
+Funciona também abrindo direto do computador (duplo clique no .html).
+
+2) MUDAR VERSÃO, DATA OU LINKS → só no arquivo assets/config.js
+---------------------------------------------------------------
+A configuração saiu de dentro do HTML e agora fica num lugar só:
+assets/config.js. Ela vale para TODOS os idiomas.
+
+Abra o arquivo num editor de texto e altere só os valores entre aspas:
+  versao, dataRelease (no formato DD/MM/AAAA) e os links:
+  github, repo, release, issues, downloadWindows, downloadLinux,
+  downloadMac, site, donate e voltar.
+
+A página em inglês mostra a data por extenso automaticamente.
+Exemplo: 29/10/2026 aparece como "October 29, 2026".
+
+Os links de download usam /releases/latest/download/<arquivo>, que sempre apontam
+para a última release do GitHub. Numa versão nova, se os nomes dos arquivos da
+release não mudarem, basta trocar "versao" e "dataRelease".
+
+3) SE RENOMEAR OS ARQUIVOS .html
+--------------------------------
+Atualize a lista "idiomas" no fim de assets/config.js. Ela faz o seletor e o
+redirecionamento automático funcionarem.
+
+Para manter o SEO certinho, troque também os nomes nas linhas
+<link rel="alternate" hreflang=...> no topo de cada .html.
+
+4) ATUALIZAR AS CAPTURAS DE TELA
+--------------------------------
+As imagens têm o mesmo nome nas duas pastas: 00-inicial.webp … 13-sobre.webp e neon.gif.
+Para trocar uma captura, substitua o arquivo de mesmo nome na pasta do idioma.
