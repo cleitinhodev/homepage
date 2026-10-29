@@ -1,5 +1,44 @@
 [
   {
+    "slug": "giffact-tutorial",
+    "title": "Giffact: tutorial do editor de lineart vetorial para GIFs",
+    "description": "Guia completo e prático do Giffact 1.1.1: download, interface, todas as ferramentas, quadros e camadas, auto-traçado, exportação e atalhos de teclado.",
+    "date": "2026-10-29",
+    "tags": [
+      "tutorial",
+      "giffact",
+      "gif",
+      "vetor",
+      "lineart",
+      "animação",
+      "desktop"
+    ],
+    "url": "projects/giffact-tutorial/",
+    "cover": "projects/giffact-tutorial/giffact-tutorial-assets/hero-pt-dark-sm.webp",
+    "i18n": {
+      "en": {
+        "title": "Giffact: tutorial for the vector lineart editor for GIFs",
+        "description": "Complete, hands-on guide to Giffact 1.1.1: download, interface, every tool, frames and layers, auto-trace, export and keyboard shortcuts."
+      },
+      "es": {
+        "title": "Giffact: tutorial del editor de lineart vectorial para GIFs",
+        "description": "Guía completa y práctica de Giffact 1.1.1: descarga, interfaz, todas las herramientas, fotogramas y capas, autocalcado, exportación y atajos de teclado."
+      }
+    },
+    "langs": [
+      "en",
+      "pt-BR",
+      "es",
+      "fr",
+      "de",
+      "it",
+      "ja",
+      "zh-CN",
+      "ko",
+      "ru"
+    ]
+  },
+  {
     "slug": "yomuchu-tutorial",
     "title": "Yomuchu: tutorial do leitor de mangá",
     "description": "Aprenda a usar o Yomuchu 0.4.2, leitor de mangá e quadrinhos para Windows e Linux com livro virtual flutuante na área de trabalho: instalação, organização da pasta, biblioteca, Abrir link, leitor, atalhos, aparência e configurações. Disponível em 18 idiomas.",

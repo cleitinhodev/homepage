@@ -1,0 +1,882 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<!--
+  ╔═══════════════════════════════════════════════════════════════════════════════╗
+  ║  GIFFACT_CONFIG: EDITE AQUI · EDIT HERE                                       ║
+  ╚═══════════════════════════════════════════════════════════════════════════════╝
+  PT-BR: Tudo o que muda entre versões fica neste bloco: número da versão, data,
+         links de download, nomes de arquivos e links do site. A página inteira
+         (botões, selos de versão, nomes de arquivo nos textos e comandos) lê daqui.
+         Para lançar uma versão nova normalmente basta trocar `version` e `releaseDate`:
+         os links são montados sozinhos a partir do número da versão.
+         Para usar um link diferente num arquivo, preencha o `url` dele (deixe '' para automático).
+  EN:    Everything that changes between releases lives in this block: version number,
+         date, download links, file names and site links. The whole page (buttons, version
+         badges, file names in the text and commands) reads from here.
+         For a new release you usually only change `version` and `releaseDate`: the links are
+         built automatically from the version number.
+         To use a different link for a file, fill in its `url` (leave '' for automatic).
+
+  Marcadores · Placeholders: {version} = número da versão · version number
+                             {base}    = downloadBase (já com a versão · with the version)
+-->
+<script>
+window.GIFFACT_CONFIG = {
+  version: '1.1.1',                 // versão atual · current version
+  releaseDate: '2026-10-29',        // data do lançamento (AAAA-MM-DD) · release date (YYYY-MM-DD)
+
+  // Pasta base dos downloads · base folder of the downloads
+  downloadBase: 'https://github.com/cleitinhodev/giffact/releases/download/v{version}/',
+
+  // Arquivos de download · download files
+  //   file: nome do arquivo · file name      url: link próprio ('' = {base}{file}) · own link ('' = {base}{file})
+  //   size: tamanho exibido ('' esconde) · size shown ('' hides it)
+  downloads: {
+    winPortable: { file: 'Giffact-{version}-windows-portable.exe',   url: '', size: '84 MB'  },
+    winZip:      { file: 'Giffact-{version}-windows-x64.zip',        url: '', size: '132 MB' },
+    appImage:    { file: 'Giffact-{version}-linux-x86_64.AppImage',  url: '', size: '114 MB' },
+    deb:         { file: 'Giffact-{version}-linux-amd64.deb',        url: '', size: '90 MB'  },
+    tar:         { file: 'Giffact-{version}-linux-x64.tar.gz',       url: '', size: '108 MB', folder: 'Giffact-{version}-linux-x64' },
+    checksums:   { file: 'SHA256SUMS.txt',                           url: '', size: ''       },
+  },
+
+  // Links do projeto e do site · project and site links
+  links: {
+    releases: 'https://github.com/cleitinhodev/giffact/releases/latest',  // página de versões · releases page
+    repo:     'https://github.com/cleitinhodev/giffact',                  // repositório · repository
+    issues:   'https://github.com/cleitinhodev/giffact/issues',           // bugs e ideias · bugs and ideas
+    github:   'https://github.com/cleitinhodev',                          // perfil · profile
+    site:     'https://www.bugzinho.com/',                                // site
+    donate:   'https://www.bugzinho.com/donate',                          // doações · donations
+    back:     'https://www.bugzinho.com/',                                // botão "voltar ao site" · "back to the site" button
+  },
+  backLabel: 'bugzinho.com',        // texto do botão voltar · text of the back button
+
+  // Idioma quando o do navegador não é suportado: 'en', 'pt-BR', 'es', 'fr', 'de', 'it', 'ja', 'zh-CN', 'ko', 'ru'
+  // Language used when the browser language isn't supported
+  defaultLanguage: 'en',
+  // Tema inicial: 'system' (segue o sistema · follows the system), 'dark' ou · or 'light'
+  defaultTheme: 'system',
+  // Pasta das imagens e traduções (relativa a este arquivo) · folder with images and translations (relative to this file)
+  assetsPath: 'giffact-tutorial-assets/',
+};
+</script>
+<!-- ═════════════════════ FIM DA CONFIGURAÇÃO · END OF CONFIGURATION ═════════════════════ -->
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Giffact tutorial: trace GIFs into clean vector linework</title>
+<meta name="description" content="Complete, hands-on guide to Giffact 1.1.1: download, interface, every tool, frames and layers, auto-trace, export and keyboard shortcuts.">
+<meta name="theme-color" content="#0b0d2c">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Giffact tutorial: trace GIFs into clean vector linework">
+<meta property="og:description" content="Complete, hands-on guide to Giffact 1.1.1: download, interface, every tool, frames and layers, auto-trace, export and keyboard shortcuts.">
+<meta property="og:image" content="giffact-tutorial-assets/hero-dark.webp">
+<link rel="icon" type="image/png" href="giffact-tutorial-assets/favicon.png">
+<link rel="apple-touch-icon" href="giffact-tutorial-assets/logo.png">
+<style>
+/* Giffact tutorial: every rule is scoped to .gft so the page can live inside another site */
+.gft {
+  --bg: #0b0d2c; --bg-grad: linear-gradient(160deg, #070a26 0%, #0f1142 34%, #1b1456 70%, #2a1763 100%);
+  --panel: rgba(18, 19, 62, .72); --panel-solid: #121345; --panel-2: rgba(30, 30, 88, .55);
+  --line: rgba(120, 122, 220, .28); --line-2: rgba(150, 150, 240, .45);
+  --fg: #eeecff; --fg-2: #b9b7e6; --fg-3: #8f8dc4; --acc: #b4a9ff; --acc-2: #6a5be0; --acc-3: #8f87ff;
+  --neon: #d9d2ff; --neon-glow: rgba(190, 178, 255, .55); --hl: rgba(180, 168, 255, .14);
+  --kbd: #0a0b2a; --kbd-line: #3d3f8a; --code: rgba(5, 6, 26, .65);
+  --shadow: 0 18px 50px -12px rgba(2, 3, 20, .75); --shadow-sm: 0 6px 22px -8px rgba(2, 3, 20, .7);
+  --btn: linear-gradient(135deg, #c3b9ff 0%, #8f7dff 45%, #6a5be0 100%); --btn-ink: #0b0c33;
+  --donate: linear-gradient(135deg, #ff7eb8, #b07cff); --warn: #ffcf70; --warn-bg: rgba(255, 191, 71, .08);
+  --ok: #4be39a; --radius: 18px; --header-h: 62px;
+  color-scheme: dark;
+  position: relative; min-height: 100vh; margin: 0; background: var(--bg-grad) fixed, var(--bg); color: var(--fg);
+  font-family: 'Segoe UI', system-ui, -apple-system, Roboto, 'Noto Sans', 'Noto Sans CJK JP', 'Noto Sans CJK SC', 'Noto Sans CJK KR', 'Hiragino Sans', 'Yu Gothic UI', 'Microsoft YaHei UI', 'Malgun Gothic', sans-serif;
+  font-size: 16.5px; line-height: 1.65; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; overflow-x: clip;
+}
+.gft[data-theme="light"] {
+  --bg: #f4f2ff; --bg-grad: linear-gradient(160deg, #fdfcff 0%, #f3f1ff 40%, #e8e4fd 100%);
+  --panel: rgba(255, 255, 255, .78); --panel-solid: #fff; --panel-2: rgba(236, 233, 253, .7);
+  --line: rgba(110, 100, 210, .2); --line-2: rgba(110, 100, 210, .38);
+  --fg: #0a1350; --fg-2: #3f4782; --fg-3: #6b72a6; --acc: #3b3fb8; --acc-2: #011349; --acc-3: #5b55d6;
+  --neon: #8b7cf2; --neon-glow: rgba(139, 124, 242, .45); --hl: rgba(139, 124, 242, .12);
+  --kbd: #fbfaff; --kbd-line: #c9c2f2; --code: rgba(235, 232, 253, .8);
+  --shadow: 0 18px 50px -14px rgba(30, 32, 110, .28); --shadow-sm: 0 6px 20px -8px rgba(30, 32, 110, .25);
+  --btn: linear-gradient(135deg, #2b3aa6 0%, #3d2fb0 55%, #011349 100%); --btn-ink: #fff;
+  --donate: linear-gradient(135deg, #e0428c, #7a4be0); --warn: #8a5300; --warn-bg: rgba(255, 191, 71, .14); --ok: #0d8a4f;
+  color-scheme: light;
+}
+.gft *, .gft *::before, .gft *::after { box-sizing: border-box; }
+.gft a { color: var(--acc); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+.gft a:hover { color: var(--neon); }
+.gft[data-theme="light"] a:hover { color: var(--acc-3); }
+.gft img { max-width: 100%; height: auto; display: block; }
+.gft h1, .gft h2, .gft h3, .gft h4 { line-height: 1.22; margin: 0 0 .6em; letter-spacing: -.01em; }
+.gft p { margin: 0 0 1em; }
+.gft code { font-family: ui-monospace, 'Cascadia Code', 'JetBrains Mono', Consolas, monospace; font-size: .86em; background: var(--code); border: 1px solid var(--line); padding: .08em .4em; border-radius: 6px; overflow-wrap: anywhere; }
+.gft kbd { font-family: ui-monospace, 'Cascadia Code', Consolas, monospace; font-size: .8em; display: inline-block; min-width: 1.7em; text-align: center; padding: .1em .45em; border-radius: 6px; background: var(--kbd); border: 1px solid var(--kbd-line); border-bottom-width: 2px; color: var(--fg); white-space: nowrap; line-height: 1.45; }
+.gft :focus-visible { outline: 2px solid var(--acc); outline-offset: 3px; border-radius: 6px; }
+.gft .gft-sr { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.gft .gft-skip { position: absolute; left: 12px; top: -60px; z-index: 100; background: var(--panel-solid); padding: 8px 14px; border-radius: 10px; }
+.gft .gft-skip:focus { top: 10px; }
+.gft .gft-grad { background: linear-gradient(90deg, #d9d2ff, #a5b4fc 40%, #c4a8ff 70%, #ffffff); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.gft[data-theme="light"] .gft-grad { background-image: linear-gradient(90deg, #3b3fb8, #6a5be0 50%, #011349); }
+
+/* ambient glows */
+.gft .gft-glow { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+.gft .gft-glow::before, .gft .gft-glow::after { content: ''; position: absolute; width: 60vmax; height: 60vmax; border-radius: 50%; filter: blur(80px); opacity: .35; }
+.gft .gft-glow::before { left: -20vmax; top: -25vmax; background: radial-gradient(circle, #5b4fe0 0%, transparent 65%); }
+.gft .gft-glow::after { right: -25vmax; bottom: -30vmax; background: radial-gradient(circle, #8a4fd8 0%, transparent 65%); }
+.gft[data-theme="light"] .gft-glow::before { background: radial-gradient(circle, #c9c2ff 0%, transparent 65%); opacity: .6; }
+.gft[data-theme="light"] .gft-glow::after { background: radial-gradient(circle, #e2d4ff 0%, transparent 65%); opacity: .6; }
+
+/* ---------- header ---------- */
+.gft .gft-header { position: sticky; top: 0; z-index: 50; height: var(--header-h); display: flex; align-items: center; gap: 14px; padding: 0 clamp(12px, 3vw, 28px); background: color-mix(in srgb, var(--bg) 78%, transparent); backdrop-filter: blur(14px) saturate(1.3); -webkit-backdrop-filter: blur(14px) saturate(1.3); border-bottom: 1px solid var(--line); }
+.gft .gft-brand { display: flex; align-items: center; gap: 10px; color: var(--fg); text-decoration: none; font-weight: 700; font-size: 1.08rem; white-space: nowrap; }
+.gft .gft-brand img { width: 34px; height: 34px; filter: drop-shadow(0 0 10px var(--neon-glow)); }
+.gft .gft-brand small { font-weight: 500; color: var(--fg-3); font-size: .85rem; margin-left: 2px; }
+.gft .gft-spacer { flex: 1; }
+.gft .gft-hbtn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; height: 38px; min-width: 38px; padding: 0 12px; border-radius: 12px; border: 1px solid var(--line); background: var(--panel-2); color: var(--fg); font: inherit; font-size: .9rem; cursor: pointer; text-decoration: none; white-space: nowrap; transition: background .2s, border-color .2s; }
+.gft .gft-hbtn:hover { border-color: var(--line-2); background: var(--hl); color: var(--fg); }
+.gft .gft-hbtn svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+.gft .gft-hbtn[aria-pressed="false"] .gft-anim-on, .gft .gft-hbtn[aria-pressed="true"] .gft-anim-off { display: none; }
+.gft .gft-hbtn.gft-icon { padding: 0; width: 38px; }
+.gft .gft-select { position: relative; display: inline-flex; align-items: center; }
+.gft .gft-select svg { position: absolute; left: 10px; pointer-events: none; }
+.gft .gft-select select { appearance: none; -webkit-appearance: none; padding: 0 30px 0 34px; height: 38px; border-radius: 12px; border: 1px solid var(--line); background: var(--panel-2); color: var(--fg); font: inherit; font-size: .9rem; cursor: pointer; max-width: 46vw; }
+.gft .gft-select::after { content: ''; position: absolute; right: 12px; top: 15px; width: 6px; height: 6px; border-right: 1.6px solid var(--fg-2); border-bottom: 1.6px solid var(--fg-2); transform: rotate(45deg); pointer-events: none; }
+.gft .gft-select select option { background: var(--panel-solid); color: var(--fg); }
+.gft .gft-btn { display: inline-flex; align-items: center; justify-content: center; gap: 9px; padding: 12px 22px; border-radius: 14px; font: inherit; font-weight: 650; font-size: 1rem; text-decoration: none; border: 1px solid transparent; cursor: pointer; transition: transform .2s, box-shadow .2s, background .2s; line-height: 1.2; }
+.gft .gft-btn svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+.gft .gft-btn-primary { background: var(--btn); color: var(--btn-ink); box-shadow: 0 10px 30px -10px var(--neon-glow), inset 0 1px 0 rgba(255, 255, 255, .35); }
+.gft .gft-btn-primary:hover { color: var(--btn-ink); transform: translateY(-1px); box-shadow: 0 14px 36px -10px var(--neon-glow), inset 0 1px 0 rgba(255, 255, 255, .35); }
+.gft .gft-btn-ghost { background: var(--panel-2); color: var(--fg); border-color: var(--line-2); }
+.gft .gft-btn-ghost:hover { color: var(--fg); background: var(--hl); }
+.gft .gft-btn-sm { padding: 8px 14px; font-size: .9rem; border-radius: 11px; }
+.gft .gft-header .gft-btn-sm { height: 38px; }
+
+/* neon streaks (decorative, never over content) */
+.gft .gft-streak { position: absolute; pointer-events: none; opacity: 0; z-index: 2; }
+.gft .gft-streak.x { height: 2px; width: 200px; background: linear-gradient(90deg, transparent, var(--neon) 45%, #fff 50%, var(--neon) 55%, transparent); box-shadow: 0 0 10px var(--neon-glow); animation: gft-streak-x 8s cubic-bezier(.45,.05,.55,.95) infinite; }
+.gft .gft-streak.x.rev { animation-name: gft-streak-x-rev; animation-duration: 10s; animation-delay: 2.5s; }
+.gft .gft-streak.y { width: 2px; height: 160px; background: linear-gradient(180deg, transparent, var(--neon) 45%, #fff 50%, var(--neon) 55%, transparent); box-shadow: 0 0 10px var(--neon-glow); animation: gft-streak-y 9s cubic-bezier(.45,.05,.55,.95) 1s infinite; }
+.gft[data-theme="light"] .gft-streak.x { background: linear-gradient(90deg, transparent, var(--neon) 40%, #c9bfff 50%, var(--neon) 60%, transparent); }
+.gft[data-theme="light"] .gft-streak.y { background: linear-gradient(180deg, transparent, var(--neon) 40%, #c9bfff 50%, var(--neon) 60%, transparent); }
+.gft .gft-header .gft-streak { left: 0; bottom: -1px; }
+@keyframes gft-streak-x { 0% { transform: translateX(-220px); opacity: 0; } 10%, 70% { opacity: .95; } 84%, 100% { transform: translateX(calc(100vw + 40px)); opacity: 0; } }
+@keyframes gft-streak-x-rev { 0% { transform: translateX(calc(100vw + 40px)); opacity: 0; } 10%, 70% { opacity: .9; } 84%, 100% { transform: translateX(-240px); opacity: 0; } }
+@keyframes gft-streak-y { 0% { transform: translateY(-170px); opacity: 0; } 12%, 70% { opacity: .85; } 86%, 100% { transform: translateY(var(--travel, 80vh)); opacity: 0; } }
+.gft.gft-anim-off .gft-streak, .gft.gft-anim-off .gft-hero-shot::after { display: none; animation: none; }
+.gft.gft-anim-off *, .gft.gft-anim-off *::before, .gft.gft-anim-off *::after { transition-duration: 0s !important; animation-duration: 0s !important; scroll-behavior: auto !important; }
+.gft.gft-paused .gft-streak { animation-play-state: paused; }
+
+/* ---------- hero ---------- */
+.gft .gft-hero { position: relative; z-index: 1; padding: clamp(36px, 7vw, 86px) clamp(16px, 4vw, 40px) clamp(30px, 5vw, 60px); max-width: 1320px; margin: 0 auto; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); gap: clamp(26px, 4vw, 56px); align-items: center; }
+.gft .gft-kicker { display: inline-flex; align-items: center; gap: 8px; padding: 5px 13px; border-radius: 999px; border: 1px solid var(--line-2); background: var(--panel-2); color: var(--fg-2); font-size: .86rem; font-weight: 600; margin-bottom: 18px; }
+.gft .gft-kicker::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: var(--ok); box-shadow: 0 0 10px var(--ok); }
+.gft .gft-hero h1 { font-size: clamp(2.05rem, 4.4vw, 3.5rem); font-weight: 800; margin-bottom: .45em; }
+.gft .gft-hero .gft-lead { font-size: clamp(1.02rem, 1.5vw, 1.16rem); color: var(--fg-2); max-width: 38em; }
+.gft .gft-cta { display: flex; flex-wrap: wrap; gap: 12px; margin: 26px 0 14px; }
+.gft .gft-hero-meta { color: var(--fg-3); font-size: .9rem; display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: center; }
+.gft .gft-hero-meta a { color: var(--fg-2); }
+.gft .gft-hero-shot { position: relative; border-radius: 16px; padding: 7px; background: linear-gradient(140deg, rgba(200, 190, 255, .55), rgba(90, 80, 220, .25) 40%, rgba(200, 170, 255, .45)); box-shadow: var(--shadow), 0 0 70px -20px var(--neon-glow); transform: perspective(1600px) rotateY(-5deg) rotateX(2deg); transition: transform .6s; overflow: hidden; }
+.gft .gft-hero-shot:hover { transform: perspective(1600px) rotateY(0) rotateX(0); }
+.gft .gft-hero-shot img { border-radius: 11px; width: 100%; aspect-ratio: 16 / 10; object-fit: cover; }
+.gft .gft-hero-shot::after { content: ''; position: absolute; top: 0; left: 0; width: 180px; height: 2px; background: linear-gradient(90deg, transparent, #fff, transparent); box-shadow: 0 0 12px var(--neon-glow); animation: gft-streak-box 6s ease-in-out 1s infinite; opacity: 0; }
+@keyframes gft-streak-box { 0% { transform: translateX(-200px); opacity: 0; } 12%, 70% { opacity: 1; } 85%, 100% { transform: translateX(900px); opacity: 0; } }
+
+/* ---------- layout ---------- */
+.gft .gft-layout { position: relative; z-index: 1; max-width: 1320px; margin: 0 auto; padding: 0 clamp(14px, 3vw, 40px) 40px; display: grid; grid-template-columns: 232px minmax(0, 1fr); gap: clamp(24px, 3.5vw, 54px); }
+.gft .gft-toc { position: sticky; top: calc(var(--header-h) + 22px); align-self: start; max-height: calc(100vh - var(--header-h) - 44px); overflow: auto; padding: 16px 10px 16px 0; scrollbar-width: thin; }
+.gft .gft-toc h2 { font-size: .78rem; text-transform: uppercase; letter-spacing: .12em; color: var(--fg-3); margin: 0 0 10px 14px; }
+.gft .gft-toc ol { list-style: none; margin: 0; padding: 0; border-left: 1px solid var(--line); position: relative; }
+.gft .gft-toc a { display: flex; gap: 10px; padding: 6px 12px; color: var(--fg-2); text-decoration: none; font-size: .93rem; border-left: 2px solid transparent; margin-left: -1px; line-height: 1.35; transition: color .2s, border-color .2s, background .2s; border-radius: 0 10px 10px 0; }
+.gft .gft-toc a span { color: var(--fg-3); font-variant-numeric: tabular-nums; min-width: 1.4em; font-size: .82rem; padding-top: .08em; }
+.gft .gft-toc a:hover { color: var(--fg); background: var(--hl); }
+.gft .gft-toc a[aria-current="true"] { color: var(--fg); border-left-color: var(--acc); background: var(--hl); font-weight: 600; }
+.gft .gft-toc .gft-streak.y { left: -1px; top: 0; --travel: 70vh; }
+.gft main { min-width: 0; }
+.gft .gft-sec { padding: 26px 0 30px; scroll-margin-top: calc(var(--header-h) + 14px); border-top: 1px solid var(--line); }
+.gft .gft-sec:first-child { border-top: 0; }
+.gft .gft-sec > h2 { font-size: clamp(1.55rem, 2.6vw, 2.15rem); font-weight: 780; display: flex; align-items: baseline; gap: 12px; }
+.gft .gft-sec > h2 .gft-num { font-size: .5em; font-weight: 700; color: var(--acc); border: 1px solid var(--line-2); border-radius: 999px; padding: .18em .7em; transform: translateY(-.35em); flex: none; }
+.gft .gft-sec h3 { font-size: 1.24rem; margin-top: 1.6em; }
+.gft .gft-sec .gft-lead { color: var(--fg-2); font-size: 1.06rem; max-width: 46em; }
+.gft .gft-sec ul, .gft .gft-sec ol.gft-list { padding-left: 1.25em; margin: 0 0 1em; }
+.gft .gft-sec li { margin: .3em 0; }
+.gft .gft-sec li::marker { color: var(--acc); }
+
+/* figures */
+.gft figure { margin: 18px 0 24px; }
+.gft .gft-shot { position: relative; display: block; border-radius: 14px; overflow: hidden; border: 1px solid var(--line-2); box-shadow: var(--shadow-sm); background: var(--panel-solid); cursor: zoom-in; }
+.gft .gft-shot img { width: 100%; transition: transform .5s; }
+.gft .gft-shot:hover img { transform: scale(1.012); }
+.gft .gft-shot::after { content: ''; position: absolute; right: 10px; top: 10px; width: 30px; height: 30px; border-radius: 9px; background: rgba(8, 9, 40, .6) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='10.5' cy='10.5' r='6.5'/%3E%3Cpath d='M15.5 15.5L21 21M10.5 7.5v6M7.5 10.5h6'/%3E%3C/svg%3E") center / 17px no-repeat; opacity: 0; transition: opacity .2s; backdrop-filter: blur(4px); }
+.gft .gft-shot:hover::after, .gft .gft-shot:focus-visible::after { opacity: 1; }
+.gft figcaption { color: var(--fg-3); font-size: .9rem; margin-top: 9px; text-align: center; }
+.gft .gft-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.gft .gft-pair figure { margin: 0; }
+
+/* cards */
+.gft .gft-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 14px; margin: 22px 0; }
+.gft .gft-card { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px 18px 16px; box-shadow: var(--shadow-sm); backdrop-filter: blur(8px); }
+.gft .gft-card h3 { font-size: 1.03rem; margin: 0 0 .35em; display: flex; align-items: center; gap: 10px; }
+.gft .gft-card p { margin: 0; color: var(--fg-2); font-size: .95rem; }
+.gft .gft-ico { width: 38px; height: 38px; border-radius: 12px; display: grid; place-items: center; background: linear-gradient(140deg, rgba(180, 169, 255, .3), rgba(106, 91, 224, .22)); border: 1px solid var(--line-2); flex: none; color: var(--neon); }
+.gft[data-theme="light"] .gft-ico { color: var(--acc); }
+.gft .gft-ico svg { width: 21px; height: 21px; stroke: currentColor; fill: none; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+
+/* download */
+.gft .gft-dl-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin: 20px 0; }
+.gft .gft-os { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow-sm); }
+.gft .gft-os > h3 { margin: 0 0 14px; font-size: 1.15rem; display: flex; align-items: center; gap: 10px; }
+.gft .gft-os > h3 svg { width: 24px; height: 24px; fill: currentColor; }
+.gft .gft-asset { border: 1px solid var(--line); border-radius: 14px; padding: 14px; margin-top: 12px; background: var(--panel-2); position: relative; }
+.gft .gft-asset.gft-rec { border-color: var(--acc); box-shadow: 0 0 0 1px var(--acc) inset, 0 0 28px -12px var(--neon-glow); }
+.gft .gft-asset .gft-rec-badge { display: none; position: absolute; top: -11px; right: 14px; font-size: .74rem; font-weight: 700; padding: 2px 10px; border-radius: 999px; background: var(--btn); color: var(--btn-ink); }
+.gft .gft-asset.gft-rec .gft-rec-badge { display: block; }
+.gft .gft-asset-head { display: flex; align-items: center; gap: 12px; justify-content: space-between; flex-wrap: wrap; }
+.gft .gft-asset h4 { margin: 0; font-size: 1rem; }
+.gft .gft-asset .gft-file { display: block; font-size: .82rem; color: var(--fg-3); font-family: ui-monospace, Consolas, monospace; overflow-wrap: anywhere; margin-top: 2px; }
+.gft .gft-asset p { margin: 10px 0 0; font-size: .93rem; color: var(--fg-2); }
+.gft .gft-cmd { display: flex; align-items: stretch; margin-top: 9px; border-radius: 10px; border: 1px solid var(--line); background: var(--code); overflow: hidden; }
+.gft .gft-cmd code { flex: 1; border: 0; background: none; padding: 9px 12px; font-size: .8rem; white-space: pre-wrap; overflow-wrap: anywhere; border-radius: 0; }
+.gft .gft-cmd button { border: 0; border-left: 1px solid var(--line); background: transparent; color: var(--fg-2); padding: 0 12px; cursor: pointer; font: inherit; font-size: .78rem; display: inline-flex; align-items: center; gap: 6px; flex: none; }
+.gft .gft-cmd button:hover { color: var(--fg); background: var(--hl); }
+.gft .gft-cmd button svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 2; }
+.gft .gft-note { display: flex; gap: 14px; border-radius: 16px; padding: 16px 18px; margin: 14px 0; background: var(--warn-bg); border: 1px solid color-mix(in srgb, var(--warn) 40%, transparent); }
+.gft .gft-note svg { width: 24px; height: 24px; flex: none; stroke: var(--warn); fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; margin-top: 2px; }
+.gft .gft-note h4 { margin: 0 0 4px; font-size: 1rem; color: var(--warn); }
+.gft .gft-note p { margin: 0; font-size: .95rem; }
+.gft .gft-note.gft-info { background: var(--hl); border-color: var(--line-2); }
+.gft .gft-note.gft-info svg { stroke: var(--acc); }
+
+/* interface tour */
+.gft .gft-tour { position: relative; }
+.gft .gft-tour .gft-shot { cursor: default; }
+.gft .gft-tour .gft-shot::after { display: none; }
+.gft .gft-hot { position: absolute; transform: translate(-50%, -50%); width: 28px; height: 28px; border-radius: 50%; border: 2px solid #fff; background: linear-gradient(135deg, #8f7dff, #5b4fe0); color: #fff; font: 700 .8rem/1 system-ui, sans-serif; display: grid; place-items: center; cursor: pointer; padding: 0; box-shadow: 0 0 0 4px rgba(143, 125, 255, .35), 0 4px 14px rgba(0, 0, 0, .45); transition: transform .2s, box-shadow .2s; z-index: 2; }
+.gft .gft-hot::before { content: ''; position: absolute; inset: -8px; border-radius: 50%; border: 2px solid rgba(190, 178, 255, .7); animation: gft-pulse 2.6s ease-out infinite; }
+.gft .gft-hot:hover, .gft .gft-hot.on { transform: translate(-50%, -50%) scale(1.22); box-shadow: 0 0 0 6px rgba(143, 125, 255, .5), 0 0 24px var(--neon-glow); }
+@keyframes gft-pulse { 0% { transform: scale(.7); opacity: .9; } 80%, 100% { transform: scale(1.5); opacity: 0; } }
+.gft .gft-tip { position: absolute; z-index: 5; width: min(290px, 80%); padding: 12px 14px; border-radius: 12px; background: var(--panel-solid); border: 1px solid var(--line-2); box-shadow: var(--shadow); font-size: .9rem; pointer-events: none; opacity: 0; transform: translateY(4px); transition: opacity .18s, transform .18s; }
+.gft .gft-tip.show { opacity: 1; transform: none; }
+.gft .gft-tip b { display: block; margin-bottom: 3px; }
+.gft .gft-legend { list-style: none; padding: 0 !important; display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 8px 18px; margin-top: 18px !important; counter-reset: none; }
+.gft .gft-legend li { display: flex; gap: 10px; padding: 8px 10px; border-radius: 12px; margin: 0 !important; transition: background .2s; font-size: .93rem; }
+.gft .gft-legend li.on { background: var(--hl); }
+.gft .gft-legend li > span:first-child { flex: none; width: 24px; height: 24px; border-radius: 50%; background: linear-gradient(135deg, #8f7dff, #5b4fe0); color: #fff; font-weight: 700; font-size: .75rem; display: grid; place-items: center; margin-top: 1px; }
+.gft .gft-legend li div > b:first-child { display: block; }
+.gft .gft-legend li div { color: var(--fg-2); }
+.gft .gft-legend li div b { color: var(--fg); }
+
+/* steps */
+.gft .gft-steps { list-style: none; padding: 0 !important; margin: 24px 0 0; counter-reset: step; }
+.gft .gft-step { position: relative; display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: 22px; align-items: start; padding: 0 0 30px 60px; margin: 0 !important; }
+.gft .gft-step::before { counter-increment: step; content: counter(step); position: absolute; left: 0; top: 0; width: 42px; height: 42px; border-radius: 14px; display: grid; place-items: center; font-weight: 800; font-size: 1.1rem; background: var(--btn); color: var(--btn-ink); box-shadow: 0 6px 20px -6px var(--neon-glow); }
+.gft .gft-step::after { content: ''; position: absolute; left: 20px; top: 50px; bottom: 8px; width: 2px; background: linear-gradient(180deg, var(--line-2), transparent); }
+.gft .gft-step:last-child::after { display: none; }
+.gft .gft-step h3 { margin: 6px 0 .45em !important; font-size: 1.18rem; }
+.gft .gft-step p { color: var(--fg-2); }
+.gft .gft-step figure { margin: 0; }
+
+/* tools */
+.gft .gft-tool { background: var(--panel); border: 1px solid var(--line); border-radius: 22px; padding: clamp(16px, 2.4vw, 26px); margin: 20px 0; box-shadow: var(--shadow-sm); scroll-margin-top: calc(var(--header-h) + 14px); }
+.gft .gft-tool-head { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; flex-wrap: wrap; }
+.gft .gft-tool-head h3 { margin: 0 !important; font-size: 1.28rem; flex: 1; min-width: 12em; }
+.gft .gft-tool-head .gft-ico { width: 46px; height: 46px; border-radius: 14px; }
+.gft .gft-tool-head .gft-ico svg { width: 26px; height: 26px; }
+.gft .gft-keycap { display: inline-flex; align-items: center; gap: 8px; font-size: .85rem; color: var(--fg-3); }
+.gft .gft-keycap kbd { font-size: 1rem; padding: .2em .6em; }
+.gft .gft-tool-body { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); gap: 22px; align-items: start; }
+.gft .gft-tool-body.gft-noimg { grid-template-columns: 1fr; }
+.gft .gft-tool figure { margin: 0; }
+.gft .gft-hint { border-left: 3px solid var(--acc); background: var(--hl); padding: 10px 14px; border-radius: 0 12px 12px 0; margin: 0 0 14px; font-size: .94rem; color: var(--fg-2); }
+.gft .gft-hint small { display: block; text-transform: uppercase; letter-spacing: .1em; font-size: .7rem; font-weight: 700; color: var(--acc); margin-bottom: 3px; }
+.gft .gft-tool h4 { margin: 0 0 6px; font-size: .78rem; text-transform: uppercase; letter-spacing: .1em; color: var(--fg-3); }
+.gft .gft-tool ul { margin: 0 !important; font-size: .95rem; }
+.gft .gft-tool .gft-pair { margin-top: 16px; }
+.gft .gft-chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0 6px; }
+.gft .gft-chips a { display: inline-flex; align-items: center; gap: 7px; padding: 6px 12px 6px 8px; border-radius: 999px; border: 1px solid var(--line); background: var(--panel-2); color: var(--fg); text-decoration: none; font-size: .88rem; }
+.gft .gft-chips a:hover { border-color: var(--acc); background: var(--hl); color: var(--fg); }
+.gft .gft-chips svg { width: 17px; height: 17px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.gft .gft-chips kbd { font-size: .72rem; padding: 0 .4em; min-width: 0; }
+
+/* split blocks (text + image) */
+.gft .gft-split { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: 26px; align-items: center; margin: 18px 0; }
+.gft .gft-split.rev > :first-child { order: 2; }
+.gft .gft-split figure { margin: 0; }
+.gft .gft-split h3 { margin-top: 0 !important; }
+.gft .gft-menus { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; align-items: start; }
+.gft .gft-menus figure { margin: 0; }
+
+/* before/after */
+.gft .gft-ba { position: relative; border-radius: 14px; overflow: hidden; border: 1px solid var(--line-2); box-shadow: var(--shadow-sm); aspect-ratio: 1; max-width: 560px; background: #fff; user-select: none; touch-action: pan-y; }
+.gft .gft-ba img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.gft .gft-ba .gft-ba-top { clip-path: inset(0 calc(100% - var(--pos, 50%)) 0 0); }
+.gft .gft-ba .gft-ba-line { position: absolute; top: 0; bottom: 0; left: var(--pos, 50%); width: 3px; margin-left: -1.5px; background: #fff; box-shadow: 0 0 12px rgba(80, 70, 220, .8); pointer-events: none; }
+.gft .gft-ba .gft-ba-line::after { content: '⟷'; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #8f7dff, #5b4fe0); color: #fff; display: grid; place-items: center; font-size: 1.1rem; border: 2px solid #fff; }
+.gft .gft-ba input { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: ew-resize; margin: 0; }
+.gft .gft-ba .gft-ba-lbl { position: absolute; top: 10px; padding: 3px 10px; border-radius: 999px; background: rgba(8, 9, 40, .7); color: #fff; font-size: .78rem; font-weight: 600; pointer-events: none; }
+.gft .gft-ba .gft-ba-lbl.l { left: 10px; } .gft .gft-ba .gft-ba-lbl.r { right: 10px; }
+.gft .gft-trace-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 22px; align-items: start; }
+
+/* definition table (export) */
+.gft .gft-dl { display: grid; grid-template-columns: max-content 1fr; gap: 0; border: 1px solid var(--line); border-radius: 16px; overflow: hidden; background: var(--panel); margin: 16px 0; }
+.gft .gft-dl dt, .gft .gft-dl dd { margin: 0; padding: 11px 16px; border-top: 1px solid var(--line); }
+.gft .gft-dl dt:first-of-type, .gft .gft-dl dt:first-of-type + dd { border-top: 0; }
+.gft .gft-dl dt { font-weight: 700; background: var(--panel-2); }
+.gft .gft-dl dd { color: var(--fg-2); font-size: .95rem; }
+
+/* shortcuts */
+.gft .gft-sc { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; margin-top: 18px; }
+.gft .gft-sc table { width: 100%; border-collapse: collapse; background: var(--panel); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; font-size: .93rem; }
+.gft .gft-sc caption { text-align: left; font-weight: 700; padding: 0 4px 8px; color: var(--fg); font-size: 1.02rem; }
+.gft .gft-sc th { text-align: left; font-size: .72rem; text-transform: uppercase; letter-spacing: .08em; color: var(--fg-3); padding: 9px 14px; background: var(--panel-2); font-weight: 700; }
+.gft .gft-sc td { padding: 8px 14px; border-top: 1px solid var(--line); vertical-align: top; }
+.gft .gft-sc td:last-child { text-align: right; }
+.gft .gft-sc td kbd { white-space: normal; }
+.gft .gft-sc tr:hover td { background: var(--hl); }
+
+/* tips */
+.gft .gft-tips { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; margin-top: 18px; counter-reset: tip; }
+.gft .gft-tips .gft-card { position: relative; padding-top: 44px; }
+.gft .gft-tips .gft-card::before { counter-increment: tip; content: counter(tip, decimal-leading-zero); position: absolute; top: 14px; left: 18px; font-weight: 800; font-size: .9rem; color: var(--acc); letter-spacing: .05em; }
+
+/* faq */
+.gft .gft-faq details { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; margin: 10px 0; overflow: hidden; }
+.gft .gft-faq summary { cursor: pointer; padding: 14px 48px 14px 18px; font-weight: 650; list-style: none; position: relative; }
+.gft .gft-faq summary::-webkit-details-marker { display: none; }
+.gft .gft-faq summary::after { content: ''; position: absolute; right: 20px; top: 50%; width: 9px; height: 9px; border-right: 2px solid var(--acc); border-bottom: 2px solid var(--acc); transform: translateY(-70%) rotate(45deg); transition: transform .25s; }
+.gft .gft-faq details[open] summary::after { transform: translateY(-30%) rotate(-135deg); }
+.gft .gft-faq details[open] summary { border-bottom: 1px solid var(--line); }
+.gft .gft-faq details > div { padding: 12px 18px 16px; color: var(--fg-2); }
+.gft .gft-faq details:hover { border-color: var(--line-2); }
+
+/* footer */
+.gft .gft-footer { position: relative; z-index: 1; border-top: 1px solid var(--line); background: color-mix(in srgb, var(--bg) 60%, transparent); padding: 38px clamp(16px, 4vw, 40px) 46px; }
+.gft .gft-footer-in { max-width: 1240px; margin: 0 auto; display: grid; grid-template-columns: 1.3fr 1fr; gap: 30px; align-items: start; }
+.gft .gft-footer h2 { font-size: 1.05rem; margin-bottom: .6em; }
+.gft .gft-footer p { color: var(--fg-2); font-size: .95rem; }
+.gft .gft-footer .gft-links { display: flex; flex-wrap: wrap; gap: 10px; }
+.gft .gft-footer .gft-links a { display: inline-flex; align-items: center; gap: 8px; padding: 9px 14px; border-radius: 12px; border: 1px solid var(--line); background: var(--panel-2); color: var(--fg); text-decoration: none; font-size: .92rem; }
+.gft .gft-footer .gft-links a:hover { border-color: var(--line-2); background: var(--hl); }
+.gft .gft-footer .gft-links a.gft-donate { background: var(--donate); color: #fff; border-color: transparent; }
+.gft .gft-footer .gft-links svg { width: 17px; height: 17px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.gft .gft-footer .gft-streak.x { left: 0; top: -1px; }
+.gft .gft-footer p.gft-home { margin: .9rem 0 0; font-size: .95rem; }
+.gft .gft-totop { position: fixed; right: 18px; bottom: 18px; z-index: 40; width: 44px; height: 44px; border-radius: 14px; border: 1px solid var(--line-2); background: var(--panel-solid); color: var(--fg); display: grid; place-items: center; box-shadow: var(--shadow-sm); opacity: 0; pointer-events: none; transform: translateY(10px); transition: opacity .25s, transform .25s; cursor: pointer; }
+.gft .gft-totop.show { opacity: 1; pointer-events: auto; transform: none; }
+.gft .gft-totop svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+/* lightbox */
+.gft .gft-lightbox { border: 0; padding: 0; background: transparent; max-width: 96vw; max-height: 94vh; overflow: visible; }
+.gft .gft-lightbox::backdrop { background: rgba(4, 5, 24, .86); backdrop-filter: blur(6px); }
+.gft .gft-lightbox img { max-width: 96vw; max-height: 88vh; width: auto; border-radius: 12px; box-shadow: 0 30px 80px rgba(0, 0, 0, .6); background: #fff; }
+.gft .gft-lightbox p { color: #d8d6f5; text-align: center; margin: 10px 0 0; font-size: .92rem; }
+.gft .gft-lightbox button { position: absolute; top: -14px; right: -14px; width: 40px; height: 40px; border-radius: 50%; border: 1px solid rgba(255, 255, 255, .4); background: #1b1c52; color: #fff; font-size: 1.3rem; cursor: pointer; line-height: 1; }
+
+/* ---------- responsive ---------- */
+@media (max-width: 1100px) {
+  .gft .gft-layout { grid-template-columns: minmax(0, 1fr); }
+  .gft .gft-toc { position: sticky; top: var(--header-h); z-index: 30; max-height: none; overflow: visible; padding: 0; margin: 0 calc(-1 * clamp(14px, 3vw, 40px)); background: color-mix(in srgb, var(--bg) 82%, transparent); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid var(--line); }
+  .gft .gft-toc h2, .gft .gft-toc .gft-streak { display: none; }
+  .gft .gft-toc ol { display: flex; gap: 6px; overflow-x: auto; border: 0; padding: 9px clamp(14px, 3vw, 40px); scrollbar-width: none; }
+  .gft .gft-toc ol::-webkit-scrollbar { display: none; }
+  .gft .gft-toc a { white-space: nowrap; border: 1px solid var(--line); border-radius: 999px; padding: 5px 12px; margin: 0; font-size: .86rem; }
+  .gft .gft-toc a span { display: none; }
+  .gft .gft-toc a[aria-current="true"] { border-color: var(--acc); }
+  .gft .gft-sec { scroll-margin-top: calc(var(--header-h) + 60px); }
+  .gft .gft-tool { scroll-margin-top: calc(var(--header-h) + 60px); }
+}
+@media (max-width: 900px) {
+  .gft .gft-hero { grid-template-columns: minmax(0, 1fr); }
+  .gft .gft-hero-shot { transform: none; }
+  .gft .gft-step, .gft .gft-tool-body, .gft .gft-split, .gft .gft-trace-grid, .gft .gft-footer-in { grid-template-columns: minmax(0, 1fr); }
+  .gft .gft-split.rev > :first-child { order: 0; }
+  .gft .gft-dl-grid { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 640px) {
+  .gft { font-size: 15.5px; --header-h: 56px; }
+  .gft .gft-header { gap: 8px; }
+  .gft .gft-brand small, .gft .gft-hide-sm { display: none; }
+  .gft .gft-brand img { width: 30px; height: 30px; }
+  .gft .gft-select select { width: 44px; padding: 0; color: transparent; }
+  .gft .gft-select select option { color: var(--fg); }
+  .gft .gft-step { padding-left: 0; padding-top: 52px; }
+  .gft .gft-step::after { display: none; }
+  .gft .gft-pair, .gft .gft-menus { grid-template-columns: minmax(0, 1fr); }
+  .gft .gft-dl { grid-template-columns: minmax(0, 1fr); }
+  .gft .gft-dl dd { border-top: 0; padding-top: 0; }
+  .gft .gft-sc { grid-template-columns: minmax(0, 1fr); }
+  .gft .gft-hot { width: 22px; height: 22px; font-size: .68rem; border-width: 1.5px; }
+  .gft .gft-hot::before { display: none; }
+  .gft .gft-cta .gft-btn { flex: 1 1 100%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .gft .gft-streak, .gft .gft-hero-shot::after, .gft .gft-hot::before { animation: none !important; display: none; }
+  .gft * { transition-duration: 0s !important; }
+}
+@media print {
+  .gft .gft-header, .gft .gft-toc, .gft .gft-totop, .gft .gft-streak, .gft .gft-glow { display: none !important; }
+  .gft .gft-layout { grid-template-columns: 1fr; }
+}
+
+.gft.gft-wait .gft-hero, .gft.gft-wait .gft-layout { visibility: hidden; }
+</style>
+</head>
+<body style="margin:0">
+<div id="giffact-tutorial" class="gft" data-theme="dark">
+<script>/* aplica tema antes de pintar · apply theme before paint */(function(){var r=document.getElementById('giffact-tutorial'),c=window.GIFFACT_CONFIG||{},t=null,a=null;try{t=localStorage.getItem('giffact-tutorial-theme');a=localStorage.getItem('giffact-tutorial-anim')}catch(e){}t=t||c.defaultTheme||'system';if(t==='system')t=matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';r.setAttribute('data-theme',t);if(a==='off'||(a!=='on'&&matchMedia('(prefers-reduced-motion: reduce)').matches))r.classList.add('gft-anim-off');})();</script>
+<div class="gft-glow" aria-hidden="true"></div>
+<a class="gft-skip" href="#gft-main"><span data-t="ui.skip">Skip to content</span></a>
+<header class="gft-header">
+  <a class="gft-brand" href="#top"><img src="giffact-tutorial-assets/logo.png" width="34" height="34" alt="">Giffact <small data-t="ui.tutorial">Tutorial</small></a>
+  <span class="gft-spacer"></span>
+  <a class="gft-hbtn gft-back" data-href="url:back" href="https://www.bugzinho.com/" data-t-title="ui.back" title="Back to the site"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg><span class="gft-hide-sm" data-tpl="{backLabel}">bugzinho.com</span></a>
+  <label class="gft-select" title="Language" data-t-title="ui.lang"><svg viewBox="0 0 24 24" aria-hidden="true" class="gft-hbtn-ico" style="width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.8"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.8 3 2.8 15 0 18M12 3c-2.8 3-2.8 15 0 18"/></svg><span class="gft-sr" data-t="ui.lang">Language</span><select id="gft-lang"><option value="en" lang="en" selected>English</option><option value="pt-BR" lang="pt-BR">Português (Brasil)</option><option value="es" lang="es">Español</option><option value="fr" lang="fr">Français</option><option value="de" lang="de">Deutsch</option><option value="it" lang="it">Italiano</option><option value="ja" lang="ja">日本語</option><option value="zh-CN" lang="zh-CN">中文（简体）</option><option value="ko" lang="ko">한국어</option><option value="ru" lang="ru">Русский</option></select></label>
+  <button type="button" class="gft-hbtn gft-icon" id="gft-theme" data-t-aria="ui.theme" aria-label="Switch between light and dark theme" data-t-title="ui.theme" title="Switch between light and dark theme"><span class="gft-th-dark"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg></span><span class="gft-th-light" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></span></button>
+  <button type="button" class="gft-hbtn gft-icon" id="gft-anim" aria-pressed="true" data-t-aria="ui.anim" aria-label="Turn animations on or off" data-t-title="ui.anim" title="Turn animations on or off"><span class="gft-anim-on"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h3l2-6 4 12 2-6h5"/></svg></span><span class="gft-anim-off"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h16"/><path d="M4 4l16 16" opacity=".8"/></svg></span></button>
+  <a class="gft-btn gft-btn-primary gft-btn-sm gft-hide-sm" href="#download"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 20h14"/></svg><span data-t="toc.download">Download</span></a>
+  <span class="gft-streak x" aria-hidden="true"></span>
+</header>
+<noscript><p style="text-align:center;padding:8px;margin:0">This page needs JavaScript to switch languages and themes. The content below is in English.</p></noscript>
+<div class="gft-hero" id="top">
+  <div>
+    <div data-t="hero.kicker" class="gft-kicker">Tutorial · version 1.1.1</div>
+    <h1 data-t="hero.title">Turn any GIF into clean, editable <span class="gft-grad">linework</span></h1>
+    <p data-t="hero.lead" class="gft-lead">Giffact lets you trace an animated GIF frame by frame with smooth, pressure-sensitive vector strokes, in the spirit of PaintTool SAI, and export only the lines as PNG or SVG at any size. This page takes you from the download to your first exported animation.</p>
+    <div class="gft-cta">
+      <a class="gft-btn gft-btn-primary" id="gft-hero-dl" href="#download"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 20h14"/></svg><span data-t="hero.dlAny" id="gft-hero-dl-lbl">Download Giffact</span></a>
+      <a class="gft-btn gft-btn-ghost" href="#quick-start"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4l13 8-13 8z"/></svg><span data-t="hero.start">Start the tutorial</span></a>
+    </div>
+    <div class="gft-hero-meta"><span data-t="hero.meta">Free and open source · Windows and Linux · released October 29, 2026</span><a data-href="url:releases" href="https://github.com/cleitinhodev/giffact/releases/latest" rel="noopener" data-t="hero.all">All downloads</a></div>
+  </div>
+  <div class="gft-hero-shot"><img data-hero="hero" src="giffact-tutorial-assets/hero-dark.webp" srcset="giffact-tutorial-assets/hero-dark-sm.webp 800w, giffact-tutorial-assets/hero-dark.webp 1600w" sizes="(max-width: 900px) 100vw, 56vw" width="1600" height="1000" fetchpriority="high" decoding="async" data-t-alt="hero.alt" alt="Giffact in the dark theme: the GIF of an anime girl being traced with the Curve tool"></div>
+</div>
+<div class="gft-layout">
+  <nav class="gft-toc" aria-labelledby="gft-toc-h"><h2 id="gft-toc-h" data-t="ui.contents">Contents</h2><ol><li><a href="#what"><span aria-hidden="true">01</span><b data-t="toc.what" style="font-weight:inherit">What it is</b></a></li><li><a href="#download"><span aria-hidden="true">02</span><b data-t="toc.download" style="font-weight:inherit">Download</b></a></li><li><a href="#interface"><span aria-hidden="true">03</span><b data-t="toc.tour" style="font-weight:inherit">Interface</b></a></li><li><a href="#quick-start"><span aria-hidden="true">04</span><b data-t="toc.quick" style="font-weight:inherit">Quick start</b></a></li><li><a href="#tools"><span aria-hidden="true">05</span><b data-t="toc.tools" style="font-weight:inherit">Tools</b></a></li><li><a href="#frames"><span aria-hidden="true">06</span><b data-t="toc.frames" style="font-weight:inherit">Frames and layers</b></a></li><li><a href="#auto-trace"><span aria-hidden="true">07</span><b data-t="toc.trace" style="font-weight:inherit">Auto-trace</b></a></li><li><a href="#export"><span aria-hidden="true">08</span><b data-t="toc.export" style="font-weight:inherit">Export</b></a></li><li><a href="#projects"><span aria-hidden="true">09</span><b data-t="toc.project" style="font-weight:inherit">Projects</b></a></li><li><a href="#settings"><span aria-hidden="true">10</span><b data-t="toc.settings" style="font-weight:inherit">Settings</b></a></li><li><a href="#shortcuts"><span aria-hidden="true">11</span><b data-t="toc.shortcuts" style="font-weight:inherit">Shortcuts</b></a></li><li><a href="#tips"><span aria-hidden="true">12</span><b data-t="toc.tips" style="font-weight:inherit">Tips</b></a></li><li><a href="#faq"><span aria-hidden="true">13</span><b data-t="toc.faq" style="font-weight:inherit">FAQ</b></a></li></ol><span class="gft-streak y" aria-hidden="true"></span></nav>
+  <main id="gft-main" tabindex="-1">
+<section class="gft-sec" id="what" aria-labelledby="what-h"><h2 id="what-h"><span class="gft-num" aria-hidden="true">01</span><span data-t="what.title">What is Giffact?</span></h2><p data-t="what.p1" class="gft-lead">Giffact is a rotoscoping tool for line art. You open an animated GIF, draw vector lines over each frame and export only those lines. The result is a clean, transparent line layer for every frame, ready to color, redraw in another program or turn into a new animation.</p><p data-t="what.p2">Every line is a vector curve: you can move its points, change its weight, taper its ends and recolor it at any time, and export at 1×, 2×, 4× or any exact size without losing quality. Everything runs locally: your GIFs and projects never leave your computer.</p>
+<figure><div class="gft-shot" style="cursor:default"><img src="giffact-tutorial-assets/loop.webp" width="808" height="400" loading="lazy" decoding="async" data-t-alt="what.loopAlt" alt="Animation comparing the GIF of an anime girl with wind-blown hair to the traced linework"></div><figcaption data-t="what.loopCap">Left, the original GIF. Right, the linework traced in Giffact and exported frame by frame.</figcaption></figure>
+<div class="gft-cards"><div class="gft-card"><h3><span class="gft-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 18C7 4 14 4 21 8"/><circle cx="3" cy="18" r="1.6"/><circle cx="11" cy="6.4" r="1.6"/><circle cx="21" cy="8" r="1.6"/></svg></span><span data-t="feat.vector.t">Vector lines, SAI style</span></h3><p data-t="feat.vector.d">Curve, Line and Pen with pressure, stabilizer and tapered ends. Every stroke stays editable.</p></div><div class="gft-card"><h3><span class="gft-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l9 5-9 5-9-5z"/><path d="M3 13l9 5 9-5"/><path d="M3 17.5l9 5 9-5" opacity=".6"/></svg></span><span data-t="feat.layers.t">Layers in every frame</span></h3><p data-t="feat.layers.d">Keep outline, hair and details apart, each layer with visibility, lock and opacity.</p></div><div class="gft-card"><h3><span class="gft-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="12" r="6" opacity=".55"/><circle cx="15" cy="12" r="6"/></svg></span><span data-t="feat.onion.t">Onion skin and copy lines</span></h3><p data-t="feat.onion.d">See the neighbor frames in red and blue, bring the previous lines over and just adjust them.</p></div><div class="gft-card"><h3><span class="gft-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M4 17v3h16v-3"/></svg></span><span data-t="feat.export.t">Export at any size</span></h3><p data-t="feat.export.d">PNG or SVG, transparent or solid background, only the frames and layers you choose.</p></div><div class="gft-card"><h3><span class="gft-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg></span><span data-t="feat.trace.t">Auto-trace</span></h3><p data-t="feat.trace.d">An automatic edge sketch made of editable curves, a head start for busy frames.</p></div><div class="gft-card"><h3><span class="gft-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.8 3 2.8 15 0 18M12 3c-2.8 3-2.8 15 0 18"/></svg></span><span data-t="feat.lang.t">10 languages, 2 themes</span></h3><p data-t="feat.lang.d">Dark neon or light theme, with the interface in your language.</p></div></div></section>
+<section class="gft-sec" id="download" aria-labelledby="download-h"><h2 id="download-h"><span class="gft-num" aria-hidden="true">02</span><span data-t="dl.title">Download and install</span></h2><p data-t="dl.lead" class="gft-lead">Giffact 1.1.1 is available for 64-bit Windows and Linux. Pick the file for your system. All files are on the <a href="https://github.com/cleitinhodev/giffact/releases/latest">releases page</a>, along with their SHA-256 checksums.</p>
+<div class="gft-dl-grid">
+  <div class="gft-os" data-os="windows"><h3><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5.3l7.4-1v7.2H3zM11.3 4.2L21 3v8.5h-9.7zM3 12.5h7.4v7.2L3 18.7zM11.3 12.5H21V21l-9.7-1.3z"/></svg><span data-t="dl.win">Windows 10 / 11 (x64)</span></h3><div class="gft-asset" data-asset-id="winPortable"><span data-t="dl.rec" class="gft-rec-badge">Recommended for you</span>
+  <div class="gft-asset-head"><div><h4 data-t="dl.winPortable.t">Portable (.exe)</h4><span class="gft-file"><span data-tpl="{file:winPortable}">Giffact-1.1.1-windows-portable.exe</span><span data-tpl="{sizeSep:winPortable}"> · 84 MB</span></span></div>
+  <a class="gft-btn gft-btn-primary gft-btn-sm" data-href="dl:winPortable" href="https://github.com/cleitinhodev/giffact/releases/download/v1.1.1/Giffact-1.1.1-windows-portable.exe" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 20h14"/></svg><span data-t="dl.btn">Download</span></a></div>
+  <p data-t="dl.winPortable.d">A single executable with nothing to install. Just run it.</p></div><div class="gft-asset" data-asset-id="winZip"><span data-t="dl.rec" class="gft-rec-badge">Recommended for you</span>
+  <div class="gft-asset-head"><div><h4 data-t="dl.winZip.t">ZIP</h4><span class="gft-file"><span data-tpl="{file:winZip}">Giffact-1.1.1-windows-x64.zip</span><span data-tpl="{sizeSep:winZip}"> · 132 MB</span></span></div>
+  <a class="gft-btn gft-btn-primary gft-btn-sm" data-href="dl:winZip" href="https://github.com/cleitinhodev/giffact/releases/download/v1.1.1/Giffact-1.1.1-windows-x64.zip" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 20h14"/></svg><span data-t="dl.btn">Download</span></a></div>
+  <p data-t="dl.winZip.d">Unzip it and run <code>Giffact.exe</code>. It starts faster than the portable version.</p></div>
+  <div class="gft-note"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l10 18H2z"/><path d="M12 10v5M12 18v.01"/></svg><div><h4 data-t="dl.smart.t">Windows SmartScreen warning</h4><p data-t="dl.smart.d">The executable is not code-signed yet, so Windows may show “Windows protected your PC”. Click <b>More info</b> → <b>Run anyway</b>. This only happens the first time.</p></div></div></div>
+  <div class="gft-os" data-os="linux"><h3><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2c-2.6 0-4 2.2-4 5 0 1.6.4 2.6-.6 4.2C6 13.3 4.6 15.4 5 18c.2 1.2 1.3 1.6 2 1.4.6-.1 1-.5 1.6-.5h6.8c.6 0 1 .4 1.6.5.7.2 1.8-.2 2-1.4.4-2.6-1-4.7-2.4-6.8-1-1.6-.6-2.6-.6-4.2 0-2.8-1.4-5-4-5zm-1.6 4.2a.9 1.1 0 1 1 0 2.2.9 1.1 0 0 1 0-2.2zm3.2 0a.9 1.1 0 1 1 0 2.2.9 1.1 0 0 1 0-2.2zM12 9.2c.9 0 1.9.5 1.9.9s-1 1.1-1.9 1.1-1.9-.7-1.9-1.1.9-.9 1.9-.9zM6.5 19.5c-1.4.4-2.7.9-2.5 1.6.3.9 2.7.9 4.3.5.9-.2 1-1 .6-1.6-.5-.7-1.6-.7-2.4-.5zm11 0c-.8-.2-1.9-.2-2.4.5-.4.6-.3 1.4.6 1.6 1.6.4 4 .4 4.3-.5.2-.7-1.1-1.2-2.5-1.6z"/></svg><span data-t="dl.linux">Linux (x64)</span></h3><div class="gft-asset" data-asset-id="appImage"><span data-t="dl.rec" class="gft-rec-badge">Recommended for you</span>
+  <div class="gft-asset-head"><div><h4 data-t="dl.appImage.t">AppImage</h4><span class="gft-file"><span data-tpl="{file:appImage}">Giffact-1.1.1-linux-x86_64.AppImage</span><span data-tpl="{sizeSep:appImage}"> · 114 MB</span></span></div>
+  <a class="gft-btn gft-btn-primary gft-btn-sm" data-href="dl:appImage" href="https://github.com/cleitinhodev/giffact/releases/download/v1.1.1/Giffact-1.1.1-linux-x86_64.AppImage" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 20h14"/></svg><span data-t="dl.btn">Download</span></a></div>
+  <p data-t="dl.appImage.d">Works on any distribution. Make it executable and run it:</p><div class="gft-cmd"><code data-tpl="chmod +x {file:appImage} &amp;&amp; ./{file:appImage}">chmod +x Giffact-1.1.1-linux-x86_64.AppImage &amp;&amp; ./Giffact-1.1.1-linux-x86_64.AppImage</code><button type="button" class="gft-copy" data-t-aria="ui.copy" aria-label="Copy"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/></svg><span data-t="ui.copy" class="gft-copy-lbl gft-hide-sm">Copy</span></button></div></div><div class="gft-asset" data-asset-id="deb"><span data-t="dl.rec" class="gft-rec-badge">Recommended for you</span>
+  <div class="gft-asset-head"><div><h4 data-t="dl.deb.t">Debian / Ubuntu / Mint (.deb)</h4><span class="gft-file"><span data-tpl="{file:deb}">Giffact-1.1.1-linux-amd64.deb</span><span data-tpl="{sizeSep:deb}"> · 90 MB</span></span></div>
+  <a class="gft-btn gft-btn-primary gft-btn-sm" data-href="dl:deb" href="https://github.com/cleitinhodev/giffact/releases/download/v1.1.1/Giffact-1.1.1-linux-amd64.deb" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 20h14"/></svg><span data-t="dl.btn">Download</span></a></div>
+  <p data-t="dl.deb.d">Install it with apt, then open Giffact from the app menu (Graphics):</p><div class="gft-cmd"><code data-tpl="sudo apt install ./{file:deb}">sudo apt install ./Giffact-1.1.1-linux-amd64.deb</code><button type="button" class="gft-copy" data-t-aria="ui.copy" aria-label="Copy"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/></svg><span data-t="ui.copy" class="gft-copy-lbl gft-hide-sm">Copy</span></button></div></div><div class="gft-asset" data-asset-id="tar"><span data-t="dl.rec" class="gft-rec-badge">Recommended for you</span>
+  <div class="gft-asset-head"><div><h4 data-t="dl.tar.t">tar.gz</h4><span class="gft-file"><span data-tpl="{file:tar}">Giffact-1.1.1-linux-x64.tar.gz</span><span data-tpl="{sizeSep:tar}"> · 108 MB</span></span></div>
+  <a class="gft-btn gft-btn-primary gft-btn-sm" data-href="dl:tar" href="https://github.com/cleitinhodev/giffact/releases/download/v1.1.1/Giffact-1.1.1-linux-x64.tar.gz" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 20h14"/></svg><span data-t="dl.btn">Download</span></a></div>
+  <p data-t="dl.tar.d">Manual install: extract it and run <code>./giffact</code> inside the folder:</p><div class="gft-cmd"><code data-tpl="tar xzf {file:tar} &amp;&amp; cd {folder:tar} &amp;&amp; ./giffact">tar xzf Giffact-1.1.1-linux-x64.tar.gz &amp;&amp; cd Giffact-1.1.1-linux-x64 &amp;&amp; ./giffact</code><button type="button" class="gft-copy" data-t-aria="ui.copy" aria-label="Copy"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/></svg><span data-t="ui.copy" class="gft-copy-lbl gft-hide-sm">Copy</span></button></div></div>
+  <div class="gft-note"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l10 18H2z"/><path d="M12 10v5M12 18v.01"/></svg><div><h4 data-t="dl.fuse.t">The AppImage won’t open?</h4><p data-t="dl.fuse.d">AppImages need FUSE 2. Install <code>libfuse2</code> (on Ubuntu 24.04 and newer the package is called <code>libfuse2t64</code>), or start the file with <code>--appimage-extract-and-run</code>.</p><div class="gft-cmd"><code data-tpl="sudo apt install libfuse2t64   # Ubuntu 24.04+  (older: libfuse2)">sudo apt install libfuse2t64   # Ubuntu 24.04+  (older: libfuse2)</code><button type="button" class="gft-copy" data-t-aria="ui.copy" aria-label="Copy"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/></svg><span data-t="ui.copy" class="gft-copy-lbl gft-hide-sm">Copy</span></button></div></div></div></div>
+</div>
+<div class="gft-note gft-info"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.01"/></svg><div><p data-t="dl.sum">Want to verify the download? Compare it with <a href="https://github.com/cleitinhodev/giffact/releases/download/v1.1.1/SHA256SUMS.txt">SHA256SUMS.txt</a>:</p><div class="gft-cmd"><code data-tpl="sha256sum -c {file:checksums} --ignore-missing">sha256sum -c SHA256SUMS.txt --ignore-missing</code><button type="button" class="gft-copy" data-t-aria="ui.copy" aria-label="Copy"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/></svg><span data-t="ui.copy" class="gft-copy-lbl gft-hide-sm">Copy</span></button></div></div></div></section>
+<section class="gft-sec" id="interface" aria-labelledby="interface-h"><h2 id="interface-h"><span class="gft-num" aria-hidden="true">03</span><span data-t="tour.title">A tour of the interface</span></h2><p data-t="tour.lead" class="gft-lead">This is the Giffact window with a GIF open. Hover over or tap the numbers to see what each area does.</p>
+<figure class="gft-tour"><div class="gft-shot gft-tour-img"><img data-hero="tour" src="giffact-tutorial-assets/hero-dark.webp" srcset="giffact-tutorial-assets/hero-dark-sm.webp 800w, giffact-tutorial-assets/hero-dark.webp 1600w" sizes="(max-width: 1100px) 100vw, 900px" width="1600" height="1000" loading="lazy" decoding="async" data-t-alt="tour.alt" alt="The Giffact window with numbered areas">
+<button type="button" class="gft-hot" data-hot="1" style="left:17.26%;top:5.11%" aria-describedby="gft-leg-1">1</button><button type="button" class="gft-hot" data-hot="2" style="left:30.03%;top:5.11%" aria-describedby="gft-leg-2">2</button><button type="button" class="gft-hot" data-hot="3" style="left:39.76%;top:5.11%" aria-describedby="gft-leg-3">3</button><button type="button" class="gft-hot" data-hot="4" style="left:89.93%;top:5.11%" aria-describedby="gft-leg-4">4</button><button type="button" class="gft-hot" data-hot="5" style="left:1.81%;top:37.71%" aria-describedby="gft-leg-5">5</button><button type="button" class="gft-hot" data-hot="6" style="left:25.54%;top:16.64%" aria-describedby="gft-leg-6">6</button><button type="button" class="gft-hot" data-hot="7" style="left:22.67%;top:81.78%" aria-describedby="gft-leg-7">7</button><button type="button" class="gft-hot" data-hot="8" style="left:95.82%;top:7.97%" aria-describedby="gft-leg-8">8</button><button type="button" class="gft-hot" data-hot="9" style="left:95.82%;top:39.94%" aria-describedby="gft-leg-9">9</button><button type="button" class="gft-hot" data-hot="10" style="left:95.82%;top:49.00%" aria-describedby="gft-leg-10">10</button><button type="button" class="gft-hot" data-hot="11" style="left:95.82%;top:67.55%" aria-describedby="gft-leg-11">11</button><button type="button" class="gft-hot" data-hot="12" style="left:95.82%;top:79.00%" aria-describedby="gft-leg-12">12</button><button type="button" class="gft-hot" data-hot="13" style="left:50.00%;top:94.40%" aria-describedby="gft-leg-13">13</button>
+<div class="gft-tip" role="tooltip" aria-hidden="true"></div></div></figure>
+<ol class="gft-legend"><li id="gft-leg-1" data-leg="1"><span aria-hidden="true">1</span><div><b data-t="tour.1.t">File buttons</b><span data-t="tour.1.d"><b>Open GIF</b>, the <b>Project</b> menu (new, open, save) and <b>Export</b>.</span></div></li><li id="gft-leg-2" data-leg="2"><span aria-hidden="true">2</span><div><b data-t="tour.2.t">Undo / redo</b><span data-t="tour.2.d">History is kept per frame: <kbd>Ctrl+Z</kbd> / <kbd>Ctrl+Y</kbd>.</span></div></li><li id="gft-leg-3" data-leg="3"><span aria-hidden="true">3</span><div><b data-t="tour.3.t">Preview and auto-trace</b><span data-t="tour.3.d">Play your lines as an animation (<kbd>P</kbd>) or create an automatic sketch.</span></div></li><li id="gft-leg-4" data-leg="4"><span aria-hidden="true">4</span><div><b data-t="tour.4.t">Language, theme and help</b><span data-t="tour.4.d">Language 🌐, theme and animations, Help (<kbd>F1</kbd>) and About.</span></div></li><li id="gft-leg-5" data-leg="5"><span aria-hidden="true">5</span><div><b data-t="tour.5.t">Toolbar</b><span data-t="tour.5.d">All drawing and editing tools. The small letter is the shortcut.</span></div></li><li id="gft-leg-6" data-leg="6"><span aria-hidden="true">6</span><div><b data-t="tour.6.t">Canvas</b><span data-t="tour.6.d">The current GIF frame with your lines on top. The wheel zooms, <kbd>Space</kbd>+drag pans.</span></div></li><li id="gft-leg-7" data-leg="7"><span aria-hidden="true">7</span><div><b data-t="tour.7.t">Status bar</b><span data-t="tour.7.d">Frame, size, tool, cursor position, zoom, fit and rotation.</span></div></li><li id="gft-leg-8" data-leg="8"><span aria-hidden="true">8</span><div><b data-t="tour.8.t">Tool options</b><span data-t="tour.8.d">Settings of the active tool: weight, color, stabilizer, tapers, eraser mode…</span></div></li><li id="gft-leg-9" data-leg="9"><span aria-hidden="true">9</span><div><b data-t="tour.9.t">Selected strokes</b><span data-t="tour.9.d">Change the selected strokes: weight, color, tapers, simplify, flip, delete.</span></div></li><li id="gft-leg-10" data-leg="10"><span aria-hidden="true">10</span><div><b data-t="tour.10.t">Frame layers</b><span data-t="tour.10.d">The layers of the current frame: add, duplicate, reorder, hide, lock, opacity.</span></div></li><li id="gft-leg-11" data-leg="11"><span aria-hidden="true">11</span><div><b data-t="tour.11.t">Frames: copy lines</b><span data-t="tour.11.d">Bring lines from the previous or next frame, or copy them to a range of frames.</span></div></li><li id="gft-leg-12" data-leg="12"><span aria-hidden="true">12</span><div><b data-t="tour.12.t">Background (GIF) &amp; onion skin</b><span data-t="tour.12.d">GIF visibility, gray mode and opacity; onion skin frames, colors and opacity.</span></div></li><li id="gft-leg-13" data-leg="13"><span aria-hidden="true">13</span><div><b data-t="tour.13.t">Timeline</b><span data-t="tour.13.d">Every frame of the GIF. A dot marks the frames that already have lines.</span></div></li></ol></section>
+<section class="gft-sec" id="quick-start" aria-labelledby="quick-start-h"><h2 id="quick-start-h"><span class="gft-num" aria-hidden="true">04</span><span data-t="quick.title">Quick start: your first traced animation</span></h2><p data-t="quick.lead" class="gft-lead">Six steps take you from a GIF to a folder of transparent PNGs. The GIF in the screenshots is a 12-frame animation of a girl whose hair blows in the wind.</p><ol class="gft-steps"><li class="gft-step"><div><h3 data-t="q1.t">Open a GIF</h3><p data-t="q1.d">Click <b>Open GIF</b>, press <kbd>Ctrl+O</kbd> or drag the file into the window. PNG, JPG and WebP open too, as a single frame. All frames appear in the timeline at the bottom.</p></div><figure><a class="gft-shot" href="giffact-tutorial-assets/welcome.webp" data-t-title="ui.enlarge" title="Click to enlarge"><img src="giffact-tutorial-assets/welcome.webp" srcset="giffact-tutorial-assets/welcome-sm.webp 800w, giffact-tutorial-assets/welcome.webp 1600w" sizes="(max-width: 900px) 100vw, 40vw" width="1600" height="1000" loading="lazy" decoding="async" data-t-alt="q1.alt" alt="Giffact welcome screen with the Open GIF, Open project and Sample GIF buttons"></a></figure></li><li class="gft-step"><div><h3 data-t="q2.t">Organize with layers</h3><p data-t="q2.d">Every frame starts with a layer called “Lines”. Create more with <b>+</b> (<kbd>Ctrl+Shift+N</kbd>). <b>+ all</b> creates the layer in every frame at once. A good start is one layer for the outline and another for hair strands. Double-click a layer to rename it.</p></div><figure><a class="gft-shot" href="giffact-tutorial-assets/new-layer.webp" data-t-title="ui.enlarge" title="Click to enlarge"><img src="giffact-tutorial-assets/new-layer.webp" width="1400" height="835" loading="lazy" decoding="async" data-t-alt="q2.alt" alt="Frame layers panel with a new layer just created"></a></figure></li><li class="gft-step"><div><h3 data-t="q3.t">Trace with the Curve</h3><p data-t="q3.d">Press <kbd>C</kbd> and click along the shape. The curve flows smoothly through the points, so place them where the line changes direction. Made a mistake? A <b>right-click</b> goes back one point and you keep drawing. Finish with <kbd>Enter</kbd> or a double-click.</p></div><figure><a class="gft-shot" href="giffact-tutorial-assets/curve.webp" data-t-title="ui.enlarge" title="Click to enlarge"><img src="giffact-tutorial-assets/curve.webp" width="1400" height="776" loading="lazy" decoding="async" data-t-alt="q3.alt" alt="Curve tool tracing the girl’s hair, with the control points visible"></a></figure></li><li class="gft-step"><div><h3 data-t="q4.t">Refine</h3><p data-t="q4.d">With <b>Edit points</b> (<kbd>N</kbd>), drag points until they fit the drawing. Use <b>Pressure (per point)</b> (<kbd>U</kbd>) to taper the ends and <b>Weight</b> (<kbd>W</kbd>) for thicker contours. Lower the GIF opacity to see your lines better.</p></div><figure><a class="gft-shot" href="giffact-tutorial-assets/edit.webp" data-t-title="ui.enlarge" title="Click to enlarge"><img src="giffact-tutorial-assets/edit.webp" width="1400" height="714" loading="lazy" decoding="async" data-t-alt="q4.alt" alt="Edit points tool showing the control points of the face outline"></a></figure></li><li class="gft-step"><div><h3 data-t="q5.t">Next frame: onion skin + copy lines</h3><p data-t="q5.d">Go to the next frame (<kbd>→</kbd> or <kbd>D</kbd>), turn on the onion skin (<kbd>O</kbd>) and press <kbd>Alt+←</kbd>. The lines of the previous frame are copied to this one, so you only adjust what moved. That is usually much faster than tracing from scratch.</p></div><figure><a class="gft-shot" href="giffact-tutorial-assets/copy-prev.webp" data-t-title="ui.enlarge" title="Click to enlarge"><img src="giffact-tutorial-assets/copy-prev.webp" srcset="giffact-tutorial-assets/copy-prev-sm.webp 800w, giffact-tutorial-assets/copy-prev.webp 1600w" sizes="(max-width: 900px) 100vw, 40vw" width="1600" height="1000" loading="lazy" decoding="async" data-t-alt="q5.alt" alt="Lines copied from the previous frame onto the next one, with the onion skin on"></a></figure></li><li class="gft-step"><div><h3 data-t="q6.t">Export</h3><p data-t="q6.d">Press <kbd>Ctrl+E</kbd>, choose PNG, the frames and the size (2× turns a 480×480 GIF into 960×960) and export. Save the project with <kbd>Ctrl+S</kbd> to keep working later.</p></div><figure><a class="gft-shot" href="giffact-tutorial-assets/export.webp" data-t-title="ui.enlarge" title="Click to enlarge"><img src="giffact-tutorial-assets/export.webp" width="1296" height="682" loading="lazy" decoding="async" data-t-alt="q6.alt" alt="Export dialog with PNG, only frames with lines, at 2× scale"></a></figure></li></ol>
+<figure style="max-width:520px;margin-inline:auto"><a class="gft-shot" href="giffact-tutorial-assets/lines-example.webp" data-t-title="ui.enlarge" title="Click to enlarge"><img src="giffact-tutorial-assets/lines-example.webp" width="960" height="960" loading="lazy" decoding="async" data-t-alt="q.resultAlt" alt="The exported linework of the anime girl on a white background"></a><figcaption data-t="q.result">The result: only the lines, exported at 2× on a white background.</figcaption></figure></section>
+<section class="gft-sec" id="tools" aria-labelledby="tools-h"><h2 id="tools-h"><span class="gft-num" aria-hidden="true">05</span><span data-t="tools.title">The tools, one by one</span></h2><p data-t="tools.lead" class="gft-lead">Every tool has a one-key shortcut. The text marked “In the app” is the same tip the app shows in its options panel.</p>
+<nav class="gft-chips" aria-label="Tools" data-t-aria="toc.tools"><a href="#tool-curve"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 18C7 4 14 4 21 8"/><circle cx="3" cy="18" r="1.6"/><circle cx="11" cy="6.4" r="1.6"/><circle cx="21" cy="8" r="1.6"/></svg><span data-t="app:tool.curve">Curve</span><kbd>C</kbd></a><a href="#tool-line"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 19L9 6l6 9 6-11"/><circle cx="3" cy="19" r="1.6"/><circle cx="9" cy="6" r="1.6"/><circle cx="15" cy="15" r="1.6"/></svg><span data-t="app:tool.line">Line (straight)</span><kbd>L</kbd></a><a href="#tool-pen"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20c4-1 6-3 9-6l5-5-3-3-5 5c-3 3-5 5-6 9z"/><path d="M14 6l3 3"/></svg><span data-t="app:tool.pen">Pen (freehand)</span><kbd>B</kbd></a><a href="#tool-edit"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 18C8 8 16 16 20 6"/><rect x="9.8" y="9.6" width="4.4" height="4.4" fill="currentColor"/></svg><span data-t="app:tool.edit">Edit points</span><kbd>N</kbd></a><a href="#tool-weight"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16" stroke-width="1"/><path d="M4 12h16" stroke-width="2.6"/><path d="M4 18.5h16" stroke-width="4.4"/></svg><span data-t="app:tool.weight">Weight</span><kbd>W</kbd></a><a href="#tool-pressure"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17c5-11 13-11 18-5"/><circle cx="8.5" cy="10" r="2.6" fill="currentColor"/><circle cx="18" cy="9.5" r="1.2" fill="currentColor"/></svg><span data-t="app:tool.pressure">Pressure (per point)</span><kbd>U</kbd></a><a href="#tool-color"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3c4 5 6 8 6 11a6 6 0 0 1-12 0c0-3 2-6 6-11z"/></svg><span data-t="app:tool.color">Stroke color</span><kbd>K</kbd></a><a href="#tool-eraser"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 16.5l8-8 6 6-4 4H6.5z"/><path d="M11 8.5l3.5-3.5 6 6-3.5 3.5"/><path d="M3 21h18"/></svg><span data-t="app:tool.eraser">Vector eraser</span><kbd>E</kbd></a><a href="#tool-select"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3l13 8-6 1.6L9.5 19z"/><path d="M14 14l4 4" /></svg><span data-t="app:tool.select">Selection / Transform</span><kbd>V</kbd></a><a href="#tool-hand"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 12V5.5a1.5 1.5 0 0 1 3 0V11M11 11V4a1.5 1.5 0 0 1 3 0v7M14 11V5.5a1.5 1.5 0 0 1 3 0V14c0 4-3 7-6.5 7-2.5 0-4.5-1.5-5.5-3.5l-2-4a1.5 1.5 0 0 1 2.6-1.5L8 14"/></svg><span data-t="app:tool.hand">Hand (move view)</span><kbd>H</kbd></a></nav>
+<article class="gft-tool" id="tool-curve" aria-labelledby="tool-curve-h">
+  <div class="gft-tool-head"><span class="gft-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 18C7 4 14 4 21 8"/><circle cx="3" cy="18" r="1.6"/><circle cx="11" cy="6.4" r="1.6"/><circle cx="21" cy="8" r="1.6"/></svg></span><h3 id="tool-curve-h" data-t="app:tool.curve">Curve</h3><span class="gft-keycap"><span data-t="ui.key">Shortcut</span> <kbd>C</kbd></span></div>
+  <div class="gft-tool-body"><figure><a class="gft-shot" href="giffact-tutorial-assets/curve.webp" data-t-title="ui.enlarge" title="Click to enlarge"><img src="giffact-tutorial-assets/curve.webp" width="1400" height="776" loading="lazy" decoding="async" data-t-alt="tools.alt|curve" alt="Curve in use on the GIF of the anime girl"></a></figure>
+  <div><p class="gft-hint"><small data-t="ui.inApp">In the app</small><span data-t="app:tool.curve.hint">Click to place points — the curve passes smoothly through them. Right-click goes back to the previous point and keeps drawing; Enter or double-click finishes; clicking the 1st point closes it; Esc cancels.</span></p>
+  <h4 data-t="ui.tips">Tips</h4><ul><li data-t="curve.tip1">Fewer points make smoother curves. Put them at the extremes of each bend, not every few pixels.</li><li data-t="curve.tip2">A <b>right-click</b> or <kbd>Backspace</kbd> removes the last point without losing the stroke. <kbd>Esc</kbd> cancels it.</li><li data-t="curve.tip3">Click the first point or press <kbd>Shift+Enter</kbd> to close a shape (eyes, buttons).</li></ul></div></div>
+  <div class="gft-pair"><figure><a class="gft-shot" href="giffact-tutorial-assets/curve-undo-a.webp" data-t-title="ui.enlarge" title="Click to enlarge"><img src="giffact-tutorial-assets/curve-undo-a.webp" width="1000" height="700" loading="lazy" decoding="async" data-t-alt="curve.undoA" alt="A curve in progress…"></a><figcaption data-t="curve.undoA">A curve in progress…</figcaption></figure><figure><a class="gft-shot" href="giffact-tutorial-assets/curve-undo-b.webp" data-t-title="ui.enlarge" title="Click to enlarge"><img src="giffact-tutorial-assets/curve-undo-b.webp" width="1000" height="700" loading="lazy" decoding="async" data-t-alt="curve.undoB" alt="…and after a right-click: the last point is gone and the curve goes on."></a><figcaption data-t="curve.undoB">…and after a right-click: the last point is gone and the curve goes on.</figcaption></figure></div>
+</article><article class="gft-tool" id="tool-line" aria-labelledby="tool-line-h">
+  <div class="gft-tool-head"><span class="gft-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 19L9 6l6 9 6-11"/><circle cx="3" cy="19" r="1.6"/><circle cx="9" cy="6" r="1.6"/><circle cx="15" cy="15" r="1.6"/></svg></span><h3 id="tool-line-h" data-t="app:tool.line">Line (straight)</h3><span class="gft-keycap"><span data-t="ui.key">Shortcut</span> <kbd>L</kbd></span></div>
+  <div class="gft-tool-body"><figure><a class="gft-shot" href="giffact-tutorial-assets/line.webp" data-t-title="ui.enlarge" title="Click to enlarge"><img src="giffact-tutorial-assets/line.webp" width="1400" height="714" loading="lazy" decoding="async" data-t-alt="tools.alt|line" alt="Line (straight) in use on the GIF of the anime girl"></a></figure>
+  <div><p class="gft-hint"><small data-t="ui.inApp">In the app</small><span data-t="app:tool.line.hint">Click point by point for straight segments. Shift locks the angle in 15° steps. Right-click goes back to the previous point; Enter or double-click finishes.</span></p>
+  <h4 data-t="ui.tips">Tips</h4><ul><li data-t="line.tip1">Ideal for shirt edges, buildings and other straight parts.</li><li data-t="line.tip2">Hold <kbd>Shift</kbd> to lock the angle in 15° steps.</li><li data-t="line.tip3">A Line stroke can still be edited later with Edit points.</li></ul></div></div>
+  
+</article><article class="gft-tool" id="tool-pen" aria-labelledby="tool-pen-h">
+  <div class="gft-tool-head"><span class="gft-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20c4-1 6-3 9-6l5-5-3-3-5 5c-3 3-5 5-6 9z"/><path d="M14 6l3 3"/></svg></span><h3 id="tool-pen-h" data-t="app:tool.pen">Pen (freehand)</h3><span class="gft-keycap"><span data-t="ui.key">Shortcut</span> <kbd>B</kbd></span></div>
+  <div class="gft-tool-body"><figure><a class="gft-shot" href="giffact-tutorial-assets/pen.webp" data-t-title="ui.enlarge" title="Click to enlarge"><img src="giffact-tutorial-assets/pen.webp" width="1400" height="741" loading="lazy" decoding="async" data-t-alt="tools.alt|pen" alt="Pen (freehand) in use on the GIF of the anime girl"></a></figure>
+  <div><p class="gft-hint"><small data-t="ui.inApp">In the app</small><span data-t="app:tool.pen.hint">Draw freehand. The stabilizer makes the stroke smoother (the stroke “follows” the cursor). When you release, the stroke becomes an editable curve with control points.</span></p>
+  <h4 data-t="ui.tips">Tips</h4><ul><li data-t="pen.tip1">Raise the <b>Stabilizer</b> (<kbd>Shift+]</kbd>) for long, calm strokes like hair strands, and lower it for small details.</li><li data-t="pen.tip2">With a pen tablet, pressure is recorded per point. <b>Minimum pressure</b> sets how thin the lightest touch gets.</li><li data-t="pen.tip3">When you release, the stroke becomes an editable curve with control points.</li></ul></div></div>
+  
+</article><article class="gft-tool" id="tool-edit" aria-labelledby="tool-edit-h">
+  <div class="gft-tool-head"><span class="gft-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 18C8 8 16 16 20 6"/><rect x="9.8" y="9.6" width="4.4" height="4.4" fill="currentColor"/></svg></span><h3 id="tool-edit-h" data-t="app:tool.edit">Edit points</h3><span class="gft-keycap"><span data-t="ui.key">Shortcut</span> <kbd>N</kbd></span></div>
+  <div class="gft-tool-body"><figure><a class="gft-shot" href="giffact-tutorial-assets/edit.webp" data-t-title="ui.enlarge" title="Click to enlarge"><img src="giffact-tutorial-assets/edit.webp" width="1400" height="714" loading="lazy" decoding="async" data-t-alt="tools.alt|edit" alt="Edit points in use on the GIF of the anime girl"></a></figure>
+  <div><p class="gft-hint"><small data-t="ui.inApp">In the app</small><span data-t="app:tool.edit.hint">Drag a point to move it. Drag on the line to create a new point (or double-click). Ctrl+drag moves the whole stroke. Alt+click deletes a point.</span></p>
+  <h4 data-t="ui.tips">Tips</h4><ul><li data-t="edit.tip1">Turn on <b>Show points of all strokes</b> to see the points of every stroke.</li><li data-t="edit.tip2">Drag the line itself to insert a new point there.</li><li data-t="edit.tip3"><kbd>Ctrl</kbd>+drag moves the whole stroke. <kbd>Alt</kbd>+click deletes a point.</li></ul></div></div>
+  
+</article><article class="gft-tool" id="tool-weight" aria-labelledby="tool-weight-h">
+  <div class="gft-tool-head"><span class="gft-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16" stroke-width="1"/><path d="M4 12h16" stroke-width="2.6"/><path d="M4 18.5h16" stroke-width="4.4"/></svg></span><h3 id="tool-weight-h" data-t="app:tool.weight">Weight</h3><span class="gft-keycap"><span data-t="ui.key">Shortcut</span> <kbd>W</kbd></span></div>
+  <div class="gft-tool-body"><figure><a class="gft-shot" href="giffact-tutorial-assets/weight.webp" data-t-title="ui.enlarge" title="Click to enlarge"><img src="giffact-tutorial-assets/weight.webp" width="1400" height="1104" loading="lazy" decoding="async" data-t-alt="tools.alt|weight" alt="Weight in use on the GIF of the anime girl"></a></figure>
+  <div><p class="gft-hint"><small data-t="ui.inApp">In the app</small><span data-t="app:tool.weight.hint">Click a stroke to apply the current weight. Drag sideways to thicken/thin the whole stroke.</span></p>
+  <h4 data-t="ui.tips">Tips</h4><ul><li data-t="weight.tip1">A thicker outer silhouette with thinner lines inside gives the drawing depth.</li><li data-t="weight.tip2"><kbd>[</kbd> and <kbd>]</kbd> change the current weight of any drawing tool.</li></ul></div></div>
+  
+</article><article class="gft-tool" id="tool-pressure" aria-labelledby="tool-pressure-h">
+  <div class="gft-tool-head"><span class="gft-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17c5-11 13-11 18-5"/><circle cx="8.5" cy="10" r="2.6" fill="currentColor"/><circle cx="18" cy="9.5" r="1.2" fill="currentColor"/></svg></span><h3 id="tool-pressure-h" data-t="app:tool.pressure">Pressure (per point)</h3><span class="gft-keycap"><span data-t="ui.key">Shortcut</span> <kbd>U</kbd></span></div>
+  <div class="gft-tool-body"><figure><a class="gft-shot" href="giffact-tutorial-assets/pressure.webp" data-t-title="ui.enlarge" title="Click to enlarge"><img src="giffact-tutorial-assets/pressure.webp" width="1400" height="755" loading="lazy" decoding="async" data-t-alt="tools.alt|pressure" alt="Pressure (per point) in use on the GIF of the anime girl"></a></figure>
+  <div><p class="gft-hint"><small data-t="ui.inApp">In the app</small><span data-t="app:tool.pressure.hint">Drag a point (or segment) up/down to change the thickness at that point — great for tapering ends. Alt+click resets it to 100%.</span></p>
+  <h4 data-t="ui.tips">Tips</h4><ul><li data-t="pressure.tip1">Pull the end points down so the line fades out like a brush stroke.</li><li data-t="pressure.tip2">Thicken the middle of curves where shadows fall (under the chin, under the hair).</li><li data-t="pressure.tip3"><kbd>Alt</kbd>+click resets a point to 100%.</li></ul></div></div>
+  
+</article><article class="gft-tool" id="tool-color" aria-labelledby="tool-color-h">
+  <div class="gft-tool-head"><span class="gft-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3c4 5 6 8 6 11a6 6 0 0 1-12 0c0-3 2-6 6-11z"/></svg></span><h3 id="tool-color-h" data-t="app:tool.color">Stroke color</h3><span class="gft-keycap"><span data-t="ui.key">Shortcut</span> <kbd>K</kbd></span></div>
+  <div class="gft-tool-body"><figure><a class="gft-shot" href="giffact-tutorial-assets/color.webp" data-t-title="ui.enlarge" title="Click to enlarge"><img src="giffact-tutorial-assets/color.webp" width="1400" height="810" loading="lazy" decoding="async" data-t-alt="tools.alt|color" alt="Stroke color in use on the GIF of the anime girl"></a></figure>
+  <div><p class="gft-hint"><small data-t="ui.inApp">In the app</small><span data-t="app:tool.color.hint">Click (or drag over) strokes to paint them with the current color. Alt+click or right-click picks a stroke’s color.</span></p>
+  <h4 data-t="ui.tips">Tips</h4><ul><li data-t="color.tip1">Color-code your lines, for example hair strands in blue and outlines in black. They become easy to tell apart and to recolor later.</li><li data-t="color.tip2">Right-click a swatch to store the current color in it.</li></ul></div></div>
+  
+</article><article class="gft-tool" id="tool-eraser" aria-labelledby="tool-eraser-h">
+  <div class="gft-tool-head"><span class="gft-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 16.5l8-8 6 6-4 4H6.5z"/><path d="M11 8.5l3.5-3.5 6 6-3.5 3.5"/><path d="M3 21h18"/></svg></span><h3 id="tool-eraser-h" data-t="app:tool.eraser">Vector eraser</h3><span class="gft-keycap"><span data-t="ui.key">Shortcut</span> <kbd>E</kbd></span></div>
+  <div class="gft-tool-body"><figure><a class="gft-shot" href="giffact-tutorial-assets/eraser.webp" data-t-title="ui.enlarge" title="Click to enlarge"><img src="giffact-tutorial-assets/eraser.webp" width="1400" height="792" loading="lazy" decoding="async" data-t-alt="tools.alt|eraser" alt="Vector eraser in use on the GIF of the anime girl"></a></figure>
+  <div><p class="gft-hint"><small data-t="ui.inApp">In the app</small><span data-t="app:tool.eraser.hint">Whole stroke: erases touched strokes. To intersection: erases only the piece between the nearest crossings (quick cleanup of overshoots). Area: erases the part under the brush.</span></p>
+  <h4 data-t="ui.tips">Tips</h4><ul><li data-t="eraser.tip1"><b>To intersection</b> is the SAI-style eraser. Hover over a piece of line and the part to be erased turns red; click to cut exactly up to the crossings.</li><li data-t="eraser.tip2"><b>Whole stroke</b> deletes entire strokes. <b>Area</b> works like a normal eraser and splits the strokes it touches.</li></ul></div></div>
+  
+</article><article class="gft-tool" id="tool-select" aria-labelledby="tool-select-h">
+  <div class="gft-tool-head"><span class="gft-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3l13 8-6 1.6L9.5 19z"/><path d="M14 14l4 4" /></svg></span><h3 id="tool-select-h" data-t="app:tool.select">Selection / Transform</h3><span class="gft-keycap"><span data-t="ui.key">Shortcut</span> <kbd>V</kbd></span></div>
+  <div class="gft-tool-body"><figure><a class="gft-shot" href="giffact-tutorial-assets/select.webp" data-t-title="ui.enlarge" title="Click to enlarge"><img src="giffact-tutorial-assets/select.webp" width="1400" height="835" loading="lazy" decoding="async" data-t-alt="tools.alt|select" alt="Selection / Transform in use on the GIF of the anime girl"></a></figure>
+  <div><p class="gft-hint"><small data-t="ui.inApp">In the app</small><span data-t="app:tool.select.hint">Click a stroke to select it (Shift/Ctrl adds). Drag on empty space for a box selection. Drag to move; corner handles scale (Shift = free, Alt = from center); the yellow handle rotates (Shift = 15° steps).</span></p>
+  <h4 data-t="ui.tips">Tips</h4><ul><li data-t="select.tip1"><kbd>Ctrl+A</kbd> selects everything in the active layer, and the <b>Selected strokes</b> panel then edits all of them at once.</li><li data-t="select.tip2">Corner handles scale and the yellow handle rotates. <kbd>Ctrl+C</kbd> / <kbd>Ctrl+V</kbd> copy strokes to another frame.</li></ul></div></div>
+  
+</article><article class="gft-tool" id="tool-hand" aria-labelledby="tool-hand-h">
+  <div class="gft-tool-head"><span class="gft-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 12V5.5a1.5 1.5 0 0 1 3 0V11M11 11V4a1.5 1.5 0 0 1 3 0v7M14 11V5.5a1.5 1.5 0 0 1 3 0V14c0 4-3 7-6.5 7-2.5 0-4.5-1.5-5.5-3.5l-2-4a1.5 1.5 0 0 1 2.6-1.5L8 14"/></svg></span><h3 id="tool-hand-h" data-t="app:tool.hand">Hand (move view)</h3><span class="gft-keycap"><span data-t="ui.key">Shortcut</span> <kbd>H</kbd></span></div>
+  <div class="gft-tool-body gft-noimg">
+  <div><p class="gft-hint"><small data-t="ui.inApp">In the app</small><span data-t="app:tool.hand.hint">Drag to move the view. Shortcuts: Space+drag moves, mouse wheel zooms, Alt+wheel or R+drag rotates.</span></p>
+  <h4 data-t="ui.tips">Tips</h4><ul><li data-t="hand.tip1">You rarely need it: <kbd>Space</kbd>+drag or the middle mouse button pans from any tool.</li><li data-t="hand.tip2"><kbd>R</kbd>+drag rotates the canvas like a sheet of paper and <kbd>Shift+R</kbd> straightens it. <kbd>0</kbd> fits the frame and <kbd>1</kbd> shows it at 100%.</li></ul></div></div>
+  
+</article></section>
+<section class="gft-sec" id="frames" aria-labelledby="frames-h"><h2 id="frames-h"><span class="gft-num" aria-hidden="true">06</span><span data-t="frames.title">Frames, layers and onion skin</span></h2><div class="gft-split"><div><h3 data-t="layers.t">Layers</h3><p data-t="layers.p">Each frame has its own layer stack. Using the same layers in every frame (<b>+ all</b>) keeps things organized, and copying lines works layer by layer.</p><ul><li data-t="layers.li1"><b>+</b> New layer · <b>+ all</b>: New layer in every frame</li><li data-t="layers.li2">Duplicate layer · Move up / Move down · Delete layer</li><li data-t="layers.li3">👁 Hide / Show · 🔒 Lock: a locked layer can’t be edited, perfect for guide lines.</li><li data-t="layers.li4">Opacity: dim a layer to trace over it. Double-click to rename.</li></ul></div><figure><a class="gft-shot" href="giffact-tutorial-assets/layers.webp" data-t-title="ui.enlarge" title="Click to enlarge"><img src="giffact-tutorial-assets/layers.webp" width="1400" height="835" loading="lazy" decoding="async" data-t-alt="layers.alt" alt="Frame layers panel with the Outline layer locked"></a></figure></div>
+<h3 data-t="copy.t">Copy lines between frames</h3><p data-t="copy.p">Animation changes little from one frame to the next. Instead of tracing again, bring the lines over and adjust them:</p><ul><li data-t="copy.li1"><b>⇐ From previous</b> (<kbd>Alt+←</kbd>) and <b>From next ⇒</b> (<kbd>Alt+→</kbd>) bring the active layer of the neighbor frame.</li><li data-t="copy.li2"><b>Copy to frames…</b> (<kbd>Ctrl+Shift+V</kbd>) copies the active layer or the selection to a range of frames, useful for parts that don’t move.</li><li data-t="copy.li3"><b>Clear layer</b> empties the active layer of the current frame.</li></ul><figure><a class="gft-shot" href="giffact-tutorial-assets/copy-prev.webp" data-t-title="ui.enlarge" title="Click to enlarge"><img src="giffact-tutorial-assets/copy-prev.webp" srcset="giffact-tutorial-assets/copy-prev-sm.webp 800w, giffact-tutorial-assets/copy-prev.webp 1600w" sizes="(max-width: 1100px) 100vw, 900px" width="1600" height="1000" loading="lazy" decoding="async" data-t-alt="copy.alt" alt="Lines copied from frame 5 onto frame 6: the face already matches, only the hair needs adjusting"></a><figcaption data-t="copy.alt">Lines copied from frame 5 onto frame 6: the face already matches, only the hair needs adjusting</figcaption></figure>
+<div class="gft-split rev"><div><h3 data-t="onion.t">Onion skin</h3><p data-t="onion.p">With the onion skin on (<kbd>O</kbd>) you see the lines of the previous frames in red and of the next ones in blue. Set how many frames, the colors and the opacity in the <b>Background (GIF) &amp; onion skin</b> panel. Hiding the GIF (<kbd>F</kbd>) makes it even clearer.</p></div><figure><a class="gft-shot" href="giffact-tutorial-assets/onion-skin.webp" data-t-title="ui.enlarge" title="Click to enlarge"><img src="giffact-tutorial-assets/onion-skin.webp" srcset="giffact-tutorial-assets/onion-skin-sm.webp 800w, giffact-tutorial-assets/onion-skin.webp 1600w" sizes="(max-width: 900px) 100vw, 58vw" width="1600" height="1000" loading="lazy" decoding="async" data-t-alt="onion.alt" alt="Onion skin: the previous frame in red and the next in blue around the current lines"></a></figure></div>
+<div class="gft-split"><div><h3 data-t="bg.t">The GIF in the background</h3><p data-t="bg.p"><b>Show GIF</b> (<kbd>F</kbd>), <b>Gray</b> (<kbd>G</kbd>) and <b>Opacity</b> control how the GIF appears under your lines. Gray and a low opacity make dark lines stand out. None of this changes the export unless you choose to include the GIF.</p></div><figure><a class="gft-shot" href="giffact-tutorial-assets/background.webp" data-t-title="ui.enlarge" title="Click to enlarge"><img src="giffact-tutorial-assets/background.webp" width="1400" height="835" loading="lazy" decoding="async" data-t-alt="bg.alt" alt="The GIF in gray at low opacity under the linework"></a></figure></div>
+<div class="gft-split rev"><div><h3 data-t="tl.t">Timeline and preview</h3><p data-t="tl.p">Click a thumbnail or use <kbd>←</kbd> <kbd>→</kbd> (or <kbd>A</kbd> <kbd>D</kbd>) to change frames, and <kbd>Home</kbd> / <kbd>End</kbd> to jump to the ends. With “lines in thumbnails” the thumbnails show your lines too. Press <kbd>P</kbd> for the <b>Animated preview</b>: your lines play at the GIF timing or at a custom FPS, with or without the GIF behind them.</p></div><figure><a class="gft-shot" href="giffact-tutorial-assets/preview.webp" data-t-title="ui.enlarge" title="Click to enlarge"><img src="giffact-tutorial-assets/preview.webp" width="1300" height="919" loading="lazy" decoding="async" data-t-alt="tl.alt" alt="Animated preview of the traced lines"></a></figure></div></section>
+<section class="gft-sec" id="auto-trace" aria-labelledby="auto-trace-h"><h2 id="auto-trace-h"><span class="gft-num" aria-hidden="true">07</span><span data-t="trace.title">Auto-trace (experimental)</span></h2><p data-t="trace.lead" class="gft-lead">Auto-trace detects the edges of the GIF frame and creates editable vector strokes in a new “Auto sketch” layer. It doesn’t replace your hand, but it gives you a quick sketch to start from on busy frames.</p>
+<div class="gft-trace-grid"><figure><div class="gft-ba" style="--pos:50%">
+<img src="giffact-tutorial-assets/trace-after.webp" width="900" height="900" loading="lazy" decoding="async" data-t-alt="trace.altAfter" alt="Auto-trace result on frame 9">
+<img class="gft-ba-top" src="giffact-tutorial-assets/trace-before.webp" width="900" height="900" loading="lazy" decoding="async" data-t-alt="trace.altBefore" alt="Frame 9 of the GIF without lines">
+<span class="gft-ba-line"></span><span data-t="trace.before" class="gft-ba-lbl l">Before</span><span data-t="trace.after" class="gft-ba-lbl r">After</span>
+<input type="range" min="0" max="100" value="50" data-t-aria="trace.compare" aria-label="Drag the slider to compare the frame with the auto-trace result."></div><figcaption data-t="trace.compare">Drag the slider to compare the frame with the auto-trace result.</figcaption></figure>
+<div><figure><a class="gft-shot" href="giffact-tutorial-assets/trace-dialog.webp" data-t-title="ui.enlarge" title="Click to enlarge"><img src="giffact-tutorial-assets/trace-dialog.webp" width="976" height="676" loading="lazy" decoding="async" data-t-alt="trace.altDialog" alt="Auto-trace dialog with sensitivity, smoothing, minimum size and weight"></a></figure><ul><li data-t="trace.li1"><b>Sensitivity</b>: higher values find more (and weaker) edges.</li><li data-t="trace.li2"><b>Smoothing</b>: softens the image before detecting, ignoring texture and noise.</li><li data-t="trace.li3"><b>Minimum size</b>: discards strokes shorter than this.</li><li data-t="trace.li4"><b>Weight</b>: the weight of the strokes created.</li><li data-t="trace.li5"><b>Frames</b>: only the current frame or all of them (this can take a while).</li></ul></div></div>
+<div class="gft-note gft-info"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.01"/></svg><div><p data-t="trace.tip">Tip: auto-trace one frame, remove what you don’t need with the eraser (<kbd>E</kbd>, Whole stroke) and redo the important lines (eyes, mouth) with the Curve.</p></div></div></section>
+<section class="gft-sec" id="export" aria-labelledby="export-h"><h2 id="export-h"><span class="gft-num" aria-hidden="true">08</span><span data-t="export.title">Exporting</span></h2><p data-t="export.lead" class="gft-lead"><kbd>Ctrl+E</kbd> opens <b>Export frames</b>. These are the options:</p><figure><a class="gft-shot" href="giffact-tutorial-assets/export.webp" data-t-title="ui.enlarge" title="Click to enlarge"><img src="giffact-tutorial-assets/export.webp" width="1296" height="682" loading="lazy" decoding="async" data-t-alt="export.alt" alt="Export dialog set to PNG, frames with lines, 2× scale"></a></figure>
+<dl class="gft-dl"><dt data-t="app:export.format">Format</dt><dd data-t="export.format"><b>PNG (separate images)</b> for painting programs and video. <b>SVG (vector, per frame)</b> keeps the lines as vectors for Illustrator, Inkscape or the web.</dd><dt data-t="app:export.frames">Frames</dt><dd data-t="export.frames">All, Current only, Range or Only frames with lines.</dd><dt data-t="app:export.size">Size</dt><dd data-t="export.size">Scale (1×, 2×, 4×…) or an exact Width × height, with “keep aspect ratio”. The dialog shows the final size.</dd><dt data-t="app:export.bg">Background</dt><dd data-t="export.bg">Transparent, White or a color. Check “include the GIF frame” to export the lines over the original image.</dd><dt data-t="app:export.layers">Layers</dt><dd data-t="export.layers">Choose which layers go into the files, for example only the outline.</dd><dt data-t="app:export.fileName">File names</dt><dd data-t="export.names">The prefix of the files: <code>lines_001.png</code>, <code>lines_002.png</code>…</dd></dl>
+<div class="gft-pair"><figure><a class="gft-shot" href="giffact-tutorial-assets/export-svg.webp" data-t-title="ui.enlarge" title="Click to enlarge"><img src="giffact-tutorial-assets/export-svg.webp" width="1296" height="682" loading="lazy" decoding="async" data-t-alt="export.altSvg" alt="Export dialog set to SVG with a frame range"></a></figure><figure><a class="gft-shot" href="giffact-tutorial-assets/lines-example.webp" data-t-title="ui.enlarge" title="Click to enlarge"><img src="giffact-tutorial-assets/lines-example.webp" width="960" height="960" loading="lazy" decoding="async" data-t-alt="q.resultAlt" alt="The exported linework of the anime girl on a white background"></a><figcaption data-t="q.result">The result: only the lines, exported at 2× on a white background.</figcaption></figure></div>
+<div class="gft-note gft-info"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.01"/></svg><div><p data-t="export.where">In the desktop app you choose a folder. In the browser version, the files come in a single .zip.</p></div></div></section>
+<section class="gft-sec" id="projects" aria-labelledby="projects-h"><h2 id="projects-h"><span class="gft-num" aria-hidden="true">09</span><span data-t="project.title">Projects (.giffact)</span></h2><div class="gft-split"><div><p data-t="project.p">A <code>.giffact</code> file stores everything: the GIF itself (embedded), every layer and stroke of every frame, and the view settings. Copy that single file to another computer and continue exactly where you stopped.</p><ul><li data-t="project.li1"><b>New project</b> (<kbd>Ctrl+N</kbd>) · <b>Open project…</b> (<kbd>Ctrl+Shift+O</kbd>)</li><li data-t="project.li2"><b>Save project</b> (<kbd>Ctrl+S</kbd>) · <b>Save project as…</b> (<kbd>Ctrl+Shift+S</kbd>)</li><li data-t="project.li3">Projects from GIF Linework (<code>.gifline</code> / <code>.json</code>), the previous name of Giffact, open too.</li></ul></div><figure style="max-width:420px"><a class="gft-shot" href="giffact-tutorial-assets/project-menu.webp" data-t-title="ui.enlarge" title="Click to enlarge"><img src="giffact-tutorial-assets/project-menu.webp" width="558" height="604" loading="lazy" decoding="async" data-t-alt="project.alt" alt="The Project menu with New, Open, Save and Export"></a></figure></div></section>
+<section class="gft-sec" id="settings" aria-labelledby="settings-h"><h2 id="settings-h"><span class="gft-num" aria-hidden="true">10</span><span data-t="settings.title">Theme, animations and language</span></h2><p data-t="settings.theme">In the moon/sun menu, choose <b>Follow system</b>, <b>Dark</b> or <b>Light</b>. The dark theme has subtle neon lavender streaks around the edges (never over the canvas), and you can turn them off with <b>Neon animations</b>. If your system asks for reduced motion, they stay off.</p><p data-t="settings.lang">The 🌐 button switches instantly between the 10 languages: English, Português (Brasil), Español, Français, Deutsch, Italiano, 日本語, 中文（简体）, 한국어 and Русский. By default Giffact follows the language of your system.</p>
+<div class="gft-menus"><figure><a class="gft-shot" href="giffact-tutorial-assets/theme-menu.webp" data-t-title="ui.enlarge" title="Click to enlarge"><img src="giffact-tutorial-assets/theme-menu.webp" width="544" height="392" loading="lazy" decoding="async" data-t-alt="settings.altTheme" alt="Appearance menu with system, dark and light theme and the neon animations option"></a></figure><figure><a class="gft-shot" href="giffact-tutorial-assets/lang-menu.webp" data-t-title="ui.enlarge" title="Click to enlarge"><img src="giffact-tutorial-assets/lang-menu.webp" width="544" height="750" loading="lazy" decoding="async" data-t-alt="settings.altLang" alt="Language menu with the 10 languages"></a></figure></div>
+<div class="gft-pair" style="margin-top:14px"><figure><a class="gft-shot" href="giffact-tutorial-assets/hero-light.webp" data-t-title="ui.enlarge" title="Click to enlarge"><img src="giffact-tutorial-assets/hero-light.webp" srcset="giffact-tutorial-assets/hero-light-sm.webp 800w, giffact-tutorial-assets/hero-light.webp 1600w" sizes="(max-width: 640px) 100vw, 45vw" width="1600" height="1000" loading="lazy" decoding="async" data-t-alt="hero.alt" alt="Giffact in the dark theme: the GIF of an anime girl being traced with the Curve tool"></a></figure><figure><a class="gft-shot" href="giffact-tutorial-assets/hero-pt-dark.webp" data-t-title="ui.enlarge" title="Click to enlarge"><img src="giffact-tutorial-assets/hero-pt-dark.webp" srcset="giffact-tutorial-assets/hero-pt-dark-sm.webp 800w, giffact-tutorial-assets/hero-pt-dark.webp 1600w" sizes="(max-width: 640px) 100vw, 45vw" width="1600" height="1000" loading="lazy" decoding="async" data-t-alt="hero.alt" alt="Giffact in the dark theme: the GIF of an anime girl being traced with the Curve tool"></a></figure></div></section>
+<section class="gft-sec" id="shortcuts" aria-labelledby="shortcuts-h"><h2 id="shortcuts-h"><span class="gft-num" aria-hidden="true">11</span><span data-t="sc.title">Keyboard shortcuts</span></h2><p data-t="sc.lead" class="gft-lead">The complete list, the same one the app shows with <kbd>F1</kbd>.</p><div class="gft-sc"><table><caption data-t="app:sc.tools">Tools</caption><thead><tr><th scope="col" data-t="sc.action">Action</th><th scope="col" data-t="sc.key">Key</th></tr></thead><tbody><tr><td data-t="app:sc.select">Selection / transform</td><td><kbd>V</kbd></td></tr><tr><td data-t="app:sc.pen">Pen (freehand)</td><td><kbd>B</kbd></td></tr><tr><td data-t="app:sc.curve">Curve</td><td><kbd>C</kbd></td></tr><tr><td data-t="app:sc.line">Straight line</td><td><kbd>L</kbd></td></tr><tr><td data-t="app:sc.edit">Edit points</td><td><kbd>N</kbd></td></tr><tr><td data-t="app:sc.weight">Weight</td><td><kbd>W</kbd></td></tr><tr><td data-t="app:sc.pressure">Pressure</td><td><kbd>U</kbd></td></tr><tr><td data-t="app:sc.color">Stroke color</td><td><kbd>K</kbd></td></tr><tr><td data-t="app:sc.eraser">Vector eraser</td><td><kbd>E</kbd></td></tr><tr><td data-t="app:sc.hand">Hand</td><td><kbd>H</kbd></td></tr><tr><td data-t="app:sc.widthPM">Weight − / +</td><td><kbd>[ ]</kbd></td></tr><tr><td data-t="app:sc.stabPM">Stabilizer − / +</td><td><kbd>Shift+[ ]</kbd></td></tr></tbody></table><table><caption data-t="app:sc.curveLine">Curve and line</caption><thead><tr><th scope="col" data-t="sc.action">Action</th><th scope="col" data-t="sc.key">Key</th></tr></thead><tbody><tr><td data-t="app:sc.finish">Finish stroke</td><td><kbd data-t="app:sc.finish.k">Enter / double-click</kbd></td></tr><tr><td data-t="app:sc.finishClosed">Finish closed</td><td><kbd data-t="app:sc.finishClosed.k">Shift+Enter or click the 1st point</kbd></td></tr><tr><td data-t="app:sc.undoPoint">Undo last point</td><td><kbd data-t="app:sc.undoPoint.k">Right-click / Backspace</kbd></td></tr><tr><td data-t="app:sc.cancel">Cancel stroke</td><td><kbd>Esc</kbd></td></tr><tr><td data-t="app:sc.angle">15° angle steps (line)</td><td><kbd>Shift</kbd></td></tr></tbody></table><table><caption data-t="app:sc.editPoints">Edit points</caption><thead><tr><th scope="col" data-t="sc.action">Action</th><th scope="col" data-t="sc.key">Key</th></tr></thead><tbody><tr><td data-t="app:sc.movePoint">Move point</td><td><kbd data-t="app:sc.movePoint.k">drag point</kbd></td></tr><tr><td data-t="app:sc.insertPoint">Insert point</td><td><kbd data-t="app:sc.insertPoint.k">drag the line / double-click</kbd></td></tr><tr><td data-t="app:sc.moveStroke">Move whole stroke</td><td><kbd data-t="app:sc.moveStroke.k">Ctrl+drag</kbd></td></tr><tr><td data-t="app:sc.deletePoint">Delete point</td><td><kbd data-t="app:sc.deletePoint.k">Alt+click</kbd></td></tr></tbody></table><table><caption data-t="app:sc.frames">Frames</caption><thead><tr><th scope="col" data-t="sc.action">Action</th><th scope="col" data-t="sc.key">Key</th></tr></thead><tbody><tr><td data-t="app:sc.prevNext">Previous / next frame</td><td><kbd data-t="app:sc.prevNext.k">← → or A D</kbd></td></tr><tr><td data-t="app:sc.firstLast">First / last</td><td><kbd>Home / End</kbd></td></tr><tr><td data-t="app:sc.copyNeighbor">Copy lines from previous / next</td><td><kbd>Alt+← / Alt+→</kbd></td></tr><tr><td data-t="app:sc.copyRange">Copy to several frames</td><td><kbd>Ctrl+Shift+V</kbd></td></tr><tr><td data-t="app:sc.preview">Animated preview</td><td><kbd>P</kbd></td></tr><tr><td data-t="app:sc.play">Play/pause on canvas</td><td><kbd>Shift+P</kbd></td></tr></tbody></table><table><caption data-t="app:sc.view">View</caption><thead><tr><th scope="col" data-t="sc.action">Action</th><th scope="col" data-t="sc.key">Key</th></tr></thead><tbody><tr><td data-t="app:sc.toggleGif">Show/hide GIF</td><td><kbd>F</kbd></td></tr><tr><td data-t="app:sc.grayGif">Gray GIF</td><td><kbd>G</kbd></td></tr><tr><td data-t="app:sc.onion">Onion skin</td><td><kbd>O</kbd></td></tr><tr><td data-t="app:sc.pan">Pan view</td><td><kbd data-t="app:sc.pan.k">Space+drag / middle button</kbd></td></tr><tr><td data-t="app:sc.zoom">Zoom</td><td><kbd data-t="app:sc.zoom.k">mouse wheel / + −</kbd></td></tr><tr><td data-t="app:sc.fit">Fit to window</td><td><kbd>0</kbd></td></tr><tr><td data-t="app:sc.zoom100">Zoom 100%</td><td><kbd>1</kbd></td></tr><tr><td data-t="app:sc.rotate">Rotate view</td><td><kbd data-t="app:sc.rotate.k">R+drag / Alt+wheel</kbd></td></tr><tr><td data-t="app:sc.rotReset">Reset rotation</td><td><kbd>Shift+R</kbd></td></tr></tbody></table><table><caption data-t="app:sc.editing">Editing</caption><thead><tr><th scope="col" data-t="sc.action">Action</th><th scope="col" data-t="sc.key">Key</th></tr></thead><tbody><tr><td data-t="app:sc.undoRedo">Undo / redo (per frame)</td><td><kbd>Ctrl+Z / Ctrl+Y</kbd></td></tr><tr><td data-t="app:sc.clip">Copy / cut / paste</td><td><kbd>Ctrl+C / X / V</kbd></td></tr><tr><td data-t="app:sc.selectAll">Select all in layer</td><td><kbd>Ctrl+A</kbd></td></tr><tr><td data-t="app:sc.deselect">Clear selection</td><td><kbd>Ctrl+D / Esc</kbd></td></tr><tr><td data-t="app:sc.deleteSel">Delete selected</td><td><kbd>Delete</kbd></td></tr><tr><td data-t="app:sc.newLayer">New layer</td><td><kbd>Ctrl+Shift+N</kbd></td></tr></tbody></table><table><caption data-t="app:sc.file">File</caption><thead><tr><th scope="col" data-t="sc.action">Action</th><th scope="col" data-t="sc.key">Key</th></tr></thead><tbody><tr><td data-t="app:sc.newProject">New project</td><td><kbd>Ctrl+N</kbd></td></tr><tr><td data-t="app:sc.openGif">Open GIF</td><td><kbd>Ctrl+O</kbd></td></tr><tr><td data-t="app:sc.openProject">Open project</td><td><kbd>Ctrl+Shift+O</kbd></td></tr><tr><td data-t="app:sc.save">Save project</td><td><kbd>Ctrl+S</kbd></td></tr><tr><td data-t="app:sc.saveAs">Save as</td><td><kbd>Ctrl+Shift+S</kbd></td></tr><tr><td data-t="app:sc.exportPng">Export PNG</td><td><kbd>Ctrl+E</kbd></td></tr><tr><td data-t="app:sc.exportSvg">Export SVG</td><td><kbd>Ctrl+Shift+E</kbd></td></tr><tr><td data-t="app:sc.help">This help</td><td><kbd data-t="app:sc.help.k">F1 or ?</kbd></td></tr></tbody></table></div></section>
+<section class="gft-sec" id="tips" aria-labelledby="tips-h"><h2 id="tips-h"><span class="gft-num" aria-hidden="true">12</span><span data-t="tips.title">Rotoscoping anime: workflow tips</span></h2><div class="gft-tips"><div class="gft-card"><h3 data-t="tips.1.t">Start with the clearest frame</h3><p data-t="tips.1.d">Trace the frame where the pose reads best first, then spread it forward and backward with copy lines.</p></div><div class="gft-card"><h3 data-t="tips.2.t">Separate what moves</h3><p data-t="tips.2.d">In anime often only part of the drawing moves (here, just the hair). Put the still parts on their own layer and copy them to every frame with <b>Copy to frames…</b>, so you only redraw what changes.</p></div><div class="gft-card"><h3 data-t="tips.3.t">Big shapes first</h3><p data-t="tips.3.d">Silhouette and main contours first, details (eyes, mouth, folds) last. Hide the detail layer while you adjust the big shapes.</p></div><div class="gft-card"><h3 data-t="tips.4.t">Hair: long curves, few points</h3><p data-t="tips.4.d">Use the Curve with points only at the bends of each lock, or the Pen with a high stabilizer. Then taper the tips with Pressure.</p></div><div class="gft-card"><h3 data-t="tips.5.t">A hierarchy of weights</h3><p data-t="tips.5.d">Outer contour thicker (2–3 px), inner lines thinner (1–1.5 px), hair strands the thinnest. Exporting at 2× makes everything look even cleaner.</p></div><div class="gft-card"><h3 data-t="tips.6.t">Check the motion often</h3><p data-t="tips.6.d">Press <kbd>P</kbd> every few frames. Lines that jitter show up immediately in the preview.</p></div><div class="gft-card"><h3 data-t="tips.7.t">Turn the GIF down</h3><p data-t="tips.7.d">An opacity of 40–60% and gray mode (<kbd>G</kbd>) let you see your lines and the drawing at the same time.</p></div><div class="gft-card"><h3 data-t="tips.8.t">Keep versions</h3><p data-t="tips.8.d">Use <b>Save project as…</b> to keep versions (scene_v1, scene_v2…) before big changes.</p></div></div></section>
+<section class="gft-sec" id="faq" aria-labelledby="faq-h"><h2 id="faq-h"><span class="gft-num" aria-hidden="true">13</span><span data-t="faq.title">FAQ and troubleshooting</span></h2><div class="gft-faq"><details><summary data-t="faq.1.q">Is Giffact free?</summary><div data-t="faq.1.a">Yes. It is free and open source software (MIT license). If it helps you, consider supporting it on the <a href="https://www.bugzinho.com/donate">donation page</a>.</div></details><details><summary data-t="faq.2.q">Are my files sent to the internet?</summary><div data-t="faq.2.a">No. Everything runs locally on your computer, and your GIFs and projects are never uploaded.</div></details><details><summary data-t="faq.3.q">Windows says “Windows protected your PC”</summary><div data-t="faq.3.a">That is SmartScreen, shown because the executable isn’t signed. Click <b>More info</b> → <b>Run anyway</b>.</div></details><details><summary data-t="faq.4.q">The AppImage doesn’t open</summary><div data-t="faq.4.a">Install <code>libfuse2</code> (<code>libfuse2t64</code> on Ubuntu 24.04+) or run it with <code>--appimage-extract-and-run</code>. You can also use the .deb or the .tar.gz.</div></details><details><summary data-t="faq.5.q">A right-click finished my curve!</summary><div data-t="faq.5.a">Since version 1.1.1, a right-click goes back one point and the curve goes on. To finish, press <kbd>Enter</kbd> or double-click. If yours behaves differently, update Giffact.</div></details><details><summary data-t="faq.6.q">Can I use a pen tablet?</summary><div data-t="faq.6.a">Yes. Wacom, Huion, XP-Pen, Surface and others work through the system’s pen input, and pressure is recorded per point. Turn off <b>Tablet pressure</b> in the Pen options if you prefer an even line.</div></details><details><summary data-t="faq.7.q">Can I open videos (MP4)?</summary><div data-t="faq.7.a">Not directly. Convert the clip to a GIF first (with any converter or ffmpeg). Single images (PNG, JPG, WebP) also open.</div></details><details><summary data-t="faq.8.q">My export is huge or fails</summary><div data-t="faq.8.a">Very large sizes (such as 8× of a big GIF) need a lot of memory. Export fewer frames at a time or use a smaller scale; the dialog warns you when the output is very large.</div></details><details><summary data-t="faq.9.q">How do I turn the lines back into an animation?</summary><div data-t="faq.9.a">Export PNGs with a transparent background and import them as an image sequence into your animation or video program (Krita, Clip Studio Paint, After Effects, DaVinci Resolve, Blender…).</div></details><details><summary data-t="faq.10.q">How do I update?</summary><div data-t="faq.10.a">Download the new version from the <a href="https://github.com/cleitinhodev/giffact/releases/latest">releases page</a>. Your .giffact projects keep working. This tutorial is for version 1.1.1.</div></details><details><summary data-t="faq.11.q">Found a bug or have an idea?</summary><div data-t="faq.11.a">Open an issue in the <a href="https://github.com/cleitinhodev/giffact/issues">GitHub repository</a>.</div></details></div></section>
+  </main>
+</div>
+<footer class="gft-footer"><span class="gft-streak x rev" aria-hidden="true"></span><div class="gft-footer-in">
+  <div><h2><img src="giffact-tutorial-assets/logo.png" width="28" height="28" alt="" style="display:inline-block;vertical-align:-7px;margin-right:8px"><span data-t="foot.about">About</span></h2><p data-t="foot.p">Giffact is made by <a href="https://github.com/cleitinhodev">cleitinhodev</a>. Free and open source software (MIT license).</p><p data-t="foot.version">Giffact 1.1.1 · released October 29, 2026</p><p class="gft-home"><a href="../../"><span aria-hidden="true">←</span> CleitinhoDEV · Homepage</a></p></div>
+  <div><h2 data-t="foot.links">Links</h2><div class="gft-links">
+    <a data-href="url:github" href="https://github.com/cleitinhodev" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 19c-4 1.5-4-2-6-2.5m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6 0 0 0-1.3-3.2 4.2 4.2 0 0 0-.1-3.2s-1-.3-3.4 1.3a11.6 11.6 0 0 0-6 0C6.8 2.3 5.8 2.6 5.8 2.6a4.2 4.2 0 0 0-.1 3.2A4.6 4.6 0 0 0 4.4 9c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg><span data-t="app:about.github">GitHub profile</span></a>
+    <a data-href="url:repo" href="https://github.com/cleitinhodev/giffact" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7l9-4 9 4v10l-9 4-9-4z"/><path d="M3 7l9 4 9-4M12 11v10"/></svg><span data-t="app:about.repo">Project repository</span></a>
+    <a data-href="url:site" href="https://www.bugzinho.com/" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg><span data-t="app:about.site">Website</span></a>
+    <a class="gft-donate" data-href="url:donate" href="https://www.bugzinho.com/donate" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7-4.4-9-9a4.8 4.8 0 0 1 9-3 4.8 4.8 0 0 1 9 3c-2 4.6-9 9-9 9z"/></svg><span data-t="app:about.donate">Donate</span></a>
+  </div></div>
+</div></footer>
+<button type="button" class="gft-totop" id="gft-totop" data-t-aria="ui.top" aria-label="Back to top"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 14l6-6 6 6"/></svg></button>
+<dialog class="gft-lightbox" id="gft-lightbox"><button type="button" data-t-aria="ui.close" aria-label="Close">×</button><img alt=""><p></p></dialog>
+</div>
+<script>
+/* Giffact tutorial: page logic (language, theme, animations, config bindings). No dependencies. */
+(function () {
+  'use strict';
+  var C = window.GIFFACT_CONFIG || {};
+  var root = document.getElementById('giffact-tutorial');
+  if (!root) return;
+  var $ = function (s, el) { return (el || root).querySelector(s); };
+  var $$ = function (s, el) { return Array.prototype.slice.call((el || root).querySelectorAll(s)); };
+  var LANGS = ['en', 'pt-BR', 'es', 'fr', 'de', 'it', 'ja', 'zh-CN', 'ko', 'ru'];
+  var KEY = { lang: 'giffact-tutorial-lang', theme: 'giffact-tutorial-theme', anim: 'giffact-tutorial-anim' };
+  var store = {
+    get: function (k) { try { return localStorage.getItem(k); } catch (e) { return null; } },
+    set: function (k, v) { try { localStorage.setItem(k, v); } catch (e) { /* private mode */ } },
+  };
+  var DEFAULT_AP = 'giffact-tutorial-assets/';
+  var AP = C.assetsPath || DEFAULT_AP;
+  var esc = function (s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); };
+  var fill = function (s) { return String(s || '').split('{version}').join(C.version || ''); };
+
+  // ---------- config ----------
+  var base = fill(C.downloadBase);
+  var DL = {};
+  Object.keys(C.downloads || {}).forEach(function (id) {
+    var a = C.downloads[id], file = fill(a.file);
+    DL[id] = { file: file, url: a.url ? fill(a.url).split('{base}').join(base) : base + file, size: a.size || '', folder: fill(a.folder || '') };
+  });
+  var URLS = {}; Object.keys(C.links || {}).forEach(function (k) { URLS[k] = fill(C.links[k]); });
+  if (DL.checksums) URLS.checksums = DL.checksums.url;
+
+  // ---------- OS ----------
+  var ua = navigator.userAgent || '';
+  var plat = (navigator.userAgentData && navigator.userAgentData.platform) || navigator.platform || '';
+  var OS = /android|iphone|ipad|ipod/i.test(ua) ? null : /win/i.test(plat) || /windows/i.test(ua) ? 'windows' : /linux/i.test(plat) || /linux|x11/i.test(ua) ? 'linux' : null;
+  var REC = OS === 'windows' ? 'winPortable' : OS === 'linux' ? 'appImage' : null;
+
+  // ---------- i18n ----------
+  var I = function () { return window.GIFFACT_I18N || null; };
+  var lang = 'en';
+  function dict(l) { var d = I(); return d && d[l]; }
+  function pageStr(key, l) {
+    var d = dict(l), e = dict('en');
+    return (d && d.t[key] != null) ? d.t[key] : (e && e.t[key] != null ? e.t[key] : null);
+  }
+  function appStr(k, l) {
+    var d = dict(l), e = dict('en');
+    return (d && d.app[k] != null) ? d.app[k] : (e && e.app[k] != null ? e.app[k] : k);
+  }
+  function fmtDate(l) {
+    try { return new Intl.DateTimeFormat(l, { dateStyle: 'long', timeZone: 'UTC' }).format(new Date(C.releaseDate + 'T12:00:00Z')); } catch (e) { return C.releaseDate || ''; }
+  }
+  function interp(s, l) {
+    return String(s).replace(/\{(app|ui|file|size|sizeSep|url|folder):([\w.\-]+)\}|\{(version|date|os|backLabel)\}/g, function (m, kind, k, simple) {
+      if (simple === 'version') return esc(C.version || '');
+      if (simple === 'date') return esc(fmtDate(l));
+      if (simple === 'backLabel') return esc(C.backLabel || '');
+      if (simple === 'os') return OS === 'windows' ? 'Windows' : OS === 'linux' ? 'Linux' : '';
+      if (kind === 'app') return esc(appStr(k, l));
+      if (kind === 'ui') { var u = pageStr('ui.' + k, l); return u == null ? '' : interp(u, l); }
+      var d = DL[k];
+      if (kind === 'file') return esc(d ? d.file : '');
+      if (kind === 'size') return esc(d ? d.size : '');
+      if (kind === 'sizeSep') return d && d.size ? ' · ' + esc(d.size) : '';
+      if (kind === 'folder') return esc(d ? d.folder : '');
+      if (kind === 'url') return esc(URLS[k] || (d && d.url) || '#');
+      return m;
+    });
+  }
+  function render(key, l) {
+    if (key.indexOf('app:') === 0) return esc(appStr(key.slice(4), l));
+    if (key.indexOf('tools.alt|') === 0) { var s0 = pageStr('tools.alt', l); return s0 == null ? null : s0.split('{tool}').join(appStr('tool.' + key.slice(10), l)); }
+    var s = pageStr(key, l);
+    return s == null ? null : interp(s, l);
+  }
+  var plain = function (html) { var d = document.createElement('div'); d.innerHTML = html; return d.textContent; };
+
+  function bindConfig() {
+    $$('[data-href]').forEach(function (a) {
+      var v = a.getAttribute('data-href').split(':'), u = v[0] === 'dl' ? (DL[v[1]] && DL[v[1]].url) : URLS[v[1]];
+      if (u) a.setAttribute('href', u);
+    });
+    $$('[data-tpl]').forEach(function (el) { el.innerHTML = interp(el.getAttribute('data-tpl'), lang); });
+    if (AP !== DEFAULT_AP) {
+      $$('img, a.gft-shot').forEach(function (el) {
+        ['src', 'href', 'srcset'].forEach(function (at) { var v = el.getAttribute(at); if (v && v.indexOf(DEFAULT_AP) > -1) el.setAttribute(at, v.split(DEFAULT_AP).join(AP)); });
+      });
+      var ic = document.querySelector('link[rel="icon"]'); if (ic) ic.href = AP + 'favicon.png';
+    }
+    // recommended download for this computer
+    $$('.gft-asset').forEach(function (el) { el.classList.toggle('gft-rec', el.getAttribute('data-asset-id') === REC); });
+    var hb = $('#gft-hero-dl'), hl = $('#gft-hero-dl-lbl');
+    if (REC && hb && hl) { hb.setAttribute('href', DL[REC].url); hl.setAttribute('data-t', 'hero.dl'); }
+  }
+
+  function heroSrc() {
+    var th = root.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+    var pt = lang === 'pt-BR' ? 'pt-' : '';
+    $$('img[data-hero]').forEach(function (im) {
+      var n = im.getAttribute('data-hero') === 'hero' ? 'hero-' + pt + th : 'hero-' + th;
+      im.src = AP + n + '.webp';
+      im.srcset = AP + n + '-sm.webp 800w, ' + AP + n + '.webp 1600w';
+    });
+  }
+
+  function applyLang(l) {
+    lang = l;
+    document.documentElement.lang = l;
+    root.setAttribute('lang', l);
+    var sel = $('#gft-lang'); if (sel) sel.value = l;
+    if (I()) {
+      $$('[data-t]').forEach(function (el) { var h = render(el.getAttribute('data-t'), l); if (h != null) el.innerHTML = h; });
+      [['data-t-alt', 'alt'], ['data-t-title', 'title'], ['data-t-aria', 'aria-label']].forEach(function (p) {
+        $$('[' + p[0] + ']').forEach(function (el) { var h = render(el.getAttribute(p[0]), l); if (h != null) el.setAttribute(p[1], plain(h)); });
+      });
+      var title = render('meta.title', l); if (title) document.title = plain(title);
+      var md = document.querySelector('meta[name="description"]'), desc = render('meta.desc', l); if (md && desc) md.setAttribute('content', plain(desc));
+    }
+    bindConfig();
+    heroSrc();
+  }
+
+  function detectLang() {
+    var q = null; try { q = new URLSearchParams(location.search).get('lang'); } catch (e) { /* */ }
+    var cands = [q, store.get(KEY.lang)].concat(navigator.languages || [navigator.language]);
+    for (var i = 0; i < cands.length; i++) {
+      var c = cands[i]; if (!c) continue;
+      var lc = String(c).toLowerCase();
+      for (var j = 0; j < LANGS.length; j++) if (LANGS[j].toLowerCase() === lc) return LANGS[j];
+      var p = lc.split('-')[0];
+      for (var k = 0; k < LANGS.length; k++) if (LANGS[k].toLowerCase().split('-')[0] === p) return LANGS[k];
+      if (i < 2) continue; // explicit choices are exact; browser list keeps searching
+    }
+    return LANGS.indexOf(C.defaultLanguage) > -1 ? C.defaultLanguage : 'en';
+  }
+
+  // ---------- theme & animations ----------
+  var mqLight = window.matchMedia('(prefers-color-scheme: light)');
+  var mqReduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+  function effTheme() { var t = store.get(KEY.theme) || C.defaultTheme || 'system'; return t === 'system' ? (mqLight.matches ? 'light' : 'dark') : t; }
+  function applyTheme() {
+    var t = effTheme();
+    root.setAttribute('data-theme', t);
+    var d = $('.gft-th-dark'), li = $('.gft-th-light');
+    if (d && li) { d.hidden = t !== 'dark'; li.hidden = t !== 'light'; }
+    var mc = document.querySelector('meta[name="theme-color"]'); if (mc) mc.content = t === 'light' ? '#f4f2ff' : '#0b0d2c';
+    heroSrc();
+  }
+  function animOn() { var a = store.get(KEY.anim); return a === 'on' ? true : a === 'off' ? false : !mqReduce.matches; }
+  function applyAnim() {
+    var on = animOn();
+    root.classList.toggle('gft-anim-off', !on);
+    var b = $('#gft-anim'); if (b) b.setAttribute('aria-pressed', on ? 'true' : 'false');
+  }
+  var onMq = function (mq, fn) { if (mq.addEventListener) mq.addEventListener('change', fn); else if (mq.addListener) mq.addListener(fn); };
+  onMq(mqLight, function () { if (!store.get(KEY.theme) || store.get(KEY.theme) === 'system') applyTheme(); });
+  onMq(mqReduce, applyAnim);
+  document.addEventListener('visibilitychange', function () { root.classList.toggle('gft-paused', document.hidden); });
+
+  // ---------- UI wiring ----------
+  function wire() {
+    var sel = $('#gft-lang');
+    if (sel) sel.addEventListener('change', function () { store.set(KEY.lang, sel.value); applyLang(sel.value); buildTip(); });
+    var tb = $('#gft-theme');
+    if (tb) tb.addEventListener('click', function () { store.set(KEY.theme, effTheme() === 'dark' ? 'light' : 'dark'); applyTheme(); });
+    var ab = $('#gft-anim');
+    if (ab) ab.addEventListener('click', function () { store.set(KEY.anim, animOn() ? 'off' : 'on'); applyAnim(); });
+
+    // table of contents: active section
+    var links = $$('.gft-toc a'), map = {};
+    links.forEach(function (a) { map[a.getAttribute('href').slice(1)] = a; });
+    var secs = $$('.gft-sec');
+    var setCur = function (id) {
+      links.forEach(function (a) { a.removeAttribute('aria-current'); });
+      var a = map[id]; if (!a) return;
+      a.setAttribute('aria-current', 'true');
+      var ol = a.closest('ol');
+      if (ol && ol.scrollWidth > ol.clientWidth + 4) ol.scrollTo({ left: a.offsetLeft - ol.clientWidth / 2 + a.offsetWidth / 2, behavior: animOn() ? 'smooth' : 'auto' });
+    };
+    var onScroll = function () {
+      var y = window.innerHeight * 0.3, cur = secs[0] && secs[0].id;
+      for (var i = 0; i < secs.length; i++) if (secs[i].getBoundingClientRect().top < y) cur = secs[i].id;
+      if (cur !== onScroll.last) { onScroll.last = cur; setCur(cur); }
+      var tt = $('#gft-totop'); if (tt) tt.classList.toggle('show', window.scrollY > 900);
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+    $('#gft-totop').addEventListener('click', function () { window.scrollTo({ top: 0, behavior: animOn() ? 'smooth' : 'auto' }); });
+    root.addEventListener('click', function (e) {
+      var a = e.target.closest && e.target.closest('a[href^="#"]');
+      if (!a || !root.contains(a)) return;
+      var id = a.getAttribute('href').slice(1), t = id === 'top' ? document.body : document.getElementById(id);
+      if (!t) return;
+      e.preventDefault();
+      if (id === 'top') window.scrollTo({ top: 0, behavior: animOn() ? 'smooth' : 'auto' });
+      else t.scrollIntoView({ behavior: animOn() ? 'smooth' : 'auto', block: 'start' });
+      if (history.replaceState) history.replaceState(null, '', '#' + id);
+    });
+
+    // lightbox
+    var lb = $('#gft-lightbox');
+    $$('a.gft-shot').forEach(function (a) {
+      a.addEventListener('click', function (e) {
+        if (!lb || !lb.showModal) return;
+        e.preventDefault();
+        var im = a.querySelector('img');
+        lb.querySelector('img').src = a.getAttribute('href');
+        lb.querySelector('img').alt = im ? im.alt : '';
+        lb.querySelector('p').textContent = im ? im.alt : '';
+        lb.showModal();
+      });
+    });
+    if (lb) {
+      lb.addEventListener('click', function (e) { if (e.target === lb || e.target.tagName === 'BUTTON') lb.close(); });
+    }
+
+    // before/after slider
+    $$('.gft-ba').forEach(function (ba) {
+      var r = ba.querySelector('input');
+      var upd = function () { ba.style.setProperty('--pos', r.value + '%'); };
+      r.addEventListener('input', upd); upd();
+    });
+
+    // copy buttons
+    $$('.gft-copy').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var code = b.parentNode.querySelector('code').textContent.replace(/\s+#.*$/, '');
+        var done = function () {
+          var l = b.querySelector('.gft-copy-lbl'); if (!l) return;
+          l.textContent = plain(render('ui.copied', lang) || 'Copied!');
+          setTimeout(function () { l.textContent = plain(render('ui.copy', lang) || 'Copy'); }, 1600);
+        };
+        if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(code).then(done, function () {});
+        else { var ta = document.createElement('textarea'); ta.value = code; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); done(); } catch (e) { /* */ } ta.remove(); }
+      });
+    });
+
+    // interface tour: hotspot tooltips ↔ legend
+    var tour = $('.gft-tour-img'), tip = $('.gft-tip');
+    var show = function (n, on) {
+      $$('[data-hot="' + n + '"], [data-leg="' + n + '"]').forEach(function (el) { el.classList.toggle('on', on); });
+      if (!tip || !tour) return;
+      if (!on) { tip.classList.remove('show'); return; }
+      var h = $('[data-hot="' + n + '"]'), leg = $('#gft-leg-' + n + ' div');
+      tip.innerHTML = leg ? leg.innerHTML : '';
+      var tr = tour.getBoundingClientRect(), hr = h.getBoundingClientRect();
+      var x = hr.left - tr.left + hr.width / 2, y = hr.top - tr.top + hr.height / 2;
+      var w = Math.min(290, tr.width * 0.8);
+      tip.style.left = Math.max(6, Math.min(tr.width - w - 6, x - w / 2)) + 'px';
+      tip.style.top = ''; tip.style.bottom = '';
+      if (y > tr.height * 0.55) { tip.style.bottom = (tr.height - y + 22) + 'px'; } else { tip.style.top = (y + 22) + 'px'; }
+      tip.classList.add('show');
+    };
+    $$('.gft-hot').forEach(function (h) {
+      var n = h.getAttribute('data-hot');
+      h.addEventListener('mouseenter', function () { show(n, true); });
+      h.addEventListener('mouseleave', function () { show(n, false); });
+      h.addEventListener('focus', function () { show(n, true); });
+      h.addEventListener('blur', function () { show(n, false); });
+      h.addEventListener('click', function () { var on = !h.classList.contains('on'); $$('.gft-hot.on').forEach(function (x) { show(x.getAttribute('data-hot'), false); }); show(n, on); });
+    });
+    $$('.gft-legend li').forEach(function (li) {
+      var n = li.getAttribute('data-leg');
+      li.addEventListener('mouseenter', function () { $$('[data-hot="' + n + '"]').forEach(function (el) { el.classList.add('on'); }); li.classList.add('on'); });
+      li.addEventListener('mouseleave', function () { $$('[data-hot="' + n + '"]').forEach(function (el) { el.classList.remove('on'); }); li.classList.remove('on'); });
+    });
+  }
+  function buildTip() { var t = $('.gft-tip'); if (t) t.classList.remove('show'); }
+
+  // ---------- start ----------
+  applyTheme();
+  applyAnim();
+  wire();
+  var want = detectLang();
+  bindConfig();
+  if (I()) applyLang(want);
+  else {
+    if (want !== 'en') root.classList.add('gft-wait');
+    var done = false, finish = function () { if (done) return; done = true; root.classList.remove('gft-wait'); applyLang(I() ? want : 'en'); };
+    var s = document.createElement('script');
+    s.src = AP + 'giffact-tutorial-i18n.js?v=' + encodeURIComponent(C.version || '');
+    s.onload = finish; s.onerror = finish;
+    document.head.appendChild(s);
+    setTimeout(finish, 2500);
+  }
+  window.GiffactTutorial = { setLang: function (l) { store.set(KEY.lang, l); applyLang(l); }, getLang: function () { return lang; }, config: C, downloads: DL, links: URLS };
+})();
+
+</script>
+</body>
+</html>
