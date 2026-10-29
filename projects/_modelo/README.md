@@ -2,9 +2,11 @@
 
 Esta pasta é um **modelo**. Ela começa com `_`, então o gerador a **ignora** e ela não aparece no site.
 
+> Passo a passo completo desta pasta, pelo terminal ou pelo upload do GitHub: [`projects/README.md`](../README.md). Guia geral do site e FAQ: [README principal](../../README.md).
+
 ## Como criar um novo tutorial
 
-1. Copie esta pasta com um nome novo (só letras minúsculas, números e `-`):
+1. Copie esta pasta com um nome novo (só letras minúsculas sem acento, números e `-`; sem espaços):
 
    ```bash
    cp -r projects/_modelo projects/meu-primeiro-tutorial

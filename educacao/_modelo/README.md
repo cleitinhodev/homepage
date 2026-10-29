@@ -2,9 +2,11 @@
 
 Esta pasta é um **modelo**. Ela começa com `_`, então o gerador a **ignora** e ela não aparece no site.
 
+> Passo a passo completo desta pasta, pelo terminal ou pelo upload do GitHub: [`educacao/README.md`](../README.md). Guia geral do site e FAQ: [README principal](../../README.md).
+
 ## Como criar uma nova aula
 
-1. Copie esta pasta com um nome novo (só letras minúsculas, números e `-`):
+1. Copie esta pasta com um nome novo (só letras minúsculas sem acento, números e `-`; sem espaços):
 
    ```bash
    cp -r educacao/_modelo educacao/minha-primeira-aula
