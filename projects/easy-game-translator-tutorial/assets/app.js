@@ -7,11 +7,11 @@
    ===================================================================== */
 const CONFIG = {
   VERSION: '4.0.6',
-  DOWNLOAD_WINDOWS: 'https://github.com/cleitinhodev/easy_game_translator/releases/download/v4.0.6/EasyGameTranslator-4.0.6-setup.exe',
-  DOWNLOAD_WINDOWS_PORTABLE: 'https://github.com/cleitinhodev/easy_game_translator/releases/download/v4.0.6/EasyGameTranslator-4.0.6-portable.exe',
-  DOWNLOAD_LINUX_APPIMAGE: 'https://github.com/cleitinhodev/easy_game_translator/releases/download/v4.0.6/EasyGameTranslator-4.0.6-x86_64.AppImage',
-  DOWNLOAD_LINUX_DEB: 'https://github.com/cleitinhodev/easy_game_translator/releases/download/v4.0.6/EasyGameTranslator-4.0.6-amd64.deb',
-  SHA256SUMS: 'https://github.com/cleitinhodev/easy_game_translator/releases/download/v4.0.6/SHA256SUMS.txt',
+  DOWNLOAD_WINDOWS: 'https://github.com/cleitinhodev/easy_game_translator/releases/download/v4.0.7/EasyGameTranslator-4.0.7-setup.exe',
+  DOWNLOAD_WINDOWS_PORTABLE: 'https://github.com/cleitinhodev/easy_game_translator/releases/download/v4.0.7/EasyGameTranslator-4.0.7-portable.exe',
+  DOWNLOAD_LINUX_APPIMAGE: 'https://github.com/cleitinhodev/easy_game_translator/releases/download/v4.0.7/EasyGameTranslator-4.0.7-x86_64.AppImage',
+  DOWNLOAD_LINUX_DEB: 'https://github.com/cleitinhodev/easy_game_translator/releases/download/v4.0.7/EasyGameTranslator-4.0.7-amd64.deb',
+  SHA256SUMS: 'https://github.com/cleitinhodev/easy_game_translator/releases/download/v4.0.7/SHA256SUMS.txt',
   REPO: 'https://github.com/cleitinhodev/easy_game_translator',
   RELEASES: 'https://github.com/cleitinhodev/easy_game_translator/releases',
   DONATE: 'https://www.bugzinho.com/donate',
