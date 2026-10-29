@@ -1,1 +1,27 @@
-[]
+[
+  {
+    "slug": "python-atlas",
+    "title": "Python Atlas: do primeiro print ao próximo projeto",
+    "description": "Guia interativo de Python, do básico ao avançado, com 92 exemplos, consoles simulados e progresso salvo no navegador. Um arquivo só, funciona offline.",
+    "date": "2026-10-29",
+    "tags": [
+      "python",
+      "programação",
+      "guia",
+      "iniciante",
+      "avançado",
+      "offline"
+    ],
+    "url": "educacao/python-atlas/",
+    "i18n": {
+      "en": {
+        "title": "Python Atlas: from the first print to your next project",
+        "description": "Interactive Python guide, from the basics to advanced topics, with 92 examples, simulated consoles and progress saved in the browser. A single file that works offline. Content in Portuguese."
+      },
+      "es": {
+        "title": "Python Atlas: del primer print al próximo proyecto",
+        "description": "Guía interactiva de Python, de lo básico a lo avanzado, con 92 ejemplos, consolas simuladas y progreso guardado en el navegador. Un solo archivo que funciona sin conexión. Contenido en portugués."
+      }
+    }
+  }
+]
