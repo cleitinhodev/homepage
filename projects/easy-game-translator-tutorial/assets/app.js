@@ -6,7 +6,7 @@
    pattern as the GitHub release), save, and upload the folder again.
    ===================================================================== */
 const CONFIG = {
-  VERSION: '4.0.6',
+  VERSION: '4.0.7',
   DOWNLOAD_WINDOWS: 'https://github.com/cleitinhodev/easy_game_translator/releases/download/v4.0.7/EasyGameTranslator-4.0.7-setup.exe',
   DOWNLOAD_WINDOWS_PORTABLE: 'https://github.com/cleitinhodev/easy_game_translator/releases/download/v4.0.7/EasyGameTranslator-4.0.7-portable.exe',
   DOWNLOAD_LINUX_APPIMAGE: 'https://github.com/cleitinhodev/easy_game_translator/releases/download/v4.0.7/EasyGameTranslator-4.0.7-x86_64.AppImage',
