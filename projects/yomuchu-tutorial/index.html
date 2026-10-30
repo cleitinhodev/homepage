@@ -654,8 +654,8 @@ function render(lang) {
   }).join("");
 
   // Capturas do idioma (imagens/<idioma>/) e imagens comuns (imagens/comum/)
-  ROOT.querySelectorAll("img[data-shot]").forEach((img) => { img.src = CONFIG.imagesDir + "/" + lang + "/" + img.getAttribute("data-shot") + ".png"; });
-  ROOT.querySelectorAll("img[data-common]").forEach((img) => { img.src = CONFIG.imagesDir + "/comum/" + img.getAttribute("data-common") + ".png"; });
+  ROOT.querySelectorAll("img[data-shot]").forEach((img) => { img.src = CONFIG.imagesDir + "/" + lang + "/" + img.getAttribute("data-shot") + ".webp"; });
+  ROOT.querySelectorAll("img[data-common]").forEach((img) => { img.src = CONFIG.imagesDir + "/comum/" + img.getAttribute("data-common") + ".webp"; });
   ROOT.querySelector(".hero-logo").alt = fill(T.logoAlt);
 
   document.getElementById("ymt-foot-credits").textContent =
