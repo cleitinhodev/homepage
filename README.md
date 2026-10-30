@@ -24,14 +24,15 @@ A homepage do **CleitinhoDEV**, com cara de fliperama retrô (synthwave vermelho
    - [Tools (`tools/`)](#tools-tools)
    - [Games (`games/`)](#games-games)
    - [Educação (`educacao/`)](#educação-educacao)
-4. [Como os manifestos são gerados (GitHub Actions)](#como-os-manifestos-são-gerados-github-actions)
-5. [Ver o site no seu computador](#ver-o-site-no-seu-computador)
-6. [Problemas comuns (FAQ)](#problemas-comuns-faq)
-7. [Criar uma categoria nova](#criar-uma-categoria-nova)
-8. [Idiomas do site (i18n)](#idiomas-do-site-i18n)
-9. [Controles e a aba Links + RETRO INVADER](#controles-e-a-aba-links--retro-invader)
-10. [Publicação (GitHub Pages)](#publicação-github-pages)
-11. [Licença](#licença)
+4. [Links externos (`externos/`)](#links-externos-externos)
+5. [Como os manifestos são gerados (GitHub Actions)](#como-os-manifestos-são-gerados-github-actions)
+6. [Ver o site no seu computador](#ver-o-site-no-seu-computador)
+7. [Problemas comuns (FAQ)](#problemas-comuns-faq)
+8. [Criar uma categoria nova](#criar-uma-categoria-nova)
+9. [Idiomas do site (i18n)](#idiomas-do-site-i18n)
+10. [Controles e a aba Links + RETRO INVADER](#controles-e-a-aba-links--retro-invader)
+11. [Publicação (GitHub Pages)](#publicação-github-pages)
+12. [Licença](#licença)
 
 ## Visão geral
 
@@ -45,6 +46,7 @@ A homepage do **CleitinhoDEV**, com cara de fliperama retrô (synthwave vermelho
   | Games | [`games/`](games/) | `GAME` | jogos e experimentos jogáveis |
   | Educação | [`educacao/`](educacao/) | `EDU` | aulas, guias e materiais de estudo |
 
+- **Links externos:** um vídeo, repositório ou site de fora também pode aparecer numa categoria. É só um arquivo `.json` em [`externos/`](externos/), com o selo `↗ LINK EXTERNO`. Veja [Links externos](#links-externos-externos).
 - **Automático:** você só cria a pasta. Um script (`scripts/build-manifests.mjs`) roda no GitHub Actions a cada push, monta a lista de itens de cada categoria (o "manifesto") e publica o site.
 - **15 idiomas:** o site principal muda de idioma pelo seletor 🌐 no topo. Veja [Idiomas do site](#idiomas-do-site-i18n).
 - **Aba Links:** os links acima e o mini game **RETRO INVADER**.
@@ -76,6 +78,10 @@ A homepage do **CleitinhoDEV**, com cara de fliperama retrô (synthwave vermelho
 ├── tools/                      # aba Tools    (mesma estrutura, manifesto tools/tools.json)
 ├── games/                      # aba Games    (mesma estrutura, manifesto games/games.json)
 ├── educacao/                   # aba Educação (mesma estrutura, manifesto educacao/educacao.json)
+├── externos/                   # LINKS EXTERNOS: um <nome>.json por link (entram nas categorias acima)
+│   ├── README.md               # passo a passo dos links externos
+│   ├── _modelo.json            # modelo para copiar (ignorado por começar com "_")
+│   └── imagens/                # capas locais dos links (opcional)
 ├── scripts/
 │   ├── build-manifests.mjs     # gera os manifestos de todas as categorias
 │   ├── build-projects.mjs      # nome antigo (ainda funciona: chama o build-manifests)
@@ -276,6 +282,27 @@ cp -r educacao/_modelo educacao/fracoes-para-iniciantes
 }
 ```
 
+## Links externos (`externos/`)
+
+Quer mostrar no site algo que **não está neste repositório** (um vídeo no YouTube, um repositório no GitHub, um curso, uma ferramenta online)? Crie **um arquivo** `externos/<nome>.json`. Passo a passo completo, com exemplos de cada categoria: [externos/README.md](externos/README.md).
+
+```json
+{
+  "url": "https://www.youtube.com/@CleitinhoDEV",
+  "category": "educacao",
+  "title": "Curso de Git no YouTube",
+  "description": "Do primeiro commit ao pull request.",
+  "date": "2026-11-02"
+}
+```
+
+- **Obrigatórios:** `url` (começando com `https://`), `category` (`projects`, `tools`, `games` ou `educacao`; também aceita `projeto`, `tool`, `game`, `educação`...) e `title`.
+- **Opcionais:** `description`, `date` (`AAAA-MM-DD`), `tags`, `image` (arquivo dentro de `externos/`, ex.: `imagens/capa.webp`, ou link `https://`), `i18n` e `langs` (iguais aos do `project.json`).
+- O link aparece na aba da categoria e na tela inicial, na mesma ordem dos outros itens (por `date`), com o selo **`↗ LINK EXTERNO`**, o botão **↗ Visitar site** e abre **em nova aba**. Sem `image`, mostra o ícone 🔗.
+- **Pelo navegador:** abra a pasta [`externos/`](externos/) no GitHub → **Add file → Create new file** → digite `meu-link.json` → cole o JSON → **Commit changes**.
+- **Pelo terminal:** `cp externos/_modelo.json externos/meu-link.json`, edite, `git add externos && git commit -m "Adiciona link externo" && git push`.
+- Link com erro (sem `url`, sem `https://`, categoria que não existe, sem `title`, JSON quebrado) é **pulado** e aparece um ⚠ *warning* no log do Actions com o nome do arquivo.
+
 ## Como os manifestos são gerados (GitHub Actions)
 
 Cada categoria tem um **manifesto**: `projects/projects.json`, `tools/tools.json`, `games/games.json` e `educacao/educacao.json`. É a lista que o site lê para montar a tela inicial e as abas.
@@ -289,6 +316,7 @@ A cada push na `main`, o workflow **Site (manifesto + Pages)** (`.github/workflo
    - entra só a pasta com `index.html`;
    - pastas começando com `_` ou `.` e arquivos soltos (como os `README.md`) são ignorados;
    - os dados vêm do `project.json` e, no que faltar, do `index.html` e do git;
+   - cada `externos/<nome>.json` válido entra no manifesto da categoria escolhida (com `"external": true` e o endereço completo em `url`);
 3. se algum manifesto mudou, faz um commit `chore: atualiza manifestos [skip ci]`;
 4. publica o site no GitHub Pages.
 
@@ -314,6 +342,8 @@ python3 -m http.server 8000        # ou: npx serve .
 Abra http://localhost:8000. Para testar um idioma: http://localhost:8000/?lang=en. Para parar o servidor, use `Ctrl+C`.
 
 ## Problemas comuns (FAQ)
+
+**Meu link externo não aparece.** Veja a seção [Deu errado?](externos/README.md#deu-errado-o-link-não-aparece) do `externos/README.md`: quase sempre é `url` sem `https://`, `category` escrita errado ou JSON com vírgula sobrando. O log do Actions mostra um ⚠ com o nome do arquivo.
 
 **Meu item não aparece no site.**
 

@@ -1,0 +1,18 @@
+{
+  "url": "https://exemplo.com/meu-tutorial",
+  "category": "projects",
+  "title": "Título do link",
+  "description": "Uma frase curta explicando o que tem lá.",
+  "date": "2026-10-29",
+  "tags": [
+    "html",
+    "iniciante"
+  ],
+  "image": "imagens/meu-link.webp",
+  "i18n": {
+    "en": {
+      "title": "Link title",
+      "description": "A short sentence explaining what is there."
+    }
+  }
+}

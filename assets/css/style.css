@@ -447,6 +447,18 @@ code { font-family: var(--font-body); color: var(--pink); background: rgba(255,7
 .screen-item .cat-badge { margin-inline-end: 6px; }
 .preview .meta .cat-badge { margin-inline-end: 4px; }
 
+/* links externos (externos/*.json): selo "↗ LINK EXTERNO" */
+.ext-badge {
+  display: inline-block; vertical-align: middle; margin-inline-end: 6px; padding: 2px 5px 1px;
+  font-family: var(--font-pixel); font-size: calc(7px * var(--fs)); line-height: 1.4; letter-spacing: .5px;
+  color: #ffe066; background: rgba(0,0,0,.55); border: 1px dashed #ffe066;
+  box-shadow: 2px 2px 0 rgba(0,0,0,.45); text-shadow: none; white-space: nowrap;
+}
+.ext-arrow { font-family: 'Segoe UI Symbol', 'Apple Symbols', 'DejaVu Sans', 'Noto Sans Symbols', sans-serif; font-weight: 700; font-size: 1.5em; line-height: 1; vertical-align: -.1em; }
+.screen-item .ext-mark { display: inline-block; margin-inline-start: 6px; color: #ffe066; }
+.card .card-ext { flex: 0 0 auto; margin: 0; }
+.card.is-external .card-art { border-style: dashed; border-color: rgba(255,224,102,.45); }
+
 /* aba de categoria: título com ícone e cards na cor da categoria */
 .cat-panel .section-title .title-ico { display: inline-block; filter: drop-shadow(3px 3px 0 var(--acc-d)); margin-inline-end: 4px; }
 .cat-panel .section-title::after { color: var(--acc); }

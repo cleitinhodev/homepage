@@ -19,6 +19,17 @@
  *  - Ordem: "date" mais nova primeiro; empate → "added" mais recente primeiro
  *    (sem "added" = a mais nova); depois, ordem alfabética.
  *
+ * Links externos (pasta externos/, veja externos/README.md):
+ *  - Cada arquivo externos/<nome>.json vira um item que aponta para um site de fora.
+ *    Campos: url (https, obrigatório), category (obrigatório: projects | tools | games | educacao
+ *    ou apelidos como "projeto", "tool", "game", "educação"), title (obrigatório), description,
+ *    date (AAAA-MM-DD), tags, image (arquivo dentro de externos/ ou URL https), i18n, langs.
+ *  - O item entra no manifesto da categoria escolhida com "external": true e a URL absoluta,
+ *    seguindo a mesma ordem (date → added → título). "added" = 1º commit do arquivo .json.
+ *  - Arquivos que começam com "_" ou "." (ex.: externos/_modelo.json) são ignorados.
+ *  - Itens inválidos (sem url, url sem https, categoria errada, sem title, JSON quebrado)
+ *    são pulados com um aviso — no GitHub Actions o aviso aparece como "warning" amarelo.
+ *
  * Sem dependências: só Node 18+.
  */
 import { readdirSync, readFileSync, writeFileSync, existsSync, statSync, mkdirSync } from 'node:fs';
@@ -130,7 +141,112 @@ function cleanI18n(raw, where) {
   return Object.keys(out).length ? out : undefined;
 }
 
-function buildCategory(dirName) {
+/* ================= Links externos (externos/*.json) ================= */
+const EXT_DIR = 'externos';
+const IN_ACTIONS = !!process.env.GITHUB_ACTIONS;
+let extWarnings = 0;
+
+// Aviso legível no terminal + anotação "::warning" no log do GitHub Actions.
+function extWarn(file, msg) {
+  extWarnings++;
+  console.warn(`⚠  ${file}: ${msg} — item ignorado.`);
+  if (IN_ACTIONS) console.log(`::warning file=${file},title=Link externo ignorado::${msg.replace(/[\r\n]+/g, ' ')}`);
+}
+
+// "Educação" → "educacao", " Tools " → "tools"
+const normKey = (s) => String(s).normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim().toLowerCase().replace(/[\s_-]+/g, '');
+
+// apelidos aceitos em "category" (além de dir, id, nome da aba e selo de cada categoria)
+const CAT_ALIASES = {
+  projects: ['projeto', 'projetos', 'project', 'projects', 'proj', 'tutorial', 'tutoriais'],
+  tools: ['tool', 'tools', 'ferramenta', 'ferramentas'],
+  games: ['game', 'games', 'jogo', 'jogos'],
+  educacao: ['edu', 'educacao', 'educação', 'education', 'estudo', 'estudos', 'aula', 'aulas', 'curso', 'cursos'],
+};
+
+function categoryLookup(cats) {
+  const map = new Map();
+  for (const c of cats) {
+    for (const k of [c.dir, c.id, c.tab, c.badge, ...(CAT_ALIASES[c.dir] || [])]) {
+      if (k && !map.has(normKey(k))) map.set(normKey(k), c.dir);
+    }
+  }
+  return map;
+}
+
+function extImage(image, file) {
+  if (image == null || image === '') return undefined;
+  if (typeof image !== 'string') { console.warn(`⚠  ${file}: "image" precisa ser texto; sem imagem.`); return undefined; }
+  image = image.trim();
+  if (/^https:\/\/[^\s"'<>]+$/i.test(image)) return image;
+  if (/^[a-z]+:/i.test(image) || image.startsWith('/')) { console.warn(`⚠  ${file}: "image" deve ser um arquivo dentro de externos/ ou uma URL https; sem imagem.`); return undefined; }
+  const p = posix.normalize(posix.join(EXT_DIR, image));
+  if (!p.startsWith(`${EXT_DIR}/`)) { console.warn(`⚠  ${file}: "image" saiu da pasta externos/; sem imagem.`); return undefined; }
+  if (!existsSync(join(ROOT, p))) { console.warn(`⚠  ${file}: imagem "${p}" não encontrada; sem imagem.`); return undefined; }
+  return p;
+}
+
+// Lê externos/*.json → Map(dir da categoria → [itens])
+function buildExternals(cats) {
+  const byCat = new Map(cats.map((c) => [c.dir, []]));
+  const base = join(ROOT, EXT_DIR);
+  if (!existsSync(base)) return byCat;
+  const lookup = categoryLookup(cats);
+  const valid = cats.map((c) => c.dir).join(', ');
+  let ok = 0;
+  for (const e of readdirSync(base, { withFileTypes: true })) {
+    if (!e.isFile() || !e.name.toLowerCase().endsWith('.json') || e.name.startsWith('_') || e.name.startsWith('.')) continue;
+    const file = `${EXT_DIR}/${e.name}`;
+    const slug = e.name.slice(0, -5);
+    if (!/^[A-Za-z0-9][\w.-]*$/.test(slug)) { extWarn(file, 'nome de arquivo inválido: use só letras, números, - _ . (ex.: meu-link.json)'); continue; }
+    let meta;
+    try { meta = JSON.parse(readFileSync(join(base, e.name), 'utf8')); }
+    catch (err) { extWarn(file, `JSON inválido (${err.message}). Confira vírgulas e aspas.`); continue; }
+    if (!meta || typeof meta !== 'object' || Array.isArray(meta)) { extWarn(file, 'o arquivo precisa ser um objeto { ... }'); continue; }
+
+    const rawUrl = typeof meta.url === 'string' ? meta.url.trim() : '';
+    if (!rawUrl) { extWarn(file, 'falta o campo "url" (o link externo, começando com https://)'); continue; }
+    let url;
+    try { url = new URL(rawUrl); } catch { url = null; }
+    if (!url || url.protocol !== 'https:' || /[\s"'<>]/.test(rawUrl)) { extWarn(file, `"url" inválida: "${rawUrl}". Use um endereço completo começando com https://`); continue; }
+
+    if (meta.category == null || String(meta.category).trim() === '') { extWarn(file, `falta o campo "category" (use: ${valid})`); continue; }
+    const dir = lookup.get(normKey(meta.category));
+    if (!dir) { extWarn(file, `categoria "${meta.category}" não existe (use: ${valid})`); continue; }
+
+    const title = typeof meta.title === 'string' ? meta.title.trim() : '';
+    if (!title) { extWarn(file, 'falta o campo "title" (o nome que aparece no site)'); continue; }
+
+    let date = String(meta.date || '').trim();
+    if (!DATE_RE.test(date)) {
+      if (date) console.warn(`⚠  ${file}: "date" deve ser AAAA-MM-DD (veio "${date}"); usando a data do commit.`);
+      date = gitDate(join(base, e.name)) || mtimeDate(base);
+    }
+    const item = {
+      slug,
+      title,
+      description: String(meta.description || '').trim(),
+      date,
+      tags: Array.isArray(meta.tags) ? meta.tags.map((t) => String(t).trim()).filter(Boolean) : [],
+      url: url.href,
+      external: true,
+    };
+    const cover = extImage(meta.image ?? meta.cover, file);
+    if (cover) item.cover = cover;
+    const i18n = cleanI18n(meta.i18n, file);
+    if (i18n) item.i18n = i18n;
+    const langs = Array.isArray(meta.langs) ? [...new Set(meta.langs.map(String).filter((c) => LANG_RE.test(c)))] : [];
+    if (langs.length) item.langs = langs;
+    const added = gitAdded(join(base, e.name));
+    if (added) item.added = added;
+    byCat.get(dir).push(item);
+    ok++;
+  }
+  console.log(`↗ ${EXT_DIR}/: ${ok} link(s) externo(s) válido(s)${extWarnings ? `, ${extWarnings} ignorado(s) (veja os avisos acima)` : ''}.`);
+  return byCat;
+}
+
+function buildCategory(dirName, extra = []) {
   const base = join(ROOT, dirName);
   const items = [];
   const entries = existsSync(base) ? readdirSync(base, { withFileTypes: true }) : [];
@@ -164,6 +280,7 @@ function buildCategory(dirName) {
     if (added) item.added = added;
     items.push(item);
   }
+  items.push(...extra);
   const addedOf = (p) => (p.added === undefined ? Infinity : p.added);
   items.sort((a, b) =>
     a.date < b.date ? 1 : a.date > b.date ? -1 :
@@ -172,11 +289,13 @@ function buildCategory(dirName) {
 }
 
 let stale = 0;
-for (const cat of loadCategories()) {
+const CATS = loadCategories();
+const EXTERNALS = LIST ? new Map() : buildExternals(CATS);
+for (const cat of CATS) {
   const rel = `${cat.dir}/${cat.dir}.json`;
   if (LIST) { console.log(rel); continue; }
   const out = join(ROOT, rel);
-  const items = buildCategory(cat.dir);
+  const items = buildCategory(cat.dir, EXTERNALS.get(cat.dir));
   const json = JSON.stringify(items, null, 2) + '\n';
   const current = existsSync(out) ? readFileSync(out, 'utf8') : null;
   if (CHECK) {

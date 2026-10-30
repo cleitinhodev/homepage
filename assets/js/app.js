@@ -73,8 +73,26 @@
   }
   function itemUrl(p) {
     var code = pageLang(p);
-    return code ? p.url + '?lang=' + encodeURIComponent(code) : p.url;
+    if (!code) return p.url;
+    if (p.external) { // link externo: só ganha ?lang se o arquivo declarar "langs"
+      try { var u = new URL(p.url); u.searchParams.set('lang', code); return u.href; } catch (e) { return p.url; }
+    }
+    return p.url + '?lang=' + encodeURIComponent(code);
   }
+  /* links externos (externos/*.json): abrem em nova aba, sem repassar a página de origem */
+  var EXT_ICON = '🔗';
+  function linkAttrs(p) { return p.external ? ' target="_blank" rel="noopener noreferrer"' : ''; }
+  /* a fonte pixel não tem a seta ↗: ela vai num <span> com fonte de símbolos */
+  function arrow(s) { return esc(s).replace(/↗/g, '<span class="ext-arrow" aria-hidden="true">↗</span>'); }
+  function extBadge(p) {
+    return p.external ? '<span class="ext-badge">' + arrow(t('badge.external', null, '↗ LINK EXTERNO')) + '</span>' : '';
+  }
+  function openLabel(p) {
+    return p.external
+      ? arrow(t('ext.open', null, '↗ Visitar site')) + '<span class="sr-only"> ' + esc(t('ext.newTab', null, '(abre em uma nova aba)')) + '</span>'
+      : esc(ct(p.cat, 'open'));
+  }
+  function itemIcon(p) { return p.external ? EXT_ICON : p.cat.icon; }
 
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
   var nav = document.querySelector('.main-nav');
@@ -105,11 +123,13 @@
     var d = new Date(+m[1], +m[2] - 1, +m[3]);
     return (Date.now() - d.getTime()) / 864e5 <= NEW_DAYS;
   }
-  function safeCover(c, cat) {
+  function safeCover(c, cat, external) {
     if (typeof c !== 'string' || !c) return '';
     if (/^https:\/\/[^\s"']+$/.test(c)) return c;
-    return c.indexOf(cat.dir + '/') === 0 && !/:|\.\.\//.test(c) ? c : '';
+    var dir = external ? 'externos/' : cat.dir + '/';
+    return c.indexOf(dir) === 0 && !/:|\.\.\//.test(c) ? c : '';
   }
+  var EXT_URL = /^https:\/\/[^\s"'<>]+$/;
   /* mais novo primeiro; mesma data → entrou no repo por último ("added"; sem "added" = agora);
      depois a ordem das categorias e a ordem do manifesto */
   function byNewest(a, b) {
@@ -121,8 +141,10 @@
   function normalize(raw, cat) {
     if (!Array.isArray(raw)) return [];
     return raw.filter(function (p) {
-      return p && typeof p.slug === 'string' && /^[A-Za-z0-9][\w.-]*$/.test(p.slug);
+      return p && typeof p.slug === 'string' && /^[A-Za-z0-9][\w.-]*$/.test(p.slug) &&
+        (p.external !== true || (typeof p.url === 'string' && EXT_URL.test(p.url)));
     }).map(function (p, i) {
+      var ext = p.external === true;
       return {
         slug: p.slug,
         title: String(p.title || p.slug),
@@ -130,10 +152,11 @@
         date: String(p.date || ''),
         added: typeof p.added === 'number' && isFinite(p.added) ? p.added : null,
         tags: Array.isArray(p.tags) ? p.tags.map(String).slice(0, 8) : [],
-        cover: safeCover(p.cover, cat),
+        cover: safeCover(p.cover, cat, ext),
+        external: ext,
         i18n: cleanI18n(p.i18n),
         langs: Array.isArray(p.langs) ? p.langs.filter(function (c) { return typeof c === 'string' && /^[a-z]{2,3}([-_][a-z0-9]{2,8})*$/i.test(c); }) : [],
-        url: cat.dir + '/' + encodeURIComponent(p.slug) + '/',  // sempre a pasta da categoria certa
+        url: ext ? p.url : cat.dir + '/' + encodeURIComponent(p.slug) + '/',  // interno: sempre a pasta da categoria certa
         cat: cat, _i: i
       };
     }).sort(byNewest);
@@ -348,7 +371,9 @@
         '<ul class="screen-list" id="screen-list" role="listbox" tabindex="0" aria-label="' + esc(t('screen.listAria', null, 'Últimas adições — use as setas para escolher')) + '">' +
         items.map(function (p, i) {
           return '<li class="screen-item" role="option" id="opt-' + i + '" data-index="' + i + '" aria-selected="' + (i === selected) + '">' +
-            badgeHtml(p.cat) + '<span class="item-title">' + esc(loc(p).title) + '</span>' + (isNew(p.date) ? '<span class="new">' + esc(t('badge.new', null, 'NOVO')) + '</span>' : '') + '</li>';
+            badgeHtml(p.cat) + '<span class="item-title">' + esc(loc(p).title) + '</span>' +
+            (p.external ? '<span class="ext-mark" title="' + esc(t('badge.external', null, '↗ LINK EXTERNO')) + '"><span class="ext-arrow" aria-hidden="true">↗</span><span class="sr-only">' + esc(t('badge.external', null, '↗ LINK EXTERNO')) + '</span></span>' : '') +
+            (isNew(p.date) ? '<span class="new">' + esc(t('badge.new', null, 'NOVO')) + '</span>' : '') + '</li>';
         }).join('') +
         '</ul>' +
         '<div class="preview" id="preview"></div>' +
@@ -374,12 +399,12 @@
     var p = projects[selected], L = loc(p);
     var pv = document.getElementById('preview');
     pv.innerHTML =
-      '<div class="preview-cover">' + (p.cover ? '<img src="' + esc(p.cover) + '" alt="" loading="lazy">' : '<span aria-hidden="true">' + esc(p.cat.icon) + '</span>') + '</div>' +
+      '<div class="preview-cover' + (p.external ? ' is-external' : '') + '">' + (p.cover ? '<img src="' + esc(p.cover) + '" alt="" loading="lazy">' : '<span aria-hidden="true">' + esc(itemIcon(p)) + '</span>') + '</div>' +
       '<h3>' + esc(L.title) + '</h3>' +
-      '<p class="meta">' + badgeHtml(p.cat) + ' <span aria-hidden="true">📅</span> <span class="sr-only">' + esc(t('date.label', null, 'Data')) + ': </span><time datetime="' + esc(p.date) + '">' + esc(formatDate(p.date)) + '</time></p>' +
+      '<p class="meta">' + badgeHtml(p.cat) + extBadge(p) + ' <span aria-hidden="true">📅</span> <span class="sr-only">' + esc(t('date.label', null, 'Data')) + ': </span><time datetime="' + esc(p.date) + '">' + esc(formatDate(p.date)) + '</time></p>' +
       (L.description ? '<p class="desc">' + esc(L.description) + '</p>' : '') +
       tagsHtml(p.tags) +
-      '<a class="btn btn-primary btn-small" href="' + esc(itemUrl(p)) + '"><span class="btn-label">' + esc(ct(p.cat, 'open')) + '</span></a>';
+      '<a class="btn btn-primary btn-small" href="' + esc(itemUrl(p)) + '"' + linkAttrs(p) + '><span class="btn-label">' + openLabel(p) + '</span></a>';
     if (animate) { pv.classList.remove('swap'); void pv.offsetWidth; pv.classList.add('swap'); }
   }
   function select(i) {
@@ -390,7 +415,9 @@
   }
   function openSelected() {
     var p = projects[selected];
-    if (state === 'list' && p) location.href = itemUrl(p);
+    if (state !== 'list' || !p) return;
+    if (p.external) window.open(itemUrl(p), '_blank', 'noopener,noreferrer');
+    else location.href = itemUrl(p);
   }
   function screenKeys(e) {
     if (state !== 'list') return;
@@ -450,13 +477,14 @@
     var arts = ['art-1', 'art-2', 'art-3'];
     els.box.innerHTML = items.map(function (p, i) {
       var L = loc(p);
-      return '<article class="card">' +
-        '<div class="card-art ' + arts[i % 3] + '" aria-hidden="true">' + (p.cover ? '<img src="' + esc(p.cover) + '" alt="" loading="lazy">' : esc(cat.icon)) + '</div>' +
+      return '<article class="card' + (p.external ? ' is-external' : '') + '">' +
+        '<div class="card-art ' + arts[i % 3] + '" aria-hidden="true">' + (p.cover ? '<img src="' + esc(p.cover) + '" alt="" loading="lazy">' : esc(itemIcon(p))) + '</div>' +
+        (p.external ? '<p class="card-ext">' + extBadge(p) + '</p>' : '') +
         '<h3>' + esc(L.title) + '</h3>' +
         '<p class="meta"><span aria-hidden="true">📅</span> <span class="sr-only">' + esc(t('date.label', null, 'Data')) + ': </span><time datetime="' + esc(p.date) + '">' + esc(formatDate(p.date)) + '</time></p>' +
         '<p>' + esc(L.description) + '</p>' +
         tagsHtml(p.tags) +
-        '<a class="btn btn-small" href="' + esc(itemUrl(p)) + '"><span class="btn-label">' + esc(ct(cat, 'open')) + '</span></a>' +
+        '<a class="btn btn-small" href="' + esc(itemUrl(p)) + '"' + linkAttrs(p) + '><span class="btn-label">' + openLabel(p) + '</span></a>' +
       '</article>';
     }).join('');
   }
@@ -467,7 +495,7 @@
     if (img && img.tagName === 'IMG' && img.closest('.preview-cover, .card-art')) {
       var span = document.createElement('span');
       span.setAttribute('aria-hidden', 'true');
-      span.textContent = '🕹️';
+      span.textContent = img.closest('.is-external') ? EXT_ICON : '🕹️'; // link externo → ícone 🔗
       img.replaceWith(span);
     }
   }, true);
