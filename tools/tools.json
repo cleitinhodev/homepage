@@ -1,13 +1,1 @@
-[
-  {
-    "slug": "meu-link-teste",
-    "title": "Página de teste",
-    "description": "Link de teste para endereços externos",
-    "date": "2026-10-30",
-    "tags": [],
-    "url": "https://automatal.github.io/guide/",
-    "external": true,
-    "cover": "externos/imagens/pombo.webp",
-    "added": 1793415788
-  }
-]
+[]
