@@ -1,0 +1,87 @@
+==============================================================
+   TUTORIAL - ADICIONAR E EXCLUIR LINKS EXTERNOS (IMPORTANTE)
+==============================================================
+
+Cada link externo do site e um arquivo .json dentro desta pasta
+(externos/). Nao precisa de subpasta nem de index.html.
+Arquivos que comecam com "_" (ex.: _modelo.json) sao ignorados.
+Este .txt tambem e ignorado pelo site; ele serve so de guia.
+
+--------------------------------------------------------------
+ ADICIONAR UM LINK
+--------------------------------------------------------------
+
+1. Abra https://github.com/cleitinhodev/homepage e entre na
+   pasta "externos".
+
+2. Clique em "Add file" > "Create new file".
+
+3. Digite o nome do arquivo, por exemplo: meu-link.json
+   (letras minusculas, sem espaco, sem acento, terminando em .json)
+
+4. Cole este modelo e troque pelos dados do seu link:
+
+   {
+     "url": "https://exemplo.com",
+     "category": "tools",
+     "title": "Nome que aparece no site",
+     "description": "Uma frase curta explicando o link.",
+     "date": "2026-10-30"
+   }
+
+5. (Opcional) Imagem de capa. Adicione a linha abaixo, lembrando
+   de colocar virgula no fim da linha de cima:
+
+     "image": "https://site.com/capa.webp"
+
+   Se a imagem for sua, primeiro suba o arquivo em
+   externos/imagens/ ("Add file" > "Upload files") e use:
+
+     "image": "imagens/capa.webp"
+
+   Sem imagem, o site mostra o icone generico 🔗.
+
+6. Clique em "Commit changes", escreva uma mensagem
+   (ex.: "Adiciona link X") e confirme na main.
+
+7. Abra a aba "Actions" do repositorio e espere o check verde
+   (1 a 2 minutos). Depois recarregue o site:
+   https://cleitinhodev.github.io/homepage/
+
+--------------------------------------------------------------
+ EXCLUIR UM LINK
+--------------------------------------------------------------
+
+1. Na pasta "externos", clique no arquivo .json do link
+   (ex.: meu-link.json).
+
+2. Clique nos tres pontinhos (...) no canto superior direito
+   do arquivo e escolha "Delete file".
+
+3. Clique em "Commit changes", escreva uma mensagem
+   (ex.: "Remove link X") e confirme na main.
+
+4. Se o link usava uma imagem sua em externos/imagens/,
+   apague ela tambem, do mesmo jeito.
+
+5. Espere o check verde na aba "Actions" e recarregue o site.
+
+Apagou errado? Abra o commit em que apagou e use "Revert",
+ou recupere o arquivo pelo historico (History) da pasta.
+
+--------------------------------------------------------------
+ REGRAS QUE NAO PODE ESQUECER
+--------------------------------------------------------------
+
+- "url" precisa comecar com https://
+- "category" precisa ser: projects, tools, games ou educacao
+  (tambem aceita: projeto, ferramenta, jogo, estudos)
+- "url", "category" e "title" sao obrigatorios.
+- "date" no formato AAAA-MM-DD (ano-mes-dia).
+- Todo texto vai entre aspas "assim".
+- Virgula entre as linhas, MENOS depois da ultima.
+- Se algo estiver errado, o site ignora esse link e mostra um
+  aviso (⚠) no log da aba Actions. Os outros links continuam.
+
+Mais detalhes: externos/README.md
+==============================================================
