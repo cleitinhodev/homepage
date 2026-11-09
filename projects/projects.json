@@ -1,5 +1,16 @@
 [
   {
+    "slug": "panoraminal-tutorial",
+    "title": "Panoraminal — Tutorial",
+    "description": "Aprenda a usar o Panoraminal passo a passo.",
+    "date": "2026-11-09",
+    "tags": [],
+    "url": "https://automatal.github.io/files/projects/panoraminal-tutorial/",
+    "external": true,
+    "cover": "https://automatal.github.io/files/projects/panoraminal-tutorial/img/icon.webp",
+    "added": 1794240327
+  },
+  {
     "slug": "orguine-tutorial",
     "title": "Orguine: tutorial do organizador de pastas",
     "description": "Tutorial completo do Orguine 2.1.1: como baixar, instalar e usar o organizador de pastas com prévia, duplicados por SHA-256, proteção de arquivos sensíveis, backup e desfazer. Para Windows, Linux e macOS.",
