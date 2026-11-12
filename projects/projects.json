@@ -2,12 +2,70 @@
   {
     "slug": "nimcale_tutorial",
     "title": "Nimcale — Tutorial",
-    "description": "Transforme uma imagem + mapa de altura em um relevo 3D pronto para imprimir / Turn an image + height map into a 3D relief ready to print",
+    "description": "Transforme uma imagem + mapa de altura em um relevo 3D pronto para imprimir.",
     "date": "2026-11-12",
     "tags": [],
     "url": "https://automatal.github.io/files/projects/nimcale_tutorial/",
     "external": true,
     "cover": "https://automatal.github.io/files/projects/nimcale_tutorial/assets/img/main.webp",
+    "i18n": {
+      "en": {
+        "title": "Nimcale — Tutorial",
+        "description": "Turn an image + height map into a 3D relief ready to print."
+      },
+      "es": {
+        "title": "Nimcale — Tutorial",
+        "description": "Convierte una imagen + mapa de altura en un relieve 3D listo para imprimir."
+      },
+      "fr": {
+        "title": "Nimcale — Tutoriel",
+        "description": "Transformez une image + une carte de hauteur en un relief 3D prêt à imprimer."
+      },
+      "de": {
+        "title": "Nimcale — Anleitung",
+        "description": "Verwandle ein Bild + eine Höhenkarte in ein druckfertiges 3D-Relief."
+      },
+      "it": {
+        "title": "Nimcale — Tutorial",
+        "description": "Trasforma un'immagine + una mappa di altezza in un rilievo 3D pronto da stampare."
+      },
+      "ja": {
+        "title": "Nimcale — チュートリアル",
+        "description": "画像と高さマップから、そのまま印刷できる3Dレリーフを作成します。"
+      },
+      "zh-CN": {
+        "title": "Nimcale — 教程",
+        "description": "将图像 + 高度图转换为可直接打印的 3D 浮雕。"
+      },
+      "ko": {
+        "title": "Nimcale — 튜토리얼",
+        "description": "이미지와 높이 맵을 바로 출력할 수 있는 3D 부조로 바꿔 보세요."
+      },
+      "ru": {
+        "title": "Nimcale — Руководство",
+        "description": "Превратите изображение и карту высот в 3D-рельеф, готовый к печати."
+      },
+      "tr": {
+        "title": "Nimcale — Eğitim",
+        "description": "Bir görseli + yükseklik haritasını baskıya hazır 3D kabartmaya dönüştürün."
+      },
+      "id": {
+        "title": "Nimcale — Tutorial",
+        "description": "Ubah gambar + peta ketinggian menjadi relief 3D yang siap dicetak."
+      },
+      "hi": {
+        "title": "Nimcale — ट्यूटोरियल",
+        "description": "एक इमेज + हाइट मैप को प्रिंट के लिए तैयार 3D रिलीफ़ में बदलें।"
+      },
+      "bn": {
+        "title": "Nimcale — টিউটোরিয়াল",
+        "description": "একটি ছবি + হাইট ম্যাপকে প্রিন্টের জন্য প্রস্তুত 3D রিলিফে রূপান্তর করুন।"
+      },
+      "ar": {
+        "title": "Nimcale — درس تعليمي",
+        "description": "حوِّل صورة + خريطة ارتفاع إلى نقش بارز ثلاثي الأبعاد جاهز للطباعة."
+      }
+    },
     "added": 1794497326
   },
   {
