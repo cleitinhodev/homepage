@@ -1,5 +1,16 @@
 [
   {
+    "slug": "nimcale_tutorial",
+    "title": "Nimcale — Tutorial",
+    "description": "Transforme uma imagem + mapa de altura em um relevo 3D pronto para imprimir / Turn an image + height map into a 3D relief ready to print",
+    "date": "2026-11-12",
+    "tags": [],
+    "url": "https://automatal.github.io/files/projects/nimcale_tutorial/",
+    "external": true,
+    "cover": "https://automatal.github.io/files/projects/nimcale_tutorial/assets/img/main.webp",
+    "added": 1794497326
+  },
+  {
     "slug": "panoraminal-tutorial",
     "title": "Panoraminal — Tutorial",
     "description": "Aprenda a usar o Panoraminal passo a passo.",
