@@ -2,7 +2,24 @@
   "url": "https://automatal.github.io/files/projects/panoraminal-tutorial/",
   "category": "projects",
   "title": "Panoraminal — Tutorial",
-  "description": "Aprenda a usar o Panoraminal passo a passo.",
+  "description": "Um programa de pintura feito para panoramas 360°: pinte direto na esfera, com camadas, pincéis e exportação pronta para VR.",
   "date": "2026-11-09",
-  "image": "https://automatal.github.io/files/projects/panoraminal-tutorial/img/dark-sphere.webp"
+  "image": "https://automatal.github.io/files/projects/panoraminal-tutorial/img/dark-sphere.webp",
+  "langs": ["pt-BR", "en", "es", "fr", "de", "it", "ja", "zh-CN"],
+  "i18n": {
+    "en": { "title": "Panoraminal — Tutorial", "description": "A painting program made for 360° panoramas: paint directly on the sphere, with layers, brushes and VR-ready export." },
+    "es": { "title": "Panoraminal — Tutorial", "description": "Un programa de pintura hecho para panoramas 360°: pinta directamente sobre la esfera, con capas, pinceles y exportación lista para VR." },
+    "fr": { "title": "Panoraminal — Tutoriel", "description": "Un logiciel de peinture conçu pour les panoramas 360° : peignez directement sur la sphère, avec calques, pinceaux et export prêt pour la VR." },
+    "de": { "title": "Panoraminal — Anleitung", "description": "Ein Malprogramm für 360°-Panoramen: Male direkt auf die Kugel, mit Ebenen, Pinseln und VR-fertigem Export." },
+    "it": { "title": "Panoraminal — Tutorial", "description": "Un programma di pittura creato per panorami a 360°: dipingi direttamente sulla sfera, con livelli, pennelli ed esportazione pronta per la VR." },
+    "ja": { "title": "Panoraminal — チュートリアル", "description": "360°パノラマ専用のペイントソフト。球体に直接描けて、レイヤー、ブラシ、VR対応の書き出しも備えています。" },
+    "zh-CN": { "title": "Panoraminal — 教程", "description": "专为 360° 全景打造的绘画程序：直接在球面上绘画，支持图层、画笔和适用于 VR 的导出。" },
+    "ko": { "title": "Panoraminal — 튜토리얼", "description": "360° 파노라마를 위한 페인팅 프로그램: 구 위에 바로 그리고, 레이어와 브러시, VR용 내보내기를 지원합니다." },
+    "ru": { "title": "Panoraminal — Руководство", "description": "Программа для рисования 360°-панорам: рисуйте прямо на сфере, со слоями, кистями и экспортом, готовым для VR." },
+    "tr": { "title": "Panoraminal — Eğitim", "description": "360° panoramalar için yapılmış bir çizim programı: doğrudan küre üzerine çizin; katmanlar, fırçalar ve VR'a hazır dışa aktarma." },
+    "id": { "title": "Panoraminal — Tutorial", "description": "Program melukis untuk panorama 360°: lukis langsung di bola, dengan layer, kuas, dan ekspor yang siap untuk VR." },
+    "hi": { "title": "Panoraminal — ट्यूटोरियल", "description": "360° पैनोरमा के लिए बना पेंटिंग प्रोग्राम: सीधे गोले पर पेंट करें, लेयर, ब्रश और VR के लिए तैयार एक्सपोर्ट के साथ।" },
+    "bn": { "title": "Panoraminal — টিউটোরিয়াল", "description": "৩৬০° প্যানোরামার জন্য তৈরি একটি পেইন্টিং প্রোগ্রাম: সরাসরি গোলকের ওপর আঁকুন, লেয়ার, ব্রাশ আর VR-উপযোগী এক্সপোর্টসহ।" },
+    "ar": { "title": "Panoraminal — درس تعليمي", "description": "برنامج رسم مصمَّم للصور البانورامية 360°: ارسم مباشرة على الكرة، مع الطبقات والفُرَش والتصدير الجاهز للواقع الافتراضي." }
+  }
 }
