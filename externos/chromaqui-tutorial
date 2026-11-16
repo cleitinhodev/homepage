@@ -1,0 +1,25 @@
+{
+  "url": "https://automatal.github.io/files/projects/chromaqui-tutorial/",
+  "category": "projects",
+  "title": "Chromaqui! — Tutorial",
+  "description": "Tire o fundo verde dos seus vídeos e exporte com transparência em vários formatos de imagem, inclusive para games.",
+  "date": "2026-11-15",
+  "image": "https://automatal.github.io/files/projects/chromaqui-tutorial/img/capa_pt-BR.webp",
+  "langs": ["pt-BR", "en", "es", "fr", "de", "it", "ja", "zh-CN"],
+  "i18n": {
+    "en": { "title": "Chromaqui! — Tutorial", "description": "Remove the green screen from your videos and export with transparency to many image formats, including for games." },
+    "es": { "title": "Chromaqui! — Tutorial", "description": "Quita el fondo verde de tus vídeos y exporta con transparencia a varios formatos de imagen, incluso para videojuegos." },
+    "fr": { "title": "Chromaqui! — Tutoriel", "description": "Supprimez le fond vert de vos vidéos et exportez avec transparence vers de nombreux formats d'image, y compris pour les jeux vidéo." },
+    "de": { "title": "Chromaqui! — Anleitung", "description": "Entferne den Greenscreen aus deinen Videos und exportiere mit Transparenz in viele Bildformate, auch für Spiele." },
+    "it": { "title": "Chromaqui! — Tutorial", "description": "Rimuovi lo sfondo verde dai tuoi video ed esporta con trasparenza in vari formati immagine, anche per i videogiochi." },
+    "ja": { "title": "Chromaqui! — チュートリアル", "description": "動画のグリーンバックを消して、透過付きでさまざまな画像形式に書き出せます。ゲーム用素材にも対応。" },
+    "zh-CN": { "title": "Chromaqui! — 教程", "description": "去除视频中的绿幕背景，并以透明背景导出为多种图像格式，也适用于游戏开发。" },
+    "ko": { "title": "Chromaqui! — 튜토리얼", "description": "영상의 그린 스크린 배경을 지우고 투명 배경으로 다양한 이미지 형식으로 내보내세요. 게임용으로도 좋습니다." },
+    "ru": { "title": "Chromaqui! — Руководство", "description": "Удаляйте зелёный фон из видео и экспортируйте с прозрачностью в разные форматы изображений, в том числе для игр." },
+    "tr": { "title": "Chromaqui! — Eğitim", "description": "Videolarınızdaki yeşil ekranı kaldırın ve şeffaf arka planla birçok görsel formatına aktarın; oyunlar için de uygun." },
+    "id": { "title": "Chromaqui! — Tutorial", "description": "Hapus latar hijau dari videomu dan ekspor dengan transparansi ke berbagai format gambar, termasuk untuk game." },
+    "hi": { "title": "Chromaqui! — ट्यूटोरियल", "description": "अपने वीडियो से ग्रीन स्क्रीन हटाएँ और पारदर्शिता के साथ कई इमेज फ़ॉर्मैट में एक्सपोर्ट करें, गेम्स के लिए भी।" },
+    "bn": { "title": "Chromaqui! — টিউটোরিয়াল", "description": "ভিডিও থেকে সবুজ পটভূমি সরিয়ে স্বচ্ছতাসহ নানা ইমেজ ফরম্যাটে এক্সপোর্ট করুন, গেমের জন্যও।" },
+    "ar": { "title": "Chromaqui! — درس تعليمي", "description": "أزِل الخلفية الخضراء من مقاطع الفيديو وصدِّرها بشفافية إلى صيغ صور متعددة، حتى للألعاب." }
+  }
+}
