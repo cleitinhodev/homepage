@@ -4,7 +4,7 @@
   "title": "Meu Projeto no GitHub",
   "description": "Site voltado para ensinar matemática do básico até temas intermediários, abordando diversos conceitos como algebra, equações, funções. Perfeito para quem está começando.",
   "date": "2026-11-19",
-  "tags": ["github", "javascript"],
+  "tags": ["iniciante", "matematica", "estudos", "operações", "equações", "calculo"],
   "image": "https://raw.githubusercontent.com/automatal/files/refs/heads/main/educacao/matriz/matriz_matematica.jpg",
   "langs": ["pt-BR"]
   }
