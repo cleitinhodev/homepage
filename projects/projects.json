@@ -1,5 +1,84 @@
 [
   {
+    "slug": "prompchu-tutorial",
+    "title": "Prompchu — Tutorial",
+    "description": "Gerencie seus prompts com tags e categorias para encontrá-los e reutilizá-los sem precisar reescrevê-los.",
+    "date": "2026-11-22",
+    "tags": [],
+    "url": "https://automatal.github.io/files/projects/prompchu-tutorial/",
+    "external": true,
+    "cover": "https://static.wixstatic.com/media/6ab65d_8b8dd68a097e4aa4b4096f80fa94aca7~mv2.webp/v1/fill/w_774,h_509,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/6ab65d_8b8dd68a097e4aa4b4096f80fa94aca7~mv2.webp",
+    "i18n": {
+      "en": {
+        "title": "Prompchu — Tutorial",
+        "description": "Organize your prompts with tags and categories so you can find and reuse them without having to rewrite them."
+      },
+      "es": {
+        "title": "Prompchu — Tutorial",
+        "description": "Organiza tus prompts con etiquetas y categorías para encontrarlos y reutilizarlos sin tener que volver a escribirlos."
+      },
+      "fr": {
+        "title": "Prompchu — Tutoriel",
+        "description": "Organisez vos prompts à l’aide d’étiquettes et de catégories pour les retrouver et les réutiliser sans avoir à les réécrire."
+      },
+      "de": {
+        "title": "Prompchu — Anleitung",
+        "description": "Organisiere deine Prompts mit Tags und Kategorien, damit du sie leicht finden und wiederverwenden kannst, ohne sie erneut schreiben zu müssen."
+      },
+      "it": {
+        "title": "Prompchu — Tutorial",
+        "description": "Organizza i tuoi prompt con tag e categorie per ritrovarli e riutilizzarli senza doverli riscrivere."
+      },
+      "ja": {
+        "title": "Prompchu — チュートリアル",
+        "description": "タグやカテゴリでプロンプトを整理し、書き直すことなく、必要なプロンプトを見つけて再利用できます。"
+      },
+      "zh-CN": {
+        "title": "Prompchu — 教程",
+        "description": "使用标签和分类整理你的提示词，方便查找和重复使用，无需重新编写。"
+      },
+      "ko": {
+        "title": "Prompchu — 튜토리얼",
+        "description": "태그와 카테고리로 프롬프트를 정리하고, 다시 작성할 필요 없이 원하는 프롬프트를 찾아 재사용하세요."
+      },
+      "ru": {
+        "title": "Prompchu — Руководство",
+        "description": "Организуйте свои промпты с помощью тегов и категорий, чтобы легко находить и использовать их повторно, не переписывая заново."
+      },
+      "tr": {
+        "title": "Prompchu — Eğitim",
+        "description": "İstemlerinizi etiketler ve kategorilerle düzenleyin; yeniden yazmak zorunda kalmadan kolayca bulun ve tekrar kullanın."
+      },
+      "id": {
+        "title": "Prompchu — Tutorial",
+        "description": "Atur prompt kamu dengan tag dan kategori agar mudah ditemukan dan digunakan kembali tanpa perlu menulis ulang."
+      },
+      "hi": {
+        "title": "Prompchu — ट्यूटोरियल",
+        "description": "अपने प्रॉम्प्ट को टैग और श्रेणियों के साथ व्यवस्थित करें, ताकि उन्हें दोबारा लिखे बिना आसानी से खोज सकें और फिर से इस्तेमाल कर सकें।"
+      },
+      "bn": {
+        "title": "Prompchu — টিউটোরিয়াল",
+        "description": "ট্যাগ ও বিভাগ দিয়ে আপনার প্রম্পটগুলো গুছিয়ে রাখুন, যাতে নতুন করে না লিখেই সহজে খুঁজে পেতে ও আবার ব্যবহার করতে পারেন।"
+      },
+      "ar": {
+        "title": "Prompchu — درس تعليمي",
+        "description": "نظّم مطالباتك باستخدام الوسوم والفئات لتتمكن من العثور عليها وإعادة استخدامها دون الحاجة إلى كتابتها من جديد."
+      }
+    },
+    "langs": [
+      "pt-BR",
+      "en",
+      "es",
+      "fr",
+      "de",
+      "it",
+      "ja",
+      "zh-CN"
+    ],
+    "added": 1795325689
+  },
+  {
     "slug": "chromaqui-tutorial",
     "title": "Chromaqui! — Tutorial",
     "description": "Tire o fundo verde dos seus vídeos e exporte com transparência em vários formatos de imagem, inclusive para games.",
